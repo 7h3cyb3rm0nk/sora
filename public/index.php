@@ -1,3 +1,6 @@
+<?php 
+require_once "../src/config/init.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +31,5 @@
        </div>
 
     </section>
-    
 </body>
 </html>
