@@ -4,79 +4,20 @@
 */                                                                                       
 class User {  
 
-<<<<<<< HEAD
-		/** @var mysqli Database connection */                                                  
-=======
 		/** @var mysqli $db Database connection object */                                                  
->>>>>>> auth
 	  private $db;    
 
 		/**                                                                                     
 		* Constructor for User Class                                                                                                                                                 
-<<<<<<< HEAD
-		* @param mysqli $db The database connection object                                     
-		*/                                                                                     
-		public __construct(mysqli $db) {                                                        
-=======
 		* @param mysqli $db The database connection object 
 		* @return void                                    
 		*/                                                                                     
 		public function __construct(mysqli $db ): void {                                                        
->>>>>>> auth
 		$this->db = $db;                                                                        
 		} 
 
 		/**                                                                                     
 		* Register a new user                                                                                                                                                     
-<<<<<<< HEAD
-		* @param array $data An associative array containing user registration data.           
-		*                     Expected keys: 'firstName' (string), 'LastName' (string),        
-		*                                     'username' (string), 'email' (string),           
-		*                                     'password' (string).                                                                                                                   
-		* @return array An associative array with keys:                                        
-		*             'success' (bool) - Whether the registration was successful.              
-		*             'error' (array)  - Any error messages if registration failed.            
-		*/                                                                                     
-		public function register(array $data): array {                                          
-			//unimplemented                                                                                    
-		}                                                                                       
-
-		/**                                                                                     
-		* Authenticate a user                                                                  
-		* @param string $username The username of the user                                     
-		* @param string $password The 	password of the user                                    
-		* @return array|null An array of user data if login is successful or null if it fails. 
-		*/                                                                                     
-		public function login($username, $password): ?array {                                   
-		//unimplemented                                                                       
-		}
-
-		/**                                                                                     
-		* Find a user by email address                                                         
-		* @param string $email email address to search for                                     
-		* return array|null An array of user data if found, or null if not found.              
-		*/                                                                                     
-		public function findUserByEmail($email) {                                               
-		//unimplemented                                                                       
-		}                                                                                       
-	
-		/**                                                                                     
-		* validate user registration data.                                                     
-		* @param array $data An associative array containing user registration data.           
-		*                    Expected keys: 'firstName' (string), 'LastName' (string),         
-		*                                    'username' (string), 'email' (string),            
-		*                                     'password' (string).                             
-		* @return array An associative array with keys:                                        
-		*               'isValid' (bool) - Whether the data is valid.                          
-		*                'error' (array) - Any validation error messages.                      
-		*/                                                                                     
-		private function validateUserRegistration(array $data) {                                
-		// unimplemented                                                                      
-		} 
-
-}                                                                                         
-                                                                                      
-=======
 		* @param string[] $data An associative array containing user registration data.           
 		*                     Expected keys: 'firstName', 'LastName',        
 		*                                     'username', 'email',           
@@ -126,7 +67,6 @@ class User {
 		public function login(string $username, string $password): ?array {                                   
 		//unimplemented                                                                       
 		}
->>>>>>> auth
 
 		/**                                                                                     
 		* Find a user by email address                                                         
