@@ -12,7 +12,15 @@ class User {
 		* @param mysqli $db The database connection object 
 		* @return void                                    
 		*/                                                                                     
+<<<<<<< HEAD
+<<<<<<< HEAD
+		public __construct(mysqli $db) {                                                        
+=======
+		public function __construct(mysqli $db ) {                                                        
+>>>>>>> 9fd9574 (fix: add documentation)
+=======
 		public function __construct(mysqli $db ): void {                                                        
+>>>>>>> aed04be (fix: implement register function)
 		$this->db = $db;                                                                        
 		} 
 
@@ -95,9 +103,13 @@ class User {
 			$confirmPassword = $data['confirmPassword'];
 
 		} 
+<<<<<<< HEAD
 
 }                                                                                         
                                                                                       
+=======
+>>>>>>> 9fd9574 (fix: add documentation)
+
 }                                                                                         
                                                                                       
 ?>
