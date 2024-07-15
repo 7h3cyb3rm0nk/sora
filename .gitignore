@@ -1,3 +1,14 @@
 vendor/*
 .env
 .phpdoc
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+docs/sample.md
+=======
+>>>>>>> 3735a70 (add: database schema)
+=======
+docs/sample.md
+>>>>>>> 407d53a (fix: change gitignore)
+>>>>>>> auth
