@@ -54,6 +54,7 @@ class User {
 				return [
 					'success' => false,
 					'error'   => ["cannot register user try again later."],
+				];
 			}
 
 		}                                                                                       
@@ -62,10 +63,74 @@ class User {
 		* Authenticate a user                                                                  
 		* @param string $username The username of the user                                     
 		* @param string $password The 	password of the user                                    
-		* @return string[]|null An array of user data if login is successful or null if it fails. 
+		* @return string[] An array of user data if login is successful or null if it fails.
+		* Expected keys: 'success' (bool),
+		*                 'message' (string) - Login status message. 
 		*/                                                                                     
-		public function login(string $username, string $password): ?array {                                   
-		//unimplemented                                                                       
+		public function login(string $username, string $password): ?array { 
+       $stmt = $this->db->prepare("SELECT id, username, password FROM users where username = ?");
+       $stmt->bind_param("s", $username);     
+ 			 $stmt->execute();
+ 			 $result = $stmt->get_result();
+
+ 			 if ($result->num_rows() === 0) {
+				 return [
+					 'success' => false,
+					 'message' => 'Invalid username or password',
+				 ];
+			 } 
+
+			 $user = result->fetch_assoc();
+
+			 if(password_verify($password, $user['password'])) {
+
+				 session_start();
+				 $_SESSION['user_id'] = $user['id'];
+				 $_SESSION['username'] = $user['username'];
+
+				 session_regenerate_id(true);
+				 return [
+					 'success' => true,
+					 'message' => 'Login Sucessful.',
+				 ];
+				 
+			 }
+			 else {
+				 return [
+					 'success' => false,
+					 'message' => 'Invalid username or password';
+				 ];
+			 }
+		                                                               
+		}
+
+
+    /**
+ 		 * Logout the user
+ 		 * @return void
+ 		 */
+		public function logout(): void {
+			if (session_status() == PHP_SESSION_NONE) {
+				session_start();
+
+			}
+			// unset the session variables
+
+			$_SESSION = array();
+			session_destroy();
+		}
+    
+
+		/**
+ 		 * Check if a user is logged in
+ 		 * @return bool
+ 		 */
+		public function isLoggedIn(): bool {
+
+			if (session_status() == PHP_SESSION_NONE) {
+				session_start();
+			}
+			return isset($_SESSION['user_id']);
 		}
 
 		/**                                                                                     
@@ -85,7 +150,7 @@ class User {
 		*                                     'password', 'confirmPassword'.                             
 		* @return (bool|string[])[] An associative array with keys:                                        
 		*               'isValid' (bool) - Whether the data is valid.                          
-		*                'error' (array) - Any validation error messages.                      
+		*                'error' (?array) - Any validation error messages.                      
 		*/                                                                                     
 		private function validateUserRegistration(array $data): array {                                
 			$username = $data['username'];
@@ -93,6 +158,10 @@ class User {
 			$lastName = $data['lastName'];
 			$password = $data['password'];
 			$confirmPassword = $data['confirmPassword'];
+			return [
+				'isValid' => true,
+				'error' => null
+			];
 
 		} 
 
