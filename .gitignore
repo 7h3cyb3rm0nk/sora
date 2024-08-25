@@ -2,3 +2,4 @@ vendor/*
 .env
 .phpdoc
 docs/sample.md
+composer.lock
