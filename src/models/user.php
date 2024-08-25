@@ -1,7 +1,9 @@
 <?php                                                                                     
                                                                                       
 /** User class for handling user-related operations                                       
-*/                                                                                       
+ */
+
+namespace Sora\Models;
 class User {  
 
 		/** @var mysqli $db Database connection object */                                                  
