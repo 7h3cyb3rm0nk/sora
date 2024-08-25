@@ -1,9 +1,13 @@
-{
+{   "name": "7h3cyb3rm0nk/sora",
+    "description": "Micro blogging Social media platfrom for cs department U.C College",
+    "type": "project",
     "require-dev": {
         "phpunit/phpunit": "^11"
     },
 
     "autoload": {
-        "psr-4": {"Src\\": "src/"}
+        "psr-4": {
+            "Sora\\": "src/"
+        }
     }
 }
