@@ -42,7 +42,14 @@ class PostController {
         }
     }
 
-    public static function render_tweet($username, $content, $created_at, $upvotes=0, $comments=0, $dp=NULL){
+    public static function render_tweet($tweet){
+        // print_r($tweet);
+        $username = $tweet["username"];
+        $content = $tweet['content'];
+        $created_at = $tweet['created_at'];
+        $upvotes = $tweet['upvotes'] ?? 0;
+        $comments = $tweet['comments'] ?? 0;
+        $dp = $tweet['dp'] ?? "https://i.pravatar.cc/300";
 
         $html = <<<HTML
     <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
@@ -70,6 +77,17 @@ class PostController {
     </div>
     HTML;
     return $html;
+
+    }
+
+    public function render_tweets(){
+
+         $data = $this->postModel->get_tweets();
+
+        foreach($data as $tweet){
+            $html = $this->render_tweet($tweet);
+            echo $html;
+        }
 
     }
 }

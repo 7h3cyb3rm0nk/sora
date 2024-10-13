@@ -66,14 +66,11 @@
 
                     <?php
                     use Sora\Controllers\PostController;
-                    $html = PostController::render_tweet("ramees", "Hello guyss", "12 hours ago", 12, 0,  "https://i.pravatar.cc/300");
-                    echo $html;
-                    $html = PostController::render_tweet("batman", "Tell me!, Do you bleed?!!", "12 hours ago", 12, 0,  "https://i.pravatar.cc/300");
-                    echo $html;
-                    $html = PostController::render_tweet("rasheedIkka", "Porottem iracheem:)", "12 hours ago", 12, 0,  "https://i.pravatar.cc/300");
-                    echo $html;
-                    $html = PostController::render_tweet("unnikkannan", "Nenacha vandeel keriitt shyee angene allaa...", "12 hours ago", 12, 0,  "https://i.pravatar.cc/300");
-                    echo $html;
+                    
+
+                    $postController = new PostController();
+                    $postController->render_tweets();
+                    
                     ?>
 
                     <!-- Repeat the above div for each tweet -->
