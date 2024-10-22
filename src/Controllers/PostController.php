@@ -52,6 +52,7 @@ class PostController {
         $dp_available = $tweet['profile_picture'] ?? false;
         if($dp_available){
             $pfp_avatar = <<<HTML
+             <img src="images/pfps/{$tweet['profile_picture']}" alt="" class="w-10 h-10 rounded-full mr-3">
             HTML;
         }
 
@@ -61,18 +62,18 @@ class PostController {
             HTML;
         }
         $html = <<<HTML
-    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
+    <div class="bg-gray-300 p-4 rounded-lg shadow opacity-95 shadow-sm hover:shadow-md transition duration-300">
         <div class="flex items-center mb-2">
             $pfp_avatar
             <div>
-                <a href="/" class="font-bold text-sora-secondary block">@{$username}</a>
+                <a href="/" class="font-bold text-slate-900 block">@{$username}</a>
                 <div class="flex items-center text-sm text-gray-500">
                     <i class="fas fa-clock mr-1"></i>
                     <span>{$created_at}</span>
                 </div>
             </div>
         </div>
-        <p class="mb-3">{$content}</p>
+        <p class="mb-3 text-slate-900">{$content}</p>
         <div class="flex items-center space-x-4 text-gray-500">
             <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300">
                 <i class="fas fa-arrow-up"></i>
