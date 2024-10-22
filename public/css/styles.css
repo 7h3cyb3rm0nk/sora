@@ -1233,6 +1233,14 @@ video {
   --tw-gradient-to: #818CF8 var(--tw-gradient-to-position);
 }
 
+.bg-center {
+  background-position: center;
+}
+
+.bg-no-repeat {
+  background-repeat: no-repeat;
+}
+
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
@@ -1495,6 +1503,10 @@ video {
 
 .opacity-95 {
   opacity: 0.95;
+}
+
+.opacity-85 {
+  opacity: 0.85;
 }
 
 .shadow {
