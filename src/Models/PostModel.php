@@ -34,31 +34,36 @@ class PostModel{
         }
     }
 
-    public function get_tweets(){
+    public function get_tweets($user_id) {
         $stmt = $this->db->prepare("SELECT 
-        p.id, 
-        p.content, 
-        p.created_at,
-        u.username, 
-        u.profile_picture
-    FROM 
-        posts p
-    JOIN 
-        users u ON p.user_id = u.id
-    -- JOIN 
-    --     follows f ON p.user_id = f.followed_id
-    -- WHERE 
-    --     u.username = 'ramees'
-    ORDER BY 
-        p.created_at DESC;");
-
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        
-        return $result->fetch_all(MYSQLI_ASSOC);
-
+                p.id, 
+                p.content, 
+                p.created_at,
+                u.username, 
+                u.profile_picture,
+                COUNT(l.post_id) AS upvotes
+            FROM 
+                posts p
+            JOIN 
+                users u ON p.user_id = u.id 
+            LEFT JOIN 
+                likes l ON p.id = l.post_id
+            LEFT JOIN
+                follows f ON p.user_id = f.followed_id AND f.follower_id = ? 
+            WHERE 
+                p.user_id = ? OR f.follower_id = ?
+            GROUP BY
+                p.id
+            ORDER BY 
+                p.created_at DESC;");
     
+        $stmt->bind_param("iii", $user_id, $user_id, $user_id); // Bind parameters
+    
+        $stmt->execute();
+    
+        $result = $stmt->get_result();
+    
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     

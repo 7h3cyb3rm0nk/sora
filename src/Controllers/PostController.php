@@ -44,6 +44,7 @@ class PostController {
 
     public static function render_tweet($tweet){
         // print_r($tweet); 
+        $id = $tweet["id"];
         $username = $tweet["username"];
         $content = $tweet['content'];
         $created_at = Helper::time_ago($tweet['created_at']);
@@ -75,11 +76,13 @@ class PostController {
         </div>
         <p class="mb-3 text-slate-900">{$content}</p>
         <div class="flex items-center space-x-4 text-gray-500">
-            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300">
+            
+            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300" data-post-id="$id">
                 <i class="fas fa-arrow-up"></i>
                 <span>{$upvotes}</span>
             </button>
-            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300">
+            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300" data-post-id="$id">
+            
                 <i class="fas fa-comment"></i>
                 <span>{$comments} comments</span>
             </button>
@@ -92,7 +95,7 @@ class PostController {
 
     public function render_tweets(){
 
-         $data = $this->postModel->get_tweets();
+         $data = $this->postModel->get_tweets($_SESSION['user_id']);
 
         foreach($data as $tweet){
             $html = $this->render_tweet($tweet);
@@ -100,6 +103,12 @@ class PostController {
         }
 
     }
+
+
+    public function add_likes(){
+
+    }
+   public  function check_likesexists(){}
 }
 
 ?>
