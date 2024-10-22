@@ -23,8 +23,10 @@ $app->router->post('/login', [UserController::class, 'login']);
 $app->router->get('/register', [HomeController::class, 'register']);
 $app->router->post('/register', [UserController::class, 'register']);
 $app->router->get('/logout', [UserController::class, 'logout']);
+$app->router->get('/profile', [UserController::class, 'profile']);
 
 $app->router->post('/create', [PostController::class, 'create']);
+$app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
 
 $app->run();
 

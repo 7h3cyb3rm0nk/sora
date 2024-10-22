@@ -1,28 +1,15 @@
 <!DOCTYPE html>
 <html class="h-full" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | SORA</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-<body class="h-full bg-gray-100 text-gray-900 flex flex-col">
-    <header class="bg-gradient-to-r from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg">
-        <nav class="container md:mx-0 mx-auto flex justify-between items-center">
-            <span class="text-2xl sm:text-3xl md:text-4xl font-bold">SORA</span>
-            <button class="md:hidden text-2xl">
-                <i class="fas fa-bars"></i>
-            </button>
-        </nav>
-    </header>
-    
+<?php include_once __DIR__."/html_head.html"?>
+<body class="h-full text-gray-900 flex flex-col w-full" style="background: url('images/sora-bg.png')">
+       
+<?php include_once __DIR__."/navbar.html" ?>
     <main class="flex-grow flex overflow-hidden">
-        <aside class="w-64 bg-white shadow-lg overflow-y-auto hidden md:block">
+        <aside class="w-64 bg-gray-100 opacity-85 shadow-lg overflow-y-auto hidden md:block">
             <div class="p-6">
                 <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
                 <div class="space-y-4">
-                    <div class="bg-sora-bg rounded-lg p-4 transition duration-300 hover:shadow-md">
+                    <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
                         <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Online</h3>
                         <ul class="space-y-3">
                             <li class="flex items-center space-x-3">
@@ -41,7 +28,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="bg-sora-bg rounded-lg p-4 transition duration-300 hover:shadow-md">
+                    <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
                         <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Offline</h3>
                         <ul class="space-y-3">
                             <li class="flex items-center space-x-3">
@@ -59,21 +46,18 @@
 
         <div class="flex-grow flex flex-col overflow-hidden">
             <section class="flex-grow p-4 overflow-y-auto">
-                <h1 class="text-2xl font-bold mb-4 text-sora-primary">Tweets</h1>
+                <h1 class="text-2xl font-bold mb-4 text-sora-primary bg-gray-300 w-fit p-2 rounded-md shadow-md">Tweets</h1>
                 <div class="space-y-4">
                     <!-- Tweet cards (repeated for each tweet) -->
                     
 
                     <?php
                     use Sora\Controllers\PostController;
-                    $html = PostController::render_tweet("ramees", "Hello guyss", "12 hours ago", 12, 0,  "https://i.pravatar.cc/300");
-                    echo $html;
-                    $html = PostController::render_tweet("batman", "Tell me!, Do you bleed?!!", "12 hours ago", 12, 0,  "https://i.pravatar.cc/300");
-                    echo $html;
-                    $html = PostController::render_tweet("rasheedIkka", "Porottem iracheem:)", "12 hours ago", 12, 0,  "https://i.pravatar.cc/300");
-                    echo $html;
-                    $html = PostController::render_tweet("unnikkannan", "Nenacha vandeel keriitt shyee angene allaa...", "12 hours ago", 12, 0,  "https://i.pravatar.cc/300");
-                    echo $html;
+                    
+
+                    $postController = new PostController();
+                    $postController->render_tweets();
+                    
                     ?>
 
                     <!-- Repeat the above div for each tweet -->

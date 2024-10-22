@@ -39,8 +39,8 @@ class UserModel {
 			}
 			$username  = $data['username'];
 			$email = $data['email'];
-			$firstName = $data['first_name'];
-			$lastName = $data['last_name'];
+			$firstName = $data['firstname'];
+			$lastName = $data['lastname'];
 			$password = $data['password'];
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
@@ -159,8 +159,8 @@ class UserModel {
 		*/                                                                                     
 	private function validate_user_registration(array $data): array {                                
 			$username = $data['username'];
-			$firstName = $data['first_name'];
-			$lastName = $data['last_name'];
+			$firstName = $data['firstname'];
+			$lastName = $data['lastname'];
 			$password = $data['password'];
 			$retype_password = $data['retype_password'];
 
@@ -172,6 +172,51 @@ class UserModel {
 
 	} 
 
+public function get_user_details($username): array{
+	$stmt = $this->db->prepare("SELECT * from users where username = ? limit 1");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$rows = $result->fetch_assoc();
+	return $rows;
+}
+
+public function update_user_details($username, $data){
+		$update_fields = array();
+
+		$original_fields = $this->get_user_details($username);
+		if($original_fields){
+			foreach($data as $field => $value){
+				if ($original_fields[$field] !== $value){
+					$update_fields[$field] = $value;
+				}
+			}
+			return $this->update($username, $update_fields);
+		}
+		else{
+			return false;
+		}
+}
+
+function update($username, $data){
+	if (isset($data)){
+		$sql = "UPDATE users set ";
+		foreach($data as $key => $value){
+			$sql .= "$key = '$value', ";
+
+		}
+		$sql = rtrim($sql, ", ");
+		$sql .= " WHERE username=?";
+		$stmt = $this->db->prepare($sql);
+		$stmt->bind_param("s", $username);
+		return $stmt->execute();
+	}
+	else{
+		return false;
+	}
+	
+}
+
 }                   
 
 function test_input(string $data): string{
@@ -181,6 +226,6 @@ function test_input(string $data): string{
 	return $data;
 
 }
-                                                                                      
+
                                                                                       
 ?>
