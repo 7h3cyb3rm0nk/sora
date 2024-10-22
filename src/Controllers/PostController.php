@@ -43,7 +43,7 @@ class PostController {
     }
 
     public static function render_tweet($tweet){
-        // print_r($tweet);
+        // print_r($tweet); 
         $username = $tweet["username"];
         $content = $tweet['content'];
         $created_at = $tweet['created_at'];

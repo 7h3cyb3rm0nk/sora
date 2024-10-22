@@ -46,8 +46,8 @@ class PostModel{
         users u ON p.user_id = u.id
     -- JOIN 
     --     follows f ON p.user_id = f.followed_id
-    WHERE 
-        u.username = 'ramees'
+    -- WHERE 
+    --     u.username = 'ramees'
     ORDER BY 
         p.created_at DESC;");
 
