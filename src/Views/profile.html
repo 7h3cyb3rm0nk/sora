@@ -43,7 +43,7 @@
 
             <!-- Edit Form (Hidden by default) -->
             <div id="edit-form" class="hidden bg-white rounded-xl shadow-lg p-6 sm:p-8">
-                <form action="update_profile.php" method="POST" enctype="multipart/form-data">
+                <form action="/edit_profile" method="POST" enctype="multipart/form-data">
                     <!-- Profile Picture Upload -->
                     <div class="mb-8">
                         <div class="flex items-center space-x-6">
@@ -101,9 +101,9 @@
 
                         <div class="relative">
                             <input type="text" 
-                                   name="first_name"
+                                   name="firstname"
                                    class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['first_name'] ?? ''); ?>" />
+                                   value="<?php echo htmlspecialchars($user['firstname'] ?? ''); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 First name
                             </label>
@@ -111,9 +111,9 @@
 
                         <div class="relative">
                             <input type="text" 
-                                   name="last_name"
+                                   name="lastname"
                                    class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['last_name'] ?? ''); ?>" />
+                                   value="<?php echo htmlspecialchars($user['lastname'] ?? ''); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Last name
                             </label>
@@ -149,15 +149,7 @@
                             </label>
                         </div>
 
-                        <div class="relative">
-                            <input type="tel" 
-                                   name="phone"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" />
-                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
-                                Phone
-                            </label>
-                        </div>
+                        
                     </div>
 
                     <!-- Buttons -->
@@ -206,6 +198,8 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+
     </script>
 </body>
 </html>

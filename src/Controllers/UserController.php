@@ -101,6 +101,42 @@ class UserController {
 
   }
 
+  public function edit_user_details(){
+    if($_SERVER['REQUEST_METHOD'] == "POST"){
+      $username = $_SESSION['username'];
+      $password = $_POST['old_password'];
+      $response = $this->userModel->authenticate($username, $password);
+      if($response['success'] != true){
+        $_SESSION['update_error'] = "Invalid Credentials";
+        header("Location: /profile");
+
+      }
+      else{
+        $data = [
+        "username" => $_POST['username'],
+        "password" => password_hash($_POST['new_password'], PASSWORD_DEFAULT),
+        "firstname" => $_POST['firstname'] ?? "",
+        "lastname" => $_POST['lastname'] ?? "",
+        "bio" =>     $_POST['bio'],
+        "profile_picture" => $_POST['profile_picture'] ?? "",
+        ];
+        
+        
+      }
+      if ($this->userModel->update_user_details($username, $data)) {
+        // Success message (optional)
+        $_SESSION['update_success'] = "Profile updated successfully!"; 
+      } else {
+        // Handle the case where no changes were made (optional)
+        $_SESSION['update_info'] = "No changes were made to your profile."; 
+      }
+      header("Location: /profile");
+    }
+  
+    else{
+      header("Location: /profile");
+    }
+  }
   
 
 }
