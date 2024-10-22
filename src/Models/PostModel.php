@@ -39,7 +39,8 @@ class PostModel{
         p.id, 
         p.content, 
         p.created_at,
-        u.username 
+        u.username, 
+        u.profile_picture
     FROM 
         posts p
     JOIN 

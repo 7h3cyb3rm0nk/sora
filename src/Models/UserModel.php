@@ -172,6 +172,15 @@ class UserModel {
 
 	} 
 
+public function get_user_details($username): array{
+	$stmt = $this->db->prepare("SELECT * from users where username = ? limit 1");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$rows = $result->fetch_assoc();
+	return $rows;
+}
+
 }                   
 
 function test_input(string $data): string{
@@ -181,6 +190,6 @@ function test_input(string $data): string{
 	return $data;
 
 }
-                                                                                      
+
                                                                                       
 ?>

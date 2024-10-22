@@ -1,34 +1,9 @@
 <!DOCTYPE html>
 <html class="h-full" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | SORA</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
+<?php include_once __DIR__."/html_head.html"?>
 <body class="h-full bg-gray-100 text-gray-900 flex flex-col w-full">
        
-<header class="bg-gradient-to-r flex  from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg w-full">
-    <nav class=" md:mx-0 mx-auto flex-grow flex justify-between items-center w-full">
-        <span class="text-2xl sm:text-3xl md:text-4xl font-bold">SORA</span>
-         
-        <div class="sm:flex hidden md:flex items-center md:space-x-8 md:mr-12"> 
-            <a href="/profile" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
-                <i class="fas fa-user mr-2"></i>Profile
-            </a>
-            <a href="/logout" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
-                <i class="fas fa-sign-out-alt mr-2"></i>Logout
-            </a>
-        </div>
-        
-        <button class="md:hidden text-2xl">
-            <i class="fas fa-bars"></i>
-        </button>
-    </nav>
-</header>
-
-    
+<?php include_once __DIR__."/navbar.html" ?>
     <main class="flex-grow flex overflow-hidden">
         <aside class="w-64 bg-white shadow-lg overflow-y-auto hidden md:block">
             <div class="p-6">

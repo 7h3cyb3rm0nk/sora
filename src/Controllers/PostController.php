@@ -49,12 +49,22 @@ class PostController {
         $created_at = $tweet['created_at'];
         $upvotes = $tweet['upvotes'] ?? 0;
         $comments = $tweet['comments'] ?? 0;
-        $dp = $tweet['dp'] ?? "https://i.pravatar.cc/300";
+        $dp_available = isset($tweet['profile_picture']) ?? false;
+        if($dp_available){
+            $pfp_avatar = <<<HTML
+             <img src="images/pfps/{$tweet["profile_picture"]}" alt="" class="w-10 h-10 rounded-full mr-3">
+            HTML;
+        }
 
+        else{
+            $pfp_avatar = <<<HTML
+            <img src="images/icons/user-avatar.png" alt="" class="w-10 h-10 rounded-full mr-3">
+            HTML;
+        }
         $html = <<<HTML
     <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
         <div class="flex items-center mb-2">
-            <img src="{$dp}" alt="User 1" class="w-10 h-10 rounded-full mr-3">
+            $pfp_avatar
             <div>
                 <a href="/" class="font-bold text-sora-secondary block">@{$username}</a>
                 <div class="flex items-center text-sm text-gray-500">

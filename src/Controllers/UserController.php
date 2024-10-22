@@ -86,6 +86,21 @@ class UserController {
   
   }
 
+  public function profile() {
+    if($_SERVER['REQUEST_METHOD'] == "GET"){
+      $username = $_SESSION['username'];
+      include __DIR__ ."/../Views/profile.html";
+      
+    }
+  } 
+
+  public function get_user_details($username) {
+    $user = $this->userModel->get_user_details($username);
+    return $user;
+
+
+  }
+
   
 
 }
