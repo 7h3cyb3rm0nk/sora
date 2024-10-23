@@ -77,9 +77,9 @@ class PostController {
         <p class="mb-3 text-slate-900">{$content}</p>
         <div class="flex items-center space-x-4 text-gray-500">
             
-            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300" data-post-id="$id">
+            <button class="upvotes flex items-center space-x-1 hover:text-blue-500 transition duration-300" data-post-id="$id">
                 <i class="fas fa-arrow-up"></i>
-                <span>{$upvotes}</span>
+                <span id="upvotes">{$upvotes}</span>
             </button>
             <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300" data-post-id="$id">
             
@@ -105,10 +105,80 @@ class PostController {
     }
 
 
-    public function add_likes(){
+    public function add_likes()
+{
+    // Fetch the raw POST body and decode the JSON
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
 
+    // Check if post_id exists in the decoded JSON
+    if (isset($data['post_id'])) {
+        $postId = $data['post_id'];
+
+        // Assuming you have a method to increment the like count in your model
+        $result = $this->postModel->add_likes($postId);
+
+        if ($result) {
+            // Return a success response
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Like added successfully',
+                'post_id' => $postId
+            ]);
+        } else {
+            // Handle database failure
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to add like. Please try again later.',
+                'post_id' => $postId
+            ]);
+        }
+    } else {
+        // Return an error response if post_id is not found
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'post_id not found in request'
+        ]);
     }
-   public  function check_likesexists(){}
+}
+
+public function remove_likes(){
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+
+    // Check if post_id exists in the decoded JSON
+    if (isset($data['post_id'])) {
+        $postId = $data['post_id'];
+
+        // Assuming you have a method to increment the like count in your model
+        $result = $this->postModel->remove_likes($postId);
+
+        if ($result) {
+            // Return a success response
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Like removed successfully',
+                'post_id' => $postId
+            ]);
+        } else {
+            // Handle database failure
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to remove like. Please try again later.',
+                'post_id' => $postId
+            ]);
+        }
+    } else {
+        // Return an error response if post_id is not found
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'post_id not found in request'
+        ]);
+    }
+}
+
+
+   
 }
 
 ?>

@@ -66,5 +66,27 @@ class PostModel{
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function add_likes($post_id){
+        
+        $user_id = $_SESSION['user_id'];
+       
+
+            $stmt = $this->db->prepare("insert ignore into likes(user_id, post_id) values(?,?)");
+            $stmt->bind_param("ss",$user_id, $post_id );
+            $result = $stmt->execute();
+            return $result;
+
+    }
+
+    public function remove_likes($post_id) {
+        $user_id = $_SESSION['user_id'];
+
+        $stmt = $this->db->prepare("delete from likes where user_id=? and post_id=?");
+        $stmt->bind_param("ss", $user_id, $post_id);
+        $result = $stmt->execute();
+        return $result;
+    }
+    
+
     
 }

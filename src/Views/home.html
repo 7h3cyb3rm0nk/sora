@@ -57,6 +57,7 @@
 
                     $postController = new PostController();
                     $postController->render_tweets();
+                   ;
                     
                     ?>
 
@@ -90,6 +91,69 @@
                 </div>
             </footer>
         </div>
+        <script>
+      const upvoteButtons = document.querySelectorAll('.upvotes');
+
+// Loop through each button and add an event listener
+upvoteButtons.forEach(button => {
+  const postId = button.getAttribute('data-post-id');
+
+  // Check if the user already liked this post using local storage
+  const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
+  
+  // Set the button state based on local storage
+  if (likedPosts[postId]) {
+    button.classList.add('liked'); // Mark the button as liked
+  }
+
+  button.addEventListener('click', () => {
+    // Determine whether to add or remove the like based on the current state
+    const isLiked = button.classList.contains('liked');
+    const action = isLiked ? '/remove_likes' : '/add_likes';
+
+    // Send the POST request using Fetch API
+    fetch(action, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ post_id: postId })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Toggle the like/unlike UI
+      const countElement = button.querySelector('#upvotes');
+      let currentCount = parseInt(countElement.textContent) || 0;
+
+      if (isLiked) {
+        // Decrement the count and remove 'liked' class
+        countElement.textContent = currentCount - 1;
+        button.classList.remove('liked');
+        likedPosts[postId] = false; // Update local storage
+      } else {
+        // Increment the count and add 'liked' class
+        countElement.textContent = currentCount + 1;
+        button.classList.add('liked');
+        likedPosts[postId] = true; // Update local storage
+      }
+
+      // Save the liked posts state in local storage
+      localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+    })
+    .catch(error => {
+      console.error('Error handling like:', error);
+    });
+  });
+});
+
+
+
+        </script>
     </main>
 </body>
 </html>
