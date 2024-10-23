@@ -118,7 +118,7 @@ class UserController {
         "firstname" => $_POST['firstname'] ?? "",
         "lastname" => $_POST['lastname'] ?? "",
         "bio" =>     $_POST['bio'],
-        "profile_picture" => $_POST['profile_picture'] ?? "",
+        "profile_picture" => $_FILES['profile_picture'] ?? "",
         ];
         
         
