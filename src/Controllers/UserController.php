@@ -111,6 +111,7 @@ class UserController {
       if($response['success'] != true){
         $_SESSION['update_error'] = "Invalid Credentials";
         header("Location: /profile");
+        exit;
 
       }
       else{
@@ -120,20 +121,19 @@ class UserController {
         "firstname" => $_POST['firstname'] ?? "",
         "lastname" => $_POST['lastname'] ?? "",
         "bio" =>     $_POST['bio'],
-        "profile_picture" => $_FILES['profile_picture'] ?? "",
+        // "profile_picture" => $_FILES['profile_picture'] ?? "",
         ];
 
         if($_POST['new_password'] == ""){
           unset($data["password"]);
         }
-        if($_FILES["profile_picture"] == ""){
-          unset($data["profile_picture"]);
-        }
+        
         
       }
       if ($this->userModel->update_user_details($username, $data)) {
         // Success message (optional)
         $_SESSION['update_success'] = "Profile updated successfully!"; 
+        $_SESSION['username'] = $data["username"];
       } else {
         // Handle the case where no changes were made (optional)
         $_SESSION['update_info'] = "No changes were made to your profile."; 
