@@ -56,6 +56,21 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-PostController.html#method_create"
         },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Arender_tweet\u0028\u0029",
+            "name": "render_tweet",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_render_tweet"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Arender_tweets\u0028\u0029",
+            "name": "render_tweets",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_render_tweets"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Aadd_likes\u0028\u0029",
+            "name": "add_likes",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_add_likes"
+        },                {
             "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003A\u0024postModel",
             "name": "postModel",
             "summary": "",
@@ -90,6 +105,21 @@ Search.appendIndex(
             "name": "login",
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_login"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Aprofile\u0028\u0029",
+            "name": "profile",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_profile"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Aget_user_details\u0028\u0029",
+            "name": "get_user_details",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_get_user_details"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Aedit_user_details\u0028\u0029",
+            "name": "edit_user_details",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_edit_user_details"
         },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003A\u0024userModel",
             "name": "userModel",
@@ -141,6 +171,26 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Core-Router.html#property_routes"
         },                {
+            "fqsen": "\\Sora\\Helpers\\Helper",
+            "name": "Helper",
+            "summary": "",
+            "url": "classes/Sora-Helpers-Helper.html"
+        },                {
+            "fqsen": "\\Sora\\Helpers\\Helper\u003A\u003Agenerate_token\u0028\u0029",
+            "name": "generate_token",
+            "summary": "",
+            "url": "classes/Sora-Helpers-Helper.html#method_generate_token"
+        },                {
+            "fqsen": "\\Sora\\Helpers\\Helper\u003A\u003Avalidate_user\u0028\u0029",
+            "name": "validate_user",
+            "summary": "",
+            "url": "classes/Sora-Helpers-Helper.html#method_validate_user"
+        },                {
+            "fqsen": "\\Sora\\Helpers\\Helper\u003A\u003Atime_ago\u0028\u0029",
+            "name": "time_ago",
+            "summary": "",
+            "url": "classes/Sora-Helpers-Helper.html#method_time_ago"
+        },                {
             "fqsen": "\\Sora\\Models\\PostModel",
             "name": "PostModel",
             "summary": "",
@@ -160,6 +210,21 @@ Search.appendIndex(
             "name": "view_posts",
             "summary": "",
             "url": "classes/Sora-Models-PostModel.html#method_view_posts"
+        },                {
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Aget_tweets\u0028\u0029",
+            "name": "get_tweets",
+            "summary": "",
+            "url": "classes/Sora-Models-PostModel.html#method_get_tweets"
+        },                {
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Aadd_likes\u0028\u0029",
+            "name": "add_likes",
+            "summary": "",
+            "url": "classes/Sora-Models-PostModel.html#method_add_likes"
+        },                {
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Alike_not_exists\u0028\u0029",
+            "name": "like_not_exists",
+            "summary": "",
+            "url": "classes/Sora-Models-PostModel.html#method_like_not_exists"
         },                {
             "fqsen": "\\Sora\\Models\\PostModel\u003A\u003A\u0024db",
             "name": "db",
@@ -200,6 +265,21 @@ Search.appendIndex(
             "name": "validate_user_registration",
             "summary": "validate\u0020user\u0020registration\u0020data.",
             "url": "classes/Sora-Models-UserModel.html#method_validate_user_registration"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_user_details\u0028\u0029",
+            "name": "get_user_details",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_user_details"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aupdate_user_details\u0028\u0029",
+            "name": "update_user_details",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_update_user_details"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aupdate\u0028\u0029",
+            "name": "update",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_update"
         },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003A\u0024db",
             "name": "db",
@@ -31615,6 +31695,11 @@ Search.appendIndex(
             "name": "Core",
             "summary": "",
             "url": "namespaces/sora-core.html"
+        },                {
+            "fqsen": "\\Sora\\Helpers",
+            "name": "Helpers",
+            "summary": "",
+            "url": "namespaces/sora-helpers.html"
         },                {
             "fqsen": "\\Sora\\Models",
             "name": "Models",

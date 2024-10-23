@@ -48,111 +48,114 @@
             <section class="flex-grow p-4 overflow-y-auto">
                 <h1 class="text-2xl font-bold mb-4 text-sora-primary bg-gray-300 w-fit p-2 rounded-md shadow-md">Tweets</h1>
                 <div class="space-y-4">
-                    <!-- Tweet cards (repeated for each tweet) -->
-                    
-
                     <?php
                     use Sora\Controllers\PostController;
                     
-
                     $postController = new PostController();
                     $postController->render_tweets();
-                   ;
-                    
                     ?>
-
-                    <!-- Repeat the above div for each tweet -->
                 </div>
             </section>
-            <footer class="bg-gradient-to-r from-sora-primary to-sora-secondary p-4 shadow-lg m-2  rounded-lg">
+            <footer class="bg-gradient-to-r from-sora-primary to-sora-secondary p-4 shadow-lg m-2 rounded-lg">
                 <div class="max-w-4xl mx-auto">
-                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center  gap-3">
+                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center gap-3">
                         <div class="relative flex-grow">
-                            <textarea name="content" id="tweet" rows="3" class="w-full p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500 " placeholder="What's on your mind?"></textarea>
+                            <textarea name="content" id="tweet" rows="3" class="w-full p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500" placeholder="What's on your mind?"></textarea>
                             <div class="absolute bottom-3 right-3 flex space-x-2">
-                                <!-- <button type="button" class="text-sora-primary hover:text-sora-secondary transition-colors duration-300" title="Add image">
-                                    <i class="fas fa-image"></i>
-                                </button>
-                                <button type="button" class="text-sora-primary hover:text-sora-secondary transition-colors duration-300" title="Add emoji">
-                                    <i class="fas fa-smile"></i>
-                                </button> -->
                             </div>
                         </div>
-                        <!-- csrf protection -->
-                        <?php use Sora\Helpers\Helper;
+                        <?php 
+                        use Sora\Helpers\Helper;
                         $_SESSION['csrf_token'] = Helper::generate_token()
-                         ?>
+                        ?>
                         <input type="hidden" name="csrf_token" value=<?=$_SESSION['csrf_token'] ?>>
                         <button name="post-btn" class="bg-sora-bg text-sora-primary py-2 px-6 rounded-full hover:bg-white hover:text-sora-secondary transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sora-bg">
                             <i class="fas fa-paper-plane mr-2"></i>Post
                         </button>
                     </form>
-                   
                 </div>
             </footer>
         </div>
+
+        <style>
+            /* Upvote button styles */
+            .upvotes {
+                transition: color 0.2s ease-in-out;
+            }
+
+            .upvotes.liked {
+                color: #3b82f6; /* Tailwind blue-500 */
+            }
+
+            .upvotes.liked svg {
+                stroke: #3b82f6; /* Tailwind blue-500 */
+            }
+
+            .upvotes:hover {
+                color: #60a5fa; /* Tailwind blue-400 for hover */
+            }
+
+            .upvotes:hover svg {
+                stroke: #60a5fa; /* Tailwind blue-400 for hover */
+            }
+
+            .upvotes svg {
+                transition: stroke 0.2s ease-in-out;
+            }
+        </style>
+
         <script>
-      const upvoteButtons = document.querySelectorAll('.upvotes');
+            const upvoteButtons = document.querySelectorAll('.upvotes');
 
-// Loop through each button and add an event listener
-upvoteButtons.forEach(button => {
-  const postId = button.getAttribute('data-post-id');
+            upvoteButtons.forEach(button => {
+                const postId = button.getAttribute('data-post-id');
+                const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
+                
+                // Set initial state
+                if (likedPosts[postId]) {
+                    button.classList.add('liked');
+                    button.classList.add('text-blue-500')
+                }
 
-  // Check if the user already liked this post using local storage
-  const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
-  
-  // Set the button state based on local storage
-  if (likedPosts[postId]) {
-    button.classList.add('liked'); // Mark the button as liked
-  }
+                button.addEventListener('click', () => {
+                    const isLiked = button.classList.contains('liked');
+                    const action = isLiked ? '/remove_likes' : '/add_likes';
 
-  button.addEventListener('click', () => {
-    // Determine whether to add or remove the like based on the current state
-    const isLiked = button.classList.contains('liked');
-    const action = isLiked ? '/remove_likes' : '/add_likes';
+                    fetch(action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const countElement = button.querySelector('#upvotes');
+                        let currentCount = parseInt(countElement.textContent) || 0;
 
-    // Send the POST request using Fetch API
-    fetch(action, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ post_id: postId })
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      // Toggle the like/unlike UI
-      const countElement = button.querySelector('#upvotes');
-      let currentCount = parseInt(countElement.textContent) || 0;
+                        if (isLiked) {
+                            countElement.textContent = currentCount - 1;
+                            button.classList.remove('liked');
+                            button.classList.remove('text-blue-500')
+                            likedPosts[postId] = false;
+                        } else {
+                            countElement.textContent = currentCount + 1;
+                            button.classList.add('liked');
+                            likedPosts[postId] = true;
+                        }
 
-      if (isLiked) {
-        // Decrement the count and remove 'liked' class
-        countElement.textContent = currentCount - 1;
-        button.classList.remove('liked');
-        likedPosts[postId] = false; // Update local storage
-      } else {
-        // Increment the count and add 'liked' class
-        countElement.textContent = currentCount + 1;
-        button.classList.add('liked');
-        likedPosts[postId] = true; // Update local storage
-      }
-
-      // Save the liked posts state in local storage
-      localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-    })
-    .catch(error => {
-      console.error('Error handling like:', error);
-    });
-  });
-});
-
-
-
+                        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+                    })
+                    .catch(error => {
+                        console.error('Error handling like:', error);
+                    });
+                });
+            });
         </script>
     </main>
 </body>

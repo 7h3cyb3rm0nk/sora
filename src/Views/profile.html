@@ -50,7 +50,7 @@
                             <div class="relative group">
                                 <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
                                     <?php if(isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
-                                        <img id="preview-image" src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile" class="h-full w-full object-cover">
+                                        <img id="preview-image" src="<?php echo htmlspecialchars('../'.$user['profile_picture']); ?>" alt="Profile" class="h-full w-full object-cover">
                                     <?php else: ?>
                                         <img id="preview-image" src="#" alt="Profile" class="h-full w-full object-cover hidden">
                                         <svg id="default-image" class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

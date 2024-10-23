@@ -7,7 +7,13 @@ sora
 ├── tailwind.config.js
 ├── public
 │   ├── images
-│   │   └── sora-login.jpg
+│   │   ├── sora-login.jpg
+│   │   ├── sora-bg1.jpg
+│   │   ├── icons
+│   │   │   └── user-avatar.png
+│   │   ├── Profile _ Sora.html
+│   │   ├── user-edit.png
+│   │   └── sora-bg.png
 │   ├── css
 │   │   ├── imports.css
 │   │   └── styles.css
@@ -18,7 +24,7 @@ sora
 ├── docs
 ├── src
 │   ├── Helpers
-│   │   └── Token.php
+│   │   └── Helper.php
 │   ├── Config
 │   │   ├── Database.php
 │   │   ├── sample.php
@@ -30,15 +36,17 @@ sora
 │   ├── Controllers
 │   │   ├── HomeController.php
 │   │   ├── PostController.php
-│   │   ├── sample.php
 │   │   └── UserController.php
 │   ├── Models
 │   │   ├── UserModel.php
 │   │   └── PostModel.php
 │   └── Views
+│       ├── navbar.html
 │       ├── login.html
+│       ├── profile.html
 │       ├── signup.html
-│       └── home.html
+│       ├── home.html
+│       └── html_head.html
 ├── composer.json
 └── README.md
 
@@ -64,6 +72,224 @@ module.exports = {
   plugins: [],
 }
 
+
+```````
+
+`/home/ramees/progs/php/sora/public/images/Profile _ Sora.html`:
+
+```````html
+<!DOCTYPE html>
+<html lang="en" class=" sm:overflow-y-auto md:overflow-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Sora</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head><body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover" class="bg-no-repeat bg-center">
+    <header class="bg-gradient-to-r flex  from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg w-full">
+    <nav class=" md:mx-0 mx-auto flex-grow flex justify-between items-center w-full">
+        <span class="text-2xl sm:text-3xl md:text-4xl font-bold"><a href="/"> SORA</a></span>
+         
+        <div class="sm:flex hidden md:flex items-center md:space-x-8 md:mr-12"> 
+            <a href="/profile" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
+                <i class="fas fa-user mr-2"></i>ramees            </a>
+            <a href="/logout" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
+                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </a>
+        </div>
+        
+        <button class="md:hidden text-2xl">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+</header>
+    
+    <!-- Profile View (Default) -->
+    <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8  ">
+        <div class="max-w-3xl mx-auto">
+            <!-- Profile Card (Visible when not editing) -->
+            <div id="profile-view" class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
+                    <div class="relative group">
+                        <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
+                                                            <svg class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                                    </div>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-bold text-gray-900">Ramees Mohammed M M</h2>
+                        <p class="text-gray-500 mb-2">rameesmohd2004@gmail.com</p>
+                        <p class="text-gray-700">C,C++, Rust Enthusiast, Systems Programmer</p>
+                    </div>
+                    <button onclick="toggleEdit()" class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                        <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        Edit Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- Edit Form (Hidden by default) -->
+            <div id="edit-form" class="hidden bg-white rounded-xl shadow-lg p-6 sm:p-8">
+                <form action="/edit_profile" method="POST" enctype="multipart/form-data">
+                    <!-- Profile Picture Upload -->
+                    <div class="mb-8">
+                        <div class="flex items-center space-x-6">
+                            <div class="relative group">
+                                <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
+                                                                            <img id="preview-image" src="#" alt="Profile" class="h-full w-full object-cover hidden">
+                                        <svg id="default-image" class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                                                    </div>
+                                <label class="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition-colors">
+                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <input type="file" name="profile_picture" accept="image/*" class="hidden" onchange="previewImage(this)">
+                                </label>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-700">Profile photo</h3>
+                                <p class="text-xs text-gray-500">JPG, PNG, GIF up to 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bio Section -->
+                    <div class="relative mb-8">
+                        <textarea 
+                            name="bio" 
+                            rows="4" 
+                            class="peer w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all resize-none"
+                            placeholder="Write something about yourself..."
+                        >C,C++, Rust Enthusiast, Systems Programmer</textarea>
+                        <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                            Bio
+                        </label>
+                    </div>
+
+                    <!-- Form Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                        <div class="relative">
+                            <input type="text" 
+                                   name="username"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   value="ramees"
+                                    />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                Username
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="text" 
+                                   name="firstname"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   value="Ramees" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                First name
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="text" 
+                                   name="lastname"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   value="Mohammed M M" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                Last name
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="email" 
+                                   name="email"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   value="rameesmohd2004@gmail.com" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                Email
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="password" 
+                                   name="old_password"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   placeholder="Enter your current password" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                Current Password
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="password" 
+                                   name="new_password"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   placeholder="Leave blank to keep current password" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                New Password
+                            </label>
+                        </div>
+
+                        
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end space-y-4 space-y-reverse sm:space-y-0 sm:space-x-4">
+                        <button type="button" 
+                                onclick="toggleEdit()"
+                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-violet-600 bg-white border border-violet-600 rounded-lg hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
+                            Save changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleEdit() {
+            const profileView = document.getElementById('profile-view');
+            const editForm = document.getElementById('edit-form');
+            
+            if (profileView.classList.contains('hidden')) {
+                profileView.classList.remove('hidden');
+                editForm.classList.add('hidden');
+            } else {
+                profileView.classList.add('hidden');
+                editForm.classList.remove('hidden');
+            }
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('preview-image');
+                    const defaultImage = document.getElementById('default-image');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    if (defaultImage) {
+                        defaultImage.classList.add('hidden');
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
 
 ```````
 
@@ -193,7 +419,7 @@ module.exports = {
 }
 
 /*
-! tailwindcss v3.4.13 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.14 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -636,7 +862,7 @@ video {
 
 /* Make elements with the HTML hidden attribute stay hidden by default */
 
-[hidden] {
+[hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
 
@@ -702,68 +928,32 @@ video {
   position: sticky;
 }
 
+.-top-2\.5 {
+  top: -0.625rem;
+}
+
 .bottom-0 {
   bottom: 0px;
-}
-
-.right-0 {
-  right: 0px;
-}
-
-.top-10 {
-  top: 2.5rem;
-}
-
-.right-\[50\%\] {
-  right: 50%;
-}
-
-.right-\[50\] {
-  right: 50;
-}
-
-.right-\[25em\] {
-  right: 25em;
-}
-
-.left-\[2em\] {
-  left: 2em;
-}
-
-.right-\[2em\] {
-  right: 2em;
 }
 
 .bottom-3 {
   bottom: 0.75rem;
 }
 
+.left-2 {
+  left: 0.5rem;
+}
+
+.right-0 {
+  right: 0px;
+}
+
 .right-3 {
   right: 0.75rem;
 }
 
-.bottom-2 {
-  bottom: 0.5rem;
-}
-
-.right-2 {
-  right: 0.5rem;
-}
-
-.bottom-4 {
-  bottom: 1rem;
-}
-
-.right-4 {
-  right: 1rem;
-}
-
-.z-\[3\] {
-  z-index: 3;
-}
-
-.m-4 {
-  margin: 1rem;
+.top-10 {
+  top: 2.5rem;
 }
 
 .m-2 {
@@ -773,16 +963,6 @@ video {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
-}
-
-.my-auto {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.mx-2 {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
 }
 
 .mb-2 {
@@ -801,28 +981,24 @@ video {
   margin-bottom: 1.5rem;
 }
 
-.mr-3 {
-  margin-right: 0.75rem;
+.mb-8 {
+  margin-bottom: 2rem;
 }
 
-.mt-2 {
-  margin-top: 0.5rem;
-}
-
-.mt-\[1em\] {
-  margin-top: 1em;
-}
-
-.mb-\[1em\] {
-  margin-bottom: 1em;
+.mr-1 {
+  margin-right: 0.25rem;
 }
 
 .mr-2 {
   margin-right: 0.5rem;
 }
 
-.mt-3 {
-  margin-top: 0.75rem;
+.mr-3 {
+  margin-right: 0.75rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
 .block {
@@ -841,8 +1017,16 @@ video {
   display: flex;
 }
 
+.inline-flex {
+  display: inline-flex;
+}
+
 .table {
   display: table;
+}
+
+.grid {
+  display: grid;
 }
 
 .contents {
@@ -857,8 +1041,20 @@ video {
   height: 2.5rem;
 }
 
+.h-12 {
+  height: 3rem;
+}
+
+.h-24 {
+  height: 6rem;
+}
+
 .h-3 {
   height: 0.75rem;
+}
+
+.h-4 {
+  height: 1rem;
 }
 
 .h-full {
@@ -869,24 +1065,24 @@ video {
   min-height: calc(100vh - 4rem);
 }
 
+.min-h-screen {
+  min-height: 100vh;
+}
+
 .w-10 {
   width: 2.5rem;
+}
+
+.w-24 {
+  width: 6rem;
 }
 
 .w-3 {
   width: 0.75rem;
 }
 
-.w-72 {
-  width: 18rem;
-}
-
-.w-full {
-  width: 100%;
-}
-
-.w-\[50\%\] {
-  width: 50%;
+.w-4 {
+  width: 1rem;
 }
 
 .w-64 {
@@ -898,25 +1094,24 @@ video {
   width: fit-content;
 }
 
-.w-max {
-  width: -moz-max-content;
-  width: max-content;
+.w-full {
+  width: 100%;
 }
 
-.max-w-md {
-  max-width: 28rem;
-}
-
-.max-w-2xl {
-  max-width: 42rem;
+.max-w-3xl {
+  max-width: 48rem;
 }
 
 .max-w-4xl {
   max-width: 56rem;
 }
 
-.flex-none {
-  flex: none;
+.max-w-md {
+  max-width: 28rem;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
 }
 
 .flex-grow {
@@ -925,6 +1120,10 @@ video {
 
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .resize-none {
@@ -941,16 +1140,20 @@ video {
           appearance: none;
 }
 
-.flex-row {
-  flex-direction: row;
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
 .flex-col {
   flex-direction: column;
 }
 
-.items-end {
-  align-items: flex-end;
+.flex-col-reverse {
+  flex-direction: column-reverse;
+}
+
+.items-start {
+  align-items: flex-start;
 }
 
 .items-center {
@@ -965,26 +1168,32 @@ video {
   justify-content: space-between;
 }
 
+.gap-3 {
+  gap: 0.75rem;
+}
+
 .gap-4 {
   gap: 1rem;
+}
+
+.gap-6 {
+  gap: 1.5rem;
 }
 
 .gap-7 {
   gap: 1.75rem;
 }
 
-.gap-2 {
-  gap: 0.5rem;
-}
-
-.gap-3 {
-  gap: 0.75rem;
-}
-
 .space-x-1 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.25rem * var(--tw-space-x-reverse));
   margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
 .space-x-3 > :not([hidden]) ~ :not([hidden]) {
@@ -999,6 +1208,12 @@ video {
   margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+.space-x-6 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(1.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
 .space-y-3 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
@@ -1011,18 +1226,8 @@ video {
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
 }
 
-.space-x-2 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 0;
-  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
-  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
-}
-
-.self-end {
-  align-self: flex-end;
-}
-
-.self-center {
-  align-self: center;
+.space-y-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 1;
 }
 
 .overflow-hidden {
@@ -1049,12 +1254,26 @@ video {
   border-radius: 0.375rem;
 }
 
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
 .border {
   border-width: 1px;
 }
 
 .border-2 {
   border-width: 2px;
+}
+
+.border-gray-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 231 235 / var(--tw-border-opacity));
+}
+
+.border-violet-600 {
+  --tw-border-opacity: 1;
+  border-color: rgb(124 58 237 / var(--tw-border-opacity));
 }
 
 .border-white {
@@ -1077,6 +1296,11 @@ video {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
+.bg-gray-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+}
+
 .bg-gray-400 {
   --tw-bg-opacity: 1;
   background-color: rgb(156 163 175 / var(--tw-bg-opacity));
@@ -1097,24 +1321,14 @@ video {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
+.bg-violet-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(124 58 237 / var(--tw-bg-opacity));
+}
+
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-slate-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(30 41 59 / var(--tw-bg-opacity));
-}
-
-.bg-sora-primary {
-  --tw-bg-opacity: 1;
-  background-color: rgb(79 70 229 / var(--tw-bg-opacity));
-}
-
-.bg-sora-secondary {
-  --tw-bg-opacity: 1;
-  background-color: rgb(129 140 248 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-90 {
@@ -1135,8 +1349,29 @@ video {
   --tw-gradient-to: #818CF8 var(--tw-gradient-to-position);
 }
 
+.bg-center {
+  background-position: center;
+}
+
+.bg-no-repeat {
+  background-repeat: no-repeat;
+}
+
+.object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
 .p-1 {
   padding: 0.25rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.p-3 {
+  padding: 0.75rem;
 }
 
 .p-4 {
@@ -1147,12 +1382,9 @@ video {
   padding: 1.5rem;
 }
 
-.p-2 {
-  padding: 0.5rem;
-}
-
-.p-3 {
-  padding: 0.75rem;
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .px-3 {
@@ -1170,9 +1402,19 @@ video {
   padding-right: 1.5rem;
 }
 
+.py-12 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
 .py-2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .py-4 {
@@ -1182,10 +1424,6 @@ video {
 
 .pr-12 {
   padding-right: 3rem;
-}
-
-.pr-8 {
-  padding-right: 2rem;
 }
 
 .text-center {
@@ -1206,14 +1444,14 @@ video {
   line-height: 1.75rem;
 }
 
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
-
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .font-bold {
@@ -1245,9 +1483,19 @@ video {
   line-height: 1.25;
 }
 
+.text-gray-400 {
+  --tw-text-opacity: 1;
+  color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+
+.text-gray-600 {
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity));
 }
 
 .text-gray-700 {
@@ -1260,14 +1508,14 @@ video {
   color: rgb(17 24 39 / var(--tw-text-opacity));
 }
 
-.text-indigo-600 {
-  --tw-text-opacity: 1;
-  color: rgb(79 70 229 / var(--tw-text-opacity));
-}
-
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgb(15 23 42 / var(--tw-text-opacity));
 }
 
 .text-sora-primary {
@@ -1285,13 +1533,14 @@ video {
   color: rgb(31 41 55 / var(--tw-text-opacity));
 }
 
+.text-violet-600 {
+  --tw-text-opacity: 1;
+  color: rgb(124 58 237 / var(--tw-text-opacity));
+}
+
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-opacity-80 {
-  --tw-text-opacity: 0.8;
 }
 
 .underline {
@@ -1306,6 +1555,14 @@ video {
 .placeholder-gray-500::placeholder {
   --tw-placeholder-opacity: 1;
   color: rgb(107 114 128 / var(--tw-placeholder-opacity));
+}
+
+.opacity-85 {
+  opacity: 0.85;
+}
+
+.opacity-95 {
+  opacity: 0.95;
 }
 
 .shadow {
@@ -1324,6 +1581,17 @@ video {
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.outline-none {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 
 .outline {
@@ -1385,9 +1653,14 @@ video {
   background-color: rgb(67 56 202 / var(--tw-bg-opacity));
 }
 
-.hover\:bg-sora-primary:hover {
+.hover\:bg-violet-50:hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(79 70 229 / var(--tw-bg-opacity));
+  background-color: rgb(245 243 255 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-violet-700:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(109 40 217 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-white:hover {
@@ -1405,14 +1678,9 @@ video {
   color: rgb(34 197 94 / var(--tw-text-opacity));
 }
 
-.hover\:text-red-500:hover {
+.hover\:text-sora-bg:hover {
   --tw-text-opacity: 1;
-  color: rgb(239 68 68 / var(--tw-text-opacity));
-}
-
-.hover\:text-white:hover {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
+  color: rgb(243 244 246 / var(--tw-text-opacity));
 }
 
 .hover\:text-sora-secondary:hover {
@@ -1426,6 +1694,10 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.focus\:border-transparent:focus {
+  border-color: transparent;
+}
+
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -1437,44 +1709,39 @@ video {
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
-.focus\:ring-sora-primary:focus {
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgb(79 70 229 / var(--tw-ring-opacity));
-}
-
 .focus\:ring-sora-bg:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(243 244 246 / var(--tw-ring-opacity));
 }
 
+.focus\:ring-violet-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(139 92 246 / var(--tw-ring-opacity));
+}
+
+.focus\:ring-offset-2:focus {
+  --tw-ring-offset-width: 2px;
+}
+
 @media (min-width: 640px) {
-  .sm\:mx-0 {
-    margin-left: 0px;
-    margin-right: 0px;
+  .sm\:flex {
+    display: flex;
   }
 
   .sm\:w-\[90\%\] {
     width: 90%;
   }
 
-  .sm\:w-96 {
-    width: 24rem;
+  .sm\:w-auto {
+    width: auto;
   }
 
-  .sm\:w-\[50\%\] {
-    width: 50%;
-  }
-
-  .sm\:w-\[60\%\] {
-    width: 60%;
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .sm\:flex-row {
     flex-direction: row;
-  }
-
-  .sm\:flex-col {
-    flex-direction: column;
   }
 
   .sm\:items-end {
@@ -1485,12 +1752,26 @@ video {
     align-items: center;
   }
 
-  .sm\:justify-start {
-    justify-content: flex-start;
+  .sm\:justify-end {
+    justify-content: flex-end;
   }
 
-  .sm\:self-center {
-    align-self: center;
+  .sm\:space-x-4 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(1rem * var(--tw-space-x-reverse));
+    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
+  .sm\:space-x-6 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(1.5rem * var(--tw-space-x-reverse));
+    margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+
+  .sm\:space-y-0 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(0px * var(--tw-space-y-reverse));
   }
 
   .sm\:overflow-y-auto {
@@ -1499,6 +1780,11 @@ video {
 
   .sm\:p-8 {
     padding: 2rem;
+  }
+
+  .sm\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .sm\:text-3xl {
@@ -1518,8 +1804,16 @@ video {
     margin-right: 0px;
   }
 
+  .md\:mr-12 {
+    margin-right: 3rem;
+  }
+
   .md\:block {
     display: block;
+  }
+
+  .md\:flex {
+    display: flex;
   }
 
   .md\:hidden {
@@ -1530,16 +1824,14 @@ video {
     width: 80%;
   }
 
-  .md\:w-\[50\%\] {
-    width: 50%;
-  }
-
   .md\:gap-\[7em\] {
     gap: 7em;
   }
 
-  .md\:self-end {
-    align-self: flex-end;
+  .md\:space-x-8 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(2rem * var(--tw-space-x-reverse));
+    margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
   .md\:overflow-hidden {
@@ -1564,6 +1856,11 @@ video {
   .lg\:w-\[40\%\] {
     width: 40%;
   }
+
+  .lg\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 @media (min-width: 1280px) {
@@ -1578,6 +1875,12 @@ video {
 ```````php
 <?php 
 require __DIR__."/../vendor/autoload.php";
+ini_set('session.cookie_httponly', 1); 
+ini_set('session.cookie_secure', 1); 
+ini_set('session.use_strict_mode', 1); // Prevents session fixation in some cases
+ini_set('session.gc_maxlifetime', 1800);
+
+
 
 session_start();
 use Sora\Core\Application;
@@ -1585,6 +1888,7 @@ use Sora\Core\Router;
 use Sora\Controllers\UserController;
 use Sora\Controllers\HomeController;
 use Sora\Controllers\PostController;
+use Sora\Helpers\Helper;
 $router = new Router();
 $app = new Application($router);
 
@@ -1594,9 +1898,11 @@ $app->router->post('/login', [UserController::class, 'login']);
 $app->router->get('/register', [HomeController::class, 'register']);
 $app->router->post('/register', [UserController::class, 'register']);
 $app->router->get('/logout', [UserController::class, 'logout']);
+$app->router->get('/profile', [UserController::class, 'profile']);
 
 $app->router->post('/create', [PostController::class, 'create']);
-
+$app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
+$app->router->post('/add_likes', [PostController::class, 'add_likes']);
 $app->run();
 
 
@@ -1606,17 +1912,65 @@ $app->run();
 
 ```````
 
-`/home/ramees/progs/php/sora/src/Helpers/Token.php`:
+`/home/ramees/progs/php/sora/src/Helpers/Helper.php`:
 
 ```````php
-<?
+<?php
 namespace Sora\Helpers;
 
-class Token{
+class Helper{
     public static function generate_token(): string {
         return bin2hex(random_bytes(32));
     }
+
+    public static function validate_user(){
+        if(!isset($_SESSION['user_id'])){
+            header("Location: /login");
+            exit;
+        }
+    }
+
+    public static function time_ago($timestamp) {
+        $current_time = time();
+        $time_difference = $current_time - strtotime($timestamp);
+        
+        // Define time intervals in seconds
+        $intervals = array(
+            'year'   => 31536000,
+            'month'  => 2592000,
+            'week'   => 604800,
+            'day'    => 86400,
+            'hour'   => 3600,
+            'minute' => 60,
+            'second' => 1
+        );
+        
+        // Handle future dates
+        if ($time_difference < 0) {
+            return "just now";
+        }
+        
+        // Handle very recent times
+        if ($time_difference < 10) {
+            return "just now";
+        }
+        
+        // Find the appropriate interval
+        foreach ($intervals as $interval => $seconds) {
+            $difference = floor($time_difference / $seconds);
+            
+            if ($difference >= 1) {
+                // Handle plural vs singular
+                $interval_text = $difference == 1 ? $interval : $interval . 's';
+                return $difference . " " . $interval_text . " ago";
+            }
+        }
+    }
 }
+
+?>
+
+
 ```````
 
 `/home/ramees/progs/php/sora/src/Config/Database.php`:
@@ -1988,24 +2342,25 @@ class Application {
 ```````php
 <?php 
 namespace Sora\Controllers;
+use \Sora\Helpers\Helper;
 
 class HomeController{
   
 
   
   public function home(){
-    if (isset($_SESSION['user_id']) ){
+
+    Helper::validate_user();
+    
     require "../src/Views/home.html";
-    }
-    else{
-      header("Location: /login");
-      exit;
-    }
+    
+    
   }
 
   public function login(){
 
     if($_SERVER['REQUEST_METHOD'] == "POST"){
+      $this->home();
       
     }
     else{
@@ -2033,6 +2388,7 @@ namespace Sora\Controllers;
 
 use \Sora\Models\PostModel;
 use \Sora\Config\Database;
+use \Sora\Helpers\Helper;
 
 
 class PostController {
@@ -2045,21 +2401,107 @@ class PostController {
     }
 
     public function create(){
+        Helper::validate_user();
+
         if ($_SERVER['REQUEST_METHOD'] == "POST"){
             $user_id = $_SESSION['user_id'];
             $content = $_POST['content'];
-            if($this->postModel->create_post($user_id, $content)){
-                header("Location: /");
+            
+            if($_SESSION['csrf_token'] !== $_POST['csrf_token']){
+                unset($_SESSION['csrf_token']);
+                http_response_code(400);
                 exit;
-            } else{
-                $error[] = "Error creating post";
+            }
+            else{
+                unset($_SESSION['csrf_token']);
+                if($this->postModel->create_post($user_id, $content)){
+                   header("Location: /");
+                   exit;
+                } else{
+                    $error[] = "Error creating post";
+                }
             }
         }
         else{
             $errors[] = "invalid request method";
         }
     }
+
+    public static function render_tweet($tweet){
+        // print_r($tweet); 
+        $id = $tweet["id"];
+        $username = $tweet["username"];
+        $content = $tweet['content'];
+        $created_at = Helper::time_ago($tweet['created_at']);
+        $upvotes = $tweet['upvotes'] ?? 0;
+        $comments = $tweet['comments'] ?? 0;
+        $dp_available = $tweet['profile_picture'] ?? false;
+        if($dp_available){
+            $pfp_avatar = <<<HTML
+             <img src="images/pfps/{$tweet['profile_picture']}" alt="" class="w-10 h-10 rounded-full mr-3">
+            HTML;
+        }
+
+        else{
+            $pfp_avatar = <<<HTML
+            <img src="images/icons/user-avatar.png" alt="" class="w-10 h-10 rounded-full mr-3">
+            HTML;
+        }
+        $html = <<<HTML
+    <div class="bg-gray-300 p-4 rounded-lg shadow opacity-95 shadow-sm hover:shadow-md transition duration-300">
+        <div class="flex items-center mb-2">
+            $pfp_avatar
+            <div>
+                <a href="/" class="font-bold text-slate-900 block">@{$username}</a>
+                <div class="flex items-center text-sm text-gray-500">
+                    <i class="fas fa-clock mr-1"></i>
+                    <span>{$created_at}</span>
+                </div>
+            </div>
+        </div>
+        <p class="mb-3 text-slate-900">{$content}</p>
+        <div class="flex items-center space-x-4 text-gray-500">
+            
+            <button class="upvotes flex items-center space-x-1 hover:text-blue-500 transition duration-300" data-post-id="$id">
+                <i class="fas fa-arrow-up"></i>
+                <span id="upvotes">{$upvotes}</span>
+            </button>
+            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300" data-post-id="$id">
+            
+                <i class="fas fa-comment"></i>
+                <span>{$comments} comments</span>
+            </button>
+        </div>
+    </div>
+    HTML;
+    return $html;
+
+    }
+
+    public function render_tweets(){
+
+         $data = $this->postModel->get_tweets($_SESSION['user_id']);
+
+        foreach($data as $tweet){
+            $html = $this->render_tweet($tweet);
+            echo $html;
+        }
+
+    }
+
+
+    public function add_likes(){
+
+       if($_SERVER['REQUEST_METHOD' == "POST"]){
+        $post_id = $_POST['post_id'];
+        $this->postModel($post_id);
+       }
+
+    }
+   
 }
+
+?>
 ```````
 
 `/home/ramees/progs/php/sora/src/Controllers/UserController.php`:
@@ -2131,12 +2573,21 @@ class UserController {
 
   public function login() {
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $username = $_POST['username'];
+    $username = htmlspecialchars($_POST['username']);
     $password = $_POST['password'];
     $response = $this->userModel->authenticate($username, $password);
+
+    if (!$response['success']){
+      $_SESSION['login_error'] = ["Username/Password incorrect"];
+      header("Location: /login");
+      exit;
+    }
+    session_regenerate_id(true);
     $_SESSION['username'] = $response['user']['username'];
     $_SESSION['user_id'] = $response['user']['id'];
+    
     header('Location: /');
+    exit;
     }
     else{
       include __DIR__."/../Views/login.html";
@@ -2144,6 +2595,57 @@ class UserController {
   
   }
 
+  public function profile() {
+    if($_SERVER['REQUEST_METHOD'] == "GET"){
+      $username = $_SESSION['username'];
+      include __DIR__ ."/../Views/profile.html";
+      
+    }
+  } 
+
+  public function get_user_details($username) {
+    $user = $this->userModel->get_user_details($username);
+    return $user;
+
+
+  }
+
+  public function edit_user_details(){
+    if($_SERVER['REQUEST_METHOD'] == "POST"){
+      $username = $_SESSION['username'];
+      $password = $_POST['old_password'];
+      $response = $this->userModel->authenticate($username, $password);
+      if($response['success'] != true){
+        $_SESSION['update_error'] = "Invalid Credentials";
+        header("Location: /profile");
+
+      }
+      else{
+        $data = [
+        "username" => $_POST['username'],
+        "password" => password_hash($_POST['new_password'], PASSWORD_DEFAULT),
+        "firstname" => $_POST['firstname'] ?? "",
+        "lastname" => $_POST['lastname'] ?? "",
+        "bio" =>     $_POST['bio'],
+        "profile_picture" => $_POST['profile_picture'] ?? "",
+        ];
+        
+        
+      }
+      if ($this->userModel->update_user_details($username, $data)) {
+        // Success message (optional)
+        $_SESSION['update_success'] = "Profile updated successfully!"; 
+      } else {
+        // Handle the case where no changes were made (optional)
+        $_SESSION['update_info'] = "No changes were made to your profile."; 
+      }
+      header("Location: /profile");
+    }
+  
+    else{
+      header("Location: /profile");
+    }
+  }
   
 
 }
@@ -2194,8 +2696,8 @@ class UserModel {
 			}
 			$username  = $data['username'];
 			$email = $data['email'];
-			$firstName = $data['first_name'];
-			$lastName = $data['last_name'];
+			$firstName = $data['firstname'];
+			$lastName = $data['lastname'];
 			$password = $data['password'];
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
@@ -2314,8 +2816,8 @@ class UserModel {
 		*/                                                                                     
 	private function validate_user_registration(array $data): array {                                
 			$username = $data['username'];
-			$firstName = $data['first_name'];
-			$lastName = $data['last_name'];
+			$firstName = $data['firstname'];
+			$lastName = $data['lastname'];
 			$password = $data['password'];
 			$retype_password = $data['retype_password'];
 
@@ -2327,6 +2829,51 @@ class UserModel {
 
 	} 
 
+public function get_user_details($username): array{
+	$stmt = $this->db->prepare("SELECT * from users where username = ? limit 1");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$rows = $result->fetch_assoc();
+	return $rows;
+}
+
+public function update_user_details($username, $data){
+		$update_fields = array();
+
+		$original_fields = $this->get_user_details($username);
+		if($original_fields){
+			foreach($data as $field => $value){
+				if ($original_fields[$field] !== $value){
+					$update_fields[$field] = $value;
+				}
+			}
+			return $this->update($username, $update_fields);
+		}
+		else{
+			return false;
+		}
+}
+
+function update($username, $data){
+	if (isset($data)){
+		$sql = "UPDATE users set ";
+		foreach($data as $key => $value){
+			$sql .= "$key = '$value', ";
+
+		}
+		$sql = rtrim($sql, ", ");
+		$sql .= " WHERE username=?";
+		$stmt = $this->db->prepare($sql);
+		$stmt->bind_param("s", $username);
+		return $stmt->execute();
+	}
+	else{
+		return false;
+	}
+	
+}
+
 }                   
 
 function test_input(string $data): string{
@@ -2336,7 +2883,7 @@ function test_input(string $data): string{
 	return $data;
 
 }
-                                                                                      
+
                                                                                       
 ?>
 
@@ -2381,8 +2928,86 @@ class PostModel{
         }
     }
 
+    public function get_tweets($user_id) {
+        $stmt = $this->db->prepare("SELECT 
+                p.id, 
+                p.content, 
+                p.created_at,
+                u.username, 
+                u.profile_picture,
+                COUNT(l.post_id) AS upvotes
+            FROM 
+                posts p
+            JOIN 
+                users u ON p.user_id = u.id 
+            LEFT JOIN 
+                likes l ON p.id = l.post_id
+            LEFT JOIN
+                follows f ON p.user_id = f.followed_id AND f.follower_id = ? 
+            WHERE 
+                p.user_id = ? OR f.follower_id = ?
+            GROUP BY
+                p.id
+            ORDER BY 
+                p.created_at DESC;");
+    
+        $stmt->bind_param("iii", $user_id, $user_id, $user_id); // Bind parameters
+    
+        $stmt->execute();
+    
+        $result = $stmt->get_result();
+    
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function add_likes($post_id){
+        $user_id = $_SESSION['user_id'];
+        if($this->like_not_exists($user_id, $post_id) ){
+
+            $stmt = "insert into likes(user_id, post_id) values(?,?)";
+            $stmt->bind_param("ss",$user_id, $post_id );
+            $result = $stmt->execute();
+            return;
+
+        }
+
+
+    }
+    function like_not_exists($user_id, $post_id){
+        $stmt = $this->db->prepare("SELECT exists(select 1 from likes where user_id = ? and post_id=?  ");
+        $stmt->bind_param("ss", $user_id, $post_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_row();
+        $exists = $row[0];
+        return !$exists;
+    }
+
     
 }
+```````
+
+`/home/ramees/progs/php/sora/src/Views/navbar.html`:
+
+```````html
+<header class="bg-gradient-to-r flex  from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg w-full">
+    <nav class=" md:mx-0 mx-auto flex-grow flex justify-between items-center w-full">
+        <span class="text-2xl sm:text-3xl md:text-4xl font-bold"><a href="/"> SORA</a></span>
+         
+        <div class="sm:flex hidden md:flex items-center md:space-x-8 md:mr-12"> 
+            <a href="/profile" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
+                <i class="fas fa-user mr-2"></i><?=$_SESSION['username']??'Profile'?>
+            </a>
+            <a href="/logout" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
+                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </a>
+        </div>
+        
+        <button class="md:hidden text-2xl">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+</header>
 ```````
 
 `/home/ramees/progs/php/sora/src/Views/login.html`:
@@ -2423,6 +3048,15 @@ class PostModel{
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="password" name="password" id="password" required>
                         </div>
+                        <div class="error text-red-600 w-full text-center text-lg font-bold mt-2 hidden">
+                            <?php 
+                            if(isset($_SESSION['login_error'])){
+                            echo implode("<br>", $_SESSION['login_error']); 
+                            $_SESSION['login_error'] = null;
+                            unset($_SESSION['error']);
+                            }
+                             ?>
+                        </div>
                         <button
                             class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="submit" name="submit">Login</button>
@@ -2444,13 +3078,13 @@ class PostModel{
                             <label class="block text-gray-700 font-bold mb-2" for="signup-first-name">First Name</label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="first_name" id="signup-first-name" required>
+                                type="text" name="firstname" id="signup-first-name" required>
                         </div>
                         <div class="form-group">
                             <label class="block text-gray-700 font-bold mb-2" for="signup-last-name">Last Name</label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="last_name" id="signup-last-name" required>
+                                type="text" name="lastname" id="signup-last-name" required>
                         </div>
                         <div class="form-group">
                             <label class="block text-gray-700 font-bold mb-2" for="signup-username">Username</label>
@@ -2517,6 +3151,216 @@ class PostModel{
 </html>
 ```````
 
+`/home/ramees/progs/php/sora/src/Views/profile.html`:
+
+```````html
+<!DOCTYPE html>
+<html lang="en" class=" sm:overflow-y-auto md:overflow-hidden">
+<?php include_once __DIR__."/html_head.html" ?>
+<body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover" class="bg-no-repeat bg-center">
+    <?php include_once __DIR__ ."/navbar.html"?>
+
+    <?php
+    use Sora\Controllers\UserController;
+    $userController = new UserController();
+    $user = $userController->get_user_details($_SESSION['username']);
+    ?>
+
+    <!-- Profile View (Default) -->
+    <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8  ">
+        <div class="max-w-3xl mx-auto">
+            <!-- Profile Card (Visible when not editing) -->
+            <div id="profile-view" class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
+                    <div class="relative group">
+                        <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
+                            <?php if(isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
+                                <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile" class="h-full w-full object-cover">
+                            <?php else: ?>
+                                <svg class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-2xl font-bold text-gray-900"><?php echo htmlspecialchars($user['firstname'] . ' ' . $user['lastname']); ?></h2>
+                        <p class="text-gray-500 mb-2"><?php echo htmlspecialchars($user['email']); ?></p>
+                        <p class="text-gray-700"><?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?></p>
+                    </div>
+                    <button onclick="toggleEdit()" class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                        <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        Edit Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- Edit Form (Hidden by default) -->
+            <div id="edit-form" class="hidden bg-white rounded-xl shadow-lg p-6 sm:p-8">
+                <form action="/edit_profile" method="POST" enctype="multipart/form-data">
+                    <!-- Profile Picture Upload -->
+                    <div class="mb-8">
+                        <div class="flex items-center space-x-6">
+                            <div class="relative group">
+                                <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
+                                    <?php if(isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
+                                        <img id="preview-image" src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile" class="h-full w-full object-cover">
+                                    <?php else: ?>
+                                        <img id="preview-image" src="#" alt="Profile" class="h-full w-full object-cover hidden">
+                                        <svg id="default-image" class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    <?php endif; ?>
+                                </div>
+                                <label class="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition-colors">
+                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <input type="file" name="profile_picture" accept="image/*" class="hidden" onchange="previewImage(this)">
+                                </label>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-700">Profile photo</h3>
+                                <p class="text-xs text-gray-500">JPG, PNG, GIF up to 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bio Section -->
+                    <div class="relative mb-8">
+                        <textarea 
+                            name="bio" 
+                            rows="4" 
+                            class="peer w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all resize-none"
+                            placeholder="Write something about yourself..."
+                        ><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
+                        <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                            Bio
+                        </label>
+                    </div>
+
+                    <!-- Form Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                        <div class="relative">
+                            <input type="text" 
+                                   name="username"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   value="<?php echo htmlspecialchars($user['username']); ?>"
+                                    />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                Username
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="text" 
+                                   name="firstname"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   value="<?php echo htmlspecialchars($user['firstname'] ?? ''); ?>" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                First name
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="text" 
+                                   name="lastname"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   value="<?php echo htmlspecialchars($user['lastname'] ?? ''); ?>" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                Last name
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="email" 
+                                   name="email"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   value="<?php echo htmlspecialchars($user['email']); ?>" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                Email
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="password" 
+                                   name="old_password"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   placeholder="Enter your current password" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                Current Password
+                            </label>
+                        </div>
+
+                        <div class="relative">
+                            <input type="password" 
+                                   name="new_password"
+                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                   placeholder="Leave blank to keep current password" />
+                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
+                                New Password
+                            </label>
+                        </div>
+
+                        
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end space-y-4 space-y-reverse sm:space-y-0 sm:space-x-4">
+                        <button type="button" 
+                                onclick="toggleEdit()"
+                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-violet-600 bg-white border border-violet-600 rounded-lg hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
+                            Save changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleEdit() {
+            const profileView = document.getElementById('profile-view');
+            const editForm = document.getElementById('edit-form');
+            
+            if (profileView.classList.contains('hidden')) {
+                profileView.classList.remove('hidden');
+                editForm.classList.add('hidden');
+            } else {
+                profileView.classList.add('hidden');
+                editForm.classList.remove('hidden');
+            }
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('preview-image');
+                    const defaultImage = document.getElementById('default-image');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    if (defaultImage) {
+                        defaultImage.classList.add('hidden');
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
+```````
+
 `/home/ramees/progs/php/sora/src/Views/signup.html`:
 
 ```````html
@@ -2553,13 +3397,13 @@ class PostModel{
                             <label class="block text-gray-700 font-bold mb-2" for="signup-first-name">First Name</label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="first_name" id="signup-first-name" required>
+                                type="text" name="firstname" id="signup-first-name" required>
                         </div>
                         <div class="form-group">
                             <label class="block text-gray-700 font-bold mb-2" for="signup-last-name">Last Name</label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="last_name" id="signup-last-name" required>
+                                type="text" name="lastname" id="signup-last-name" required>
                         </div>
                         <div class="form-group">
                             <label class="block text-gray-700 font-bold mb-2" for="signup-username">Username</label>
@@ -2612,6 +3456,15 @@ class PostModel{
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="password" name="password" id="password" required>
                         </div>
+                        <div class="error text-red-600 w-full text-center text-lg font-bold mt-2 hidden">
+                            <?php 
+                            if(isset($_SESSION['login_error'])){
+                            echo implode("<br>", $_SESSION['login_error']); 
+                            $_SESSION['login_error'] = null;
+                            unset($_SESSION['error']);
+                            }
+                             ?>
+                        </div>
                         <button
                             class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="submit" name="submit">Login</button>
@@ -2653,29 +3506,16 @@ class PostModel{
 ```````html
 <!DOCTYPE html>
 <html class="h-full" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | SORA</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-<body class="h-full bg-gray-100 text-gray-900 flex flex-col">
-    <header class="bg-gradient-to-r from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg">
-        <nav class="container md:mx-0 mx-auto flex justify-between items-center">
-            <span class="text-2xl sm:text-3xl md:text-4xl font-bold">SORA</span>
-            <button class="md:hidden text-2xl">
-                <i class="fas fa-bars"></i>
-            </button>
-        </nav>
-    </header>
-    
+<?php include_once __DIR__."/html_head.html"?>
+<body class="h-full text-gray-900 flex flex-col w-full" style="background: url('images/sora-bg.png')">
+       
+<?php include_once __DIR__."/navbar.html" ?>
     <main class="flex-grow flex overflow-hidden">
-        <aside class="w-64 bg-white shadow-lg overflow-y-auto hidden md:block">
+        <aside class="w-64 bg-gray-100 opacity-85 shadow-lg overflow-y-auto hidden md:block">
             <div class="p-6">
                 <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
                 <div class="space-y-4">
-                    <div class="bg-sora-bg rounded-lg p-4 transition duration-300 hover:shadow-md">
+                    <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
                         <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Online</h3>
                         <ul class="space-y-3">
                             <li class="flex items-center space-x-3">
@@ -2694,7 +3534,7 @@ class PostModel{
                             </li>
                         </ul>
                     </div>
-                    <div class="bg-sora-bg rounded-lg p-4 transition duration-300 hover:shadow-md">
+                    <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
                         <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Offline</h3>
                         <ul class="space-y-3">
                             <li class="flex items-center space-x-3">
@@ -2712,142 +3552,21 @@ class PostModel{
 
         <div class="flex-grow flex flex-col overflow-hidden">
             <section class="flex-grow p-4 overflow-y-auto">
-                <h1 class="text-2xl font-bold mb-4 text-sora-primary">Tweets</h1>
+                <h1 class="text-2xl font-bold mb-4 text-sora-primary bg-gray-300 w-fit p-2 rounded-md shadow-md">Tweets</h1>
                 <div class="space-y-4">
                     <!-- Tweet cards (repeated for each tweet) -->
-                    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
-                        <div class="flex items-center mb-2">
-                            <img src="/api/placeholder/40/40" alt="User 1" class="w-10 h-10 rounded-full mr-3">
-                            <p class="font-bold text-sora-secondary">@user1</p>
-                        </div>
-                        <p class="mb-3">This is a sample tweet with some interesting content.</p>
-                        <div class="flex items-center space-x-4 text-gray-500">
-                            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>10</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-red-500 transition duration-300">
-                                <i class="fas fa-arrow-down"></i>
-                                <span>2</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300">
-                                <i class="fas fa-comment"></i>
-                                <span>5 comments</span>
-                            </button>
-                        </div>
-                    </div>
+                    
 
-                    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
-                        <div class="flex items-center mb-2">
-                            <img src="/api/placeholder/40/40" alt="User 1" class="w-10 h-10 rounded-full mr-3">
-                            <p class="font-bold text-sora-secondary">@user1</p>
-                        </div>
-                        <p class="mb-3">This is a sample tweet with some interesting content.</p>
-                        <div class="flex items-center space-x-4 text-gray-500">
-                            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>10</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-red-500 transition duration-300">
-                                <i class="fas fa-arrow-down"></i>
-                                <span>2</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300">
-                                <i class="fas fa-comment"></i>
-                                <span>5 comments</span>
-                            </button>
-                        </div>
-                    </div>
+                    <?php
+                    use Sora\Controllers\PostController;
+                    
 
-                    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
-                        <div class="flex items-center mb-2">
-                            <img src="/api/placeholder/40/40" alt="User 1" class="w-10 h-10 rounded-full mr-3">
-                            <p class="font-bold text-sora-secondary">@user1</p>
-                        </div>
-                        <p class="mb-3">This is a sample tweet with some interesting content.</p>
-                        <div class="flex items-center space-x-4 text-gray-500">
-                            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>10</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-red-500 transition duration-300">
-                                <i class="fas fa-arrow-down"></i>
-                                <span>2</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300">
-                                <i class="fas fa-comment"></i>
-                                <span>5 comments</span>
-                            </button>
-                        </div>
-                    </div>
+                    $postController = new PostController();
+                    $postController->render_tweets();
+                   ;
+                    
+                    ?>
 
-                    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
-                        <div class="flex items-center mb-2">
-                            <img src="/api/placeholder/40/40" alt="User 1" class="w-10 h-10 rounded-full mr-3">
-                            <p class="font-bold text-sora-secondary">@user1</p>
-                        </div>
-                        <p class="mb-3">This is a sample tweet with some interesting content.</p>
-                        <div class="flex items-center space-x-4 text-gray-500">
-                            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>10</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-red-500 transition duration-300">
-                                <i class="fas fa-arrow-down"></i>
-                                <span>2</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300">
-                                <i class="fas fa-comment"></i>
-                                <span>5 comments</span>
-                            </button>
-                        </div>
-                    </div>
-
-
-                    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
-                        <div class="flex items-center mb-2">
-                            <img src="/api/placeholder/40/40" alt="User 1" class="w-10 h-10 rounded-full mr-3">
-                            <p class="font-bold text-sora-secondary">@user1</p>
-                        </div>
-                        <p class="mb-3">This is a sample tweet with some interesting content.</p>
-                        <div class="flex items-center space-x-4 text-gray-500">
-                            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>10</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-red-500 transition duration-300">
-                                <i class="fas fa-arrow-down"></i>
-                                <span>2</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300">
-                                <i class="fas fa-comment"></i>
-                                <span>5 comments</span>
-                            </button>
-                        </div>
-                    </div>
-
-
-                    <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition duration-300">
-                        <div class="flex items-center mb-2">
-                            <img src="/api/placeholder/40/40" alt="User 1" class="w-10 h-10 rounded-full mr-3">
-                            <p class="font-bold text-sora-secondary">@user1</p>
-                        </div>
-                        <p class="mb-3">This is a sample tweet with some interesting content.</p>
-                        <div class="flex items-center space-x-4 text-gray-500">
-                            <button class="flex items-center space-x-1 hover:text-blue-500 transition duration-300">
-                                <i class="fas fa-arrow-up"></i>
-                                <span>10</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-red-500 transition duration-300">
-                                <i class="fas fa-arrow-down"></i>
-                                <span>2</span>
-                            </button>
-                            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300">
-                                <i class="fas fa-comment"></i>
-                                <span>5 comments</span>
-                            </button>
-                        </div>
-                    </div>
                     <!-- Repeat the above div for each tweet -->
                 </div>
             </section>
@@ -2865,6 +3584,11 @@ class PostModel{
                                 </button> -->
                             </div>
                         </div>
+                        <!-- csrf protection -->
+                        <?php use Sora\Helpers\Helper;
+                        $_SESSION['csrf_token'] = Helper::generate_token()
+                         ?>
+                        <input type="hidden" name="csrf_token" value=<?=$_SESSION['csrf_token'] ?>>
                         <button name="post-btn" class="bg-sora-bg text-sora-primary py-2 px-6 rounded-full hover:bg-white hover:text-sora-secondary transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sora-bg">
                             <i class="fas fa-paper-plane mr-2"></i>Post
                         </button>
@@ -2873,9 +3597,53 @@ class PostModel{
                 </div>
             </footer>
         </div>
+        <script>
+            // Select all elements with the class 'upvotes_button'
+const upvoteButtons = document.querySelectorAll('.upvotes');
+
+// Loop through each button and add an event listener
+upvoteButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    // Get the post_id from a data attribute (assuming each button has a data-post-id attribute)
+    const postId = button.getAttribute('data-post-id');
+    
+    // Send the POST request using Fetch API
+    fetch('/add_likes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        post_id: postId
+      })
+    });
+    
+    // Optionally, add code to update the UI (e.g., increment the upvote count visually)
+    // You can adjust the DOM based on what you want to do
+    const countElement = button.querySelector('#upvotes');
+    if (countElement) {
+      let currentCount = parseInt(countElement.textContent) || 0;
+      countElement.textContent = currentCount + 1// Increment the count
+    }
+  });
+});
+
+        </script>
     </main>
 </body>
 </html>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/html_head.html`:
+
+```````html
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Sora</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
 ```````
 
 `/home/ramees/progs/php/sora/README.md`:

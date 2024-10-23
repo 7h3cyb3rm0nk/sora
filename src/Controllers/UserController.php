@@ -103,6 +103,8 @@ class UserController {
 
   public function edit_user_details(){
     if($_SERVER['REQUEST_METHOD'] == "POST"){
+
+
       $username = $_SESSION['username'];
       $password = $_POST['old_password'];
       $response = $this->userModel->authenticate($username, $password);
@@ -120,7 +122,13 @@ class UserController {
         "bio" =>     $_POST['bio'],
         "profile_picture" => $_FILES['profile_picture'] ?? "",
         ];
-        
+
+        if($_POST['new_password'] == ""){
+          unset($data["password"]);
+        }
+        if($_FILES["profile_picture"] == ""){
+          unset($data["profile_picture"]);
+        }
         
       }
       if ($this->userModel->update_user_details($username, $data)) {

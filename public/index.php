@@ -27,7 +27,8 @@ $app->router->get('/profile', [UserController::class, 'profile']);
 
 $app->router->post('/create', [PostController::class, 'create']);
 $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
-
+$app->router->post('/add_likes', [PostController::class, 'add_likes']);
+$app->router->post('/remove_likes', [PostController::class, 'remove_likes']);
 $app->run();
 
 

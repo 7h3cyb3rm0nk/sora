@@ -53,7 +53,7 @@ class PostController {
         $dp_available = $tweet['profile_picture'] ?? false;
         if($dp_available){
             $pfp_avatar = <<<HTML
-             <img src="images/pfps/{$tweet['profile_picture']}" alt="" class="w-10 h-10 rounded-full mr-3">
+             <img src="{$tweet['profile_picture']}" alt="" class="w-10 h-10 rounded-full mr-3">
             HTML;
         }
 

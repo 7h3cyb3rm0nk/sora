@@ -182,13 +182,14 @@ public function get_user_details($username): array{
 }
 
 public function update_user_details($username, $data){
-	if (isset($_FILES["profile_picture"])){
+	if (isset($_FILES["profile_picture"]) && !isset($data["profile_picture"]) ){
 
 	$uploadfile = "__DIR__"."/../../public/images/pfps/".basename($_FILES["profile_picture"]["name"]);
 	move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $uploadfile);
+	$data["profile_picture"] = "./images/pfps/".basename($_FILES["profile_picture"]["name"]);
 	}
 		$update_fields = array();
-		$data["profile_picture"] = basename($_FILES["profile_picture"]["name"]);
+		
 
 		$original_fields = $this->get_user_details($username);
 		if($original_fields){
