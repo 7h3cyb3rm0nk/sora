@@ -42,8 +42,10 @@ class PostController {
         }
     }
 
-    public static function render_tweet($tweet){
-        // print_r($tweet); 
+    public  function render_tweet($tweet){
+        // print_r($tweet);
+        $is_liked = $this->postModel->check_user_likes($tweet["id"]);
+        $like_class = $is_liked == 1 ? "liked" : "";
         $id = $tweet["id"];
         $username = $tweet["username"];
         $content = $tweet['content'];
@@ -77,7 +79,7 @@ class PostController {
         <p class="mb-3 text-slate-900">{$content}</p>
         <div class="flex items-center space-x-4 text-gray-500">
             
-            <button class="upvotes flex items-center space-x-1 hover:text-blue-500 transition duration-300" data-post-id="$id">
+            <button class="upvotes flex items-center space-x-1 hover:text-blue-500 transition duration-300 $like_class " data-post-id="$id" data-liked-id="$is_liked">
                 <i class="fas fa-arrow-up"></i>
                 <span id="upvotes">{$upvotes}</span>
             </button>

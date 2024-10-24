@@ -87,6 +87,50 @@ class PostModel{
         return $result;
     }
     
+    public function check_user_likes($post_id){
+        if(!isset($_SESSION["user_id"])){
+            return false;
+        }
+        else {
+
+            $user_id = $_SESSION["user_id"];
+            $stmt = $this->db->prepare("SELECT * FROM likes WHERE post_id = ? AND user_id = ? LIMIT 1");
+            if (!$stmt) {
+              error_log("Error preparing statement: " . $this->db->error);
+             return false;
+            }
+
+    // Bind parameters with error handling
+        if (!$stmt->bind_param("ss", $post_id, $user_id)) {
+            error_log("Error binding parameters: " . $stmt->error);
+           $stmt->close();
+           return false;
+        }
+
+    // Execute with error handling
+        if (!$stmt->execute()) {
+            error_log("Error executing statement: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+
+    // Get result
+        $result = $stmt->get_result();
+        if (!$result) {
+            error_log("Error getting result: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+
+    // Get row count and clean up
+        $has_liked = $result->num_rows;
+        $result->close();
+        $stmt->close();
+
+        return $has_liked;
+        }
+        
+    }
 
     
 }

@@ -104,59 +104,52 @@
             }
         </style>
 
-        <script>
-            const upvoteButtons = document.querySelectorAll('.upvotes');
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listener to all upvote buttons
+    document.querySelectorAll('.upvotes').forEach(button => {
+        button.addEventListener('click', handleLike);
+    });
 
-            upvoteButtons.forEach(button => {
-                const postId = button.getAttribute('data-post-id');
-                const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
-                
-                // Set initial state
-                if (likedPosts[postId]) {
-                    button.classList.add('liked');
-                    button.classList.add('text-blue-500')
-                }
+    async function handleLike(event) {
+        const button = event.currentTarget;
+        const postId = button.dataset.postId;
+        const isLiked = button.dataset.likedId === "1";
+        const upvoteSpan = button.querySelector('#upvotes');
+        const currentUpvotes = parseInt(upvoteSpan.textContent);
 
-                button.addEventListener('click', () => {
-                    const isLiked = button.classList.contains('liked');
-                    const action = isLiked ? '/remove_likes' : '/add_likes';
-
-                    fetch(action, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ post_id: postId })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        const countElement = button.querySelector('#upvotes');
-                        let currentCount = parseInt(countElement.textContent) || 0;
-
-                        if (isLiked) {
-                            countElement.textContent = currentCount - 1;
-                            button.classList.remove('liked');
-                            button.classList.remove('text-blue-500')
-                            likedPosts[postId] = false;
-                        } else {
-                            countElement.textContent = currentCount + 1;
-                            button.classList.add('liked');
-                            likedPosts[postId] = true;
-                        }
-
-                        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-                    })
-                    .catch(error => {
-                        console.error('Error handling like:', error);
-                    });
-                });
+        try {
+            const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ post_id: postId })
             });
-        </script>
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                // Toggle the liked state
+                button.dataset.likedId = isLiked ? "0" : "1";
+                button.classList.toggle('liked');
+                
+                // Update the upvote count
+                upvoteSpan.textContent = isLiked ? 
+                    (currentUpvotes - 1) : 
+                    (currentUpvotes + 1);
+            } else {
+                console.error('Error:', data.message);
+                // alert('Failed to update like. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // alert('Failed to update like. Please try again.');
+        }
+    }
+});
+    </script>   
     </main>
 </body>
 </html>
