@@ -207,7 +207,8 @@ public function update_user_details($username, $data){
 }
 
 function update($username, $data){
-	if (isset($data)){
+	
+	if (!empty($data)){
 		$sql = "UPDATE users set ";
 		foreach($data as $key => $value){
 			$sql .= "$key = '$value', ";
@@ -215,8 +216,13 @@ function update($username, $data){
 		}
 		$sql = rtrim($sql, ", ");
 		$sql .= " WHERE username=?";
+		
+
 		$stmt = $this->db->prepare($sql);
+		
 		$stmt->bind_param("s", $username);
+		
+		
 		return $stmt->execute();
 	}
 	else{
