@@ -177,8 +177,13 @@ public function get_user_details($username): array{
 	$stmt->bind_param("s", $username);
 	$stmt->execute();
 	$result = $stmt->get_result();
+	if($result->num_rows > 0){
 	$rows = $result->fetch_assoc();
 	return $rows;
+	}
+	else{
+		return Array();
+	}
 }
 
 public function update_user_details($username, $data){
