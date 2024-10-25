@@ -14,6 +14,7 @@ class UserController {
   /**@var Sora\Models\User $userModel user model object
    */
   private $userModel;
+  public $postController;
   
   /**Constructor for User Controller
    */
@@ -30,6 +31,7 @@ class UserController {
   }
 
   $this->userModel = new UserModel($db);
+  $this->postController = new PostController();
 
     
   }
@@ -118,6 +120,7 @@ class UserController {
     BODY;
     
     $data = [];
+    $data["user"] = $user;
 
     $data["posts"] = $this->userModel->get_user_posts($user["username"]);
     $data["likes"] = $this->userModel->get_user_likes($user["username"]);
@@ -131,16 +134,8 @@ class UserController {
 
 public function render_user_tweets($data){
   $posts = $data["posts"];
-  foreach( $posts as $post) {
-    echo <<<HTML
-    <div class="bg-white rounded-lg shadow p-6">
-                <p class="text-gray-800">{$post["content"]}</p>
-                <div class="mt-4 text-gray-500 text-sm">
-                    2 hours ago
-                </div>
-            </div>
-    HTML;
-  }
+  $user_id = $data["user"]["id"];
+  $this->postController->render_tweets($user_id);
 }
 
   public function get_user_details($username) {

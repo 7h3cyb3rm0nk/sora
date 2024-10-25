@@ -35,6 +35,7 @@ class PostModel{
     }
 
     public function get_tweets($user_id) {
+        if($user_id == $_SESSION["user_id"]){
         $stmt = $this->db->prepare("SELECT 
                 p.id, 
                 p.content, 
@@ -56,8 +57,33 @@ class PostModel{
                 p.id
             ORDER BY 
                 p.created_at DESC;");
+              $stmt->bind_param("iii", $user_id, $user_id, $user_id);
+        }
+        else{
+            $stmt = $this->db->prepare("SELECT 
+            p.id, 
+            p.content, 
+            p.created_at,
+            u.username, 
+            u.profile_picture,
+            COUNT(l.post_id) AS upvotes
+        FROM 
+            posts p
+        JOIN 
+            users u ON p.user_id = u.id 
+        LEFT JOIN 
+            likes l ON p.id = l.post_id
+         
+        WHERE 
+            p.user_id = ? 
+        GROUP BY
+            p.id
+        ORDER BY 
+            p.created_at DESC;");
+        $stmt->bind_param("i", $user_id);
+        }
     
-        $stmt->bind_param("iii", $user_id, $user_id, $user_id); // Bind parameters
+       
     
         $stmt->execute();
     

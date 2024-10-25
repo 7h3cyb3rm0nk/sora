@@ -95,16 +95,25 @@ class PostController {
 
     }
 
-    public function render_tweets(){
+    public function render_tweets($user_id=NULL){
+        if($user_id == NULL){
 
          $data = $this->postModel->get_tweets($_SESSION['user_id']);
+        }
+        else{
+            $data = $this->postModel->get_tweets($user_id);
+           
+        }
 
         foreach($data as $tweet){
             $html = $this->render_tweet($tweet);
             echo $html;
         }
-
+    
     }
+    
+
+    
 
 
     public function add_likes()

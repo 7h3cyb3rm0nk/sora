@@ -13,12 +13,13 @@ require __DIR__ . "/../Views/navbar.html";
             <div class="flex items-start justify-between mb-6">
                 <div class="flex items-center space-x-6">
                     <div class="w-24 h-24 rounded-full bg-gray-200 overflow-hidden">
-                        <img src="<?=$user['profile_picture']?>" 
-                             alt="<?= $user['username']?>'s avatar"
-                             class="w-full h-full object-cover">
+                        <img src="<?=$user['profile_picture']?>" alt="<?= $user['username']?>'s avatar"
+                            class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900"><?=$user["username"]?></h1>
+                        <h1 class="text-3xl font-bold text-gray-900">
+                            <?=$user["username"]?>
+                        </h1>
                         <!-- <p class="text-gray-500">Student at University</p>
                         <p class="text-gray-600 mt-1">
                             <i class="fas fa-map-marker-alt"></i> Kerala, India
@@ -26,47 +27,56 @@ require __DIR__ . "/../Views/navbar.html";
                     </div>
                 </div>
                 <div class="space-x-3">
-                    <button class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <button
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Follow
                     </button>
                 </div>
             </div>
-            
+
             <p class="text-gray-700 mb-6">
                 <?= $user["bio"]?>
             </p>
-            
+
             <div class="flex space-x-8">
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900"><?=  count($data["posts"])?></div>
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["posts"])?>
+                    </div>
                     <div class="text-gray-500">Posts</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900"><?=  count($data["followers"])?></div>
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["followers"])?>
+                    </div>
                     <div class="text-gray-500">Followers</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900"><?=  count($data["following"])?></div>
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["following"])?>
+                    </div>
                     <div class="text-gray-500">Following</div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Tab Navigation -->
         <div class="border-b border-gray-200 bg-gray-100 pt-3 px-4 rounded-md mb-6 hover:shadow-md">
             <nav class="-mb-px flex space-x-8">
                 <a href="#" class="border-b-2 border-blue-500 pb-4 px-1 text-sm font-medium text-blue-600">
                     Posts
                 </a>
-                <a href="#" class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                    Media
+                <a href="#"
+                    class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Comments
                 </a>
-                <a href="#" class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                <a href="#"
+                    class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
                     Likes
                 </a>
             </nav>
         </div>
-        
+
         <!-- Posts Grid -->
         <div class="grid grid-cols-1 gap-6">
             <!-- <div class="bg-white rounded-lg shadow p-6">
@@ -75,11 +85,88 @@ require __DIR__ . "/../Views/navbar.html";
                     2 hours ago
                 </div>
             </div> -->
-            
-          <?php $this->render_user_tweets($data); ?>
-            
+
+            <?php $this->render_user_tweets($data); ?>
+
         </div>
     </div>
+    <style>
+        /* Upvote button styles */
+        .upvotes {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .upvotes.liked {
+            color: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes.liked svg {
+            stroke: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes:hover {
+            color: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes:hover svg {
+            stroke: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes svg {
+            transition: stroke 0.2s ease-in-out;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add click event listener to all upvote buttons
+            document.querySelectorAll('.upvotes').forEach(button => {
+                button.addEventListener('click', handleLike);
+            });
+
+            async function handleLike(event) {
+                const button = event.currentTarget;
+                const postId = button.dataset.postId;
+                const isLiked = button.dataset.likedId === "1";
+                const upvoteSpan = button.querySelector('#upvotes');
+                const currentUpvotes = parseInt(upvoteSpan.textContent);
+
+                try {
+                    const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        // Toggle the liked state
+                        button.dataset.likedId = isLiked ? "0" : "1";
+                        button.classList.toggle('liked');
+
+                        // Update the upvote count
+                        upvoteSpan.textContent = isLiked ?
+                            (currentUpvotes - 1) :
+                            (currentUpvotes + 1);
+                    } else {
+                        console.error('Error:', data.message);
+                        // alert('Failed to update like. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    // alert('Failed to update like. Please try again.');
+                }
+            }
+        });
+    </script>
 </main>
 
 </body>
