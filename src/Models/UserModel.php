@@ -196,8 +196,7 @@ private function handle_profile_picture($files, $action) {
 	$user = $stmt->fetch();
 	$current_picture = $user['profile_picture'] ?? null;
 
-	switch($action){
-		case 'update':
+	
 			if (isset($files['profile_picture']) && $files['profile_picture']['error'] === UPLOAD_ERR_OK) {
 				// Delete old file if exists
 				if ($current_picture && file_exists($current_picture)) {
@@ -207,7 +206,7 @@ private function handle_profile_picture($files, $action) {
 				// Handle new upload
 				$file = $files['profile_picture'];
 				$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-				$filename = 'profile_' . $userId . '_' . time() . '.' . $ext;
+				$filename = 'profile_' . $userId .'.' . $ext;
 				$upload_path = 'images/pfps/' . $filename;
 				
 				if (!move_uploaded_file($file['tmp_name'], $upload_path)) {
@@ -216,19 +215,8 @@ private function handle_profile_picture($files, $action) {
 				
 				return $upload_path;
 			}
-			break;
 			
-		case 'delete':
-			// Delete existing file
-			if ($current_picture && file_exists($current_picture)) {
-				unlink($current_picture);
-			}
-			return ''; // Empty string to clear the database field
-			
-		case 'keep':
-		default:
-			return null; // No change to profile picture
-		}
+		
 	
 	return null;
 }
