@@ -186,22 +186,72 @@ public function get_user_details($username): array{
 	}
 }
 
-public function update_user_details($username, $data){
-	if (isset($_FILES["profile_picture"])  ){
-		
 
-	$uploadfile = "__DIR__"."/../../public/images/pfps/".basename($_FILES["profile_picture"]["name"]);
+private function handle_profile_picture($files, $action) {
+	$userId = $_SESSION['user_id'];
+	
+	// Get current profile picture
+	$stmt = $this->db->prepare("SELECT profile_picture FROM users WHERE id = ?");
+	$stmt->execute([$userId]);
+	$user = $stmt->fetch();
+	$current_picture = $user['profile_picture'] ?? null;
+
+	switch($action){
+		case 'update':
+			if (isset($files['profile_picture']) && $files['profile_picture']['error'] === UPLOAD_ERR_OK) {
+				// Delete old file if exists
+				if ($current_picture && file_exists($current_picture)) {
+					unlink($current_picture);
+				}
+				
+				// Handle new upload
+				$file = $files['profile_picture'];
+				$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+				$filename = 'profile_' . $userId . '_' . time() . '.' . $ext;
+				$upload_path = 'images/pfps/' . $filename;
+				
+				if (!move_uploaded_file($file['tmp_name'], $upload_path)) {
+					throw new \Exception("Failed to upload profile picture");
+				}
+				
+				return $upload_path;
+			}
+			break;
+			
+		case 'delete':
+			// Delete existing file
+			if ($current_picture && file_exists($current_picture)) {
+				unlink($current_picture);
+			}
+			return ''; // Empty string to clear the database field
+			
+		case 'keep':
+		default:
+			return null; // No change to profile picture
+		}
+	
+	return null;
+}
+
+public function update_user_details($username, $data){
+	$update_fields = array();
+	if (isset($_FILES["profile_picture"]) && $_FILES["profile_picture"]["name"] != ""  ){
+
+	$uploadfile = $this->handle_profile_picture($_FILES, 'update');
 	move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $uploadfile);
-	$data["profile_picture"] = "./images/pfps/".basename($_FILES["profile_picture"]["name"]);
+	$data["profile_picture"] = $uploadfile;
 	
 
 	}
-		$update_fields = array();
-		
+	
+	
 
 		$original_fields = $this->get_user_details($username);
-		if($data["profile_picture"] == "./images/pfps/"){
-			$data["profile_picture"] = NULL;
+		// if($data["profile_picture"] == "./images/pfps/"){
+		// 	$data["profile_picture"] = NULL;
+		// }
+		if(!isset($_FILES["profile_picture"]) && file_exists($original_fields["profile_picture"])){
+			unlink($current_picture);
 		}
 		if($original_fields){
 			foreach($data as $field => $value){
