@@ -127,7 +127,7 @@ class UserController {
                 <div class="flex items-start justify-between mb-6">
                     <div class="flex items-center space-x-6">
                         <div class="w-24 h-24 rounded-full bg-gray-200 overflow-hidden">
-                            <img src="/default-avatar.png" 
+                            <img src="{$data['profile_picture']}" 
                                  alt="{$data["username"]}'s avatar"
                                  class="w-full h-full object-cover">
                         </div>
