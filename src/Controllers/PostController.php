@@ -69,7 +69,7 @@ class PostController {
         <div class="flex items-center mb-2">
             $pfp_avatar
             <div>
-                <a href="/" class="font-bold text-slate-900 block">@{$username}</a>
+                <a href="/profile/{$username}" class="font-bold text-slate-900 block">@{$username}</a>
                 <div class="flex items-center text-sm text-gray-500">
                     <i class="fas fa-clock mr-1"></i>
                     <span>{$created_at}</span>
