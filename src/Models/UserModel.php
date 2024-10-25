@@ -207,7 +207,7 @@ private function handle_profile_picture($files, $action) {
 				$file = $files['profile_picture'];
 				$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
 				$filename = 'profile_' . $userId .'.' . $ext;
-				$upload_path = '/images/pfps/' . $filename;
+				$upload_path = 'images/pfps/' . $filename;
 				
 				if (!move_uploaded_file($file['tmp_name'], $upload_path)) {
 					throw new \Exception("Failed to upload profile picture");
@@ -227,7 +227,7 @@ public function update_user_details($username, $data){
 
 	$uploadfile = $this->handle_profile_picture($_FILES, 'update');
 	move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $uploadfile);
-	$data["profile_picture"] = $uploadfile;
+	$data["profile_picture"] = "/".$uploadfile;
 	
 
 	}

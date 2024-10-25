@@ -13,7 +13,7 @@ require __DIR__ . "/../Views/navbar.html";
             <div class="flex items-start justify-between mb-6">
                 <div class="flex items-center space-x-6">
                     <div class="w-24 h-24 rounded-full bg-gray-200 overflow-hidden">
-                        <img src="{$user['profile_picture']}" 
+                        <img src="<?=$user['profile_picture']?>" 
                              alt="<?= $user['username']?>'s avatar"
                              class="w-full h-full object-cover">
                     </div>
