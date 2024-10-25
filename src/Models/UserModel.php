@@ -193,11 +193,16 @@ public function update_user_details($username, $data){
 	$uploadfile = "__DIR__"."/../../public/images/pfps/".basename($_FILES["profile_picture"]["name"]);
 	move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $uploadfile);
 	$data["profile_picture"] = "./images/pfps/".basename($_FILES["profile_picture"]["name"]);
+	
+
 	}
 		$update_fields = array();
 		
 
 		$original_fields = $this->get_user_details($username);
+		if($data["profile_picture"] == "./images/pfps/"){
+			$data["profile_picture"] = NULL;
+		}
 		if($original_fields){
 			foreach($data as $field => $value){
 				if ($original_fields[$field] !== $value){
