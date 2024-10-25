@@ -37,7 +37,7 @@ class Router {
     protected function prepareRoute($path) {
         $path = str_replace(
             array(':any', ':num'),
-            array('[^/]+', '[0-9]+'),
+            array('([^/]+)', '([0-9]+)'),
             $path
         );
         return '#^' . $path . '/?$#';
@@ -53,9 +53,7 @@ class Router {
     protected function matchRoute($pattern, $uri) {
         $matches = array();
         if (preg_match($pattern, $uri, $matches)) {
-          
-            array_shift($matches); // Remove full match
-
+            array_shift($matches); 
             return $matches;
         }
         return false;
@@ -76,8 +74,7 @@ class Router {
         if (isset($this->routes[$method])) {
             foreach ($this->routes[$method] as $pattern => $callback) {
                 $matches = $this->matchRoute($pattern, $uri);
-               
-                
+                         
                 if ($matches !== false) {
                     if (is_callable($callback)) {
                         call_user_func_array($callback, $matches);
