@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" class=" sm:overflow-y-auto md:overflow-hidden">
 <?php include_once __DIR__."/html_head.html" ?>
-<body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover" class="bg-no-repeat bg-center">
+
+<body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover"
+    class="bg-no-repeat bg-center">
     <?php include_once __DIR__ ."/navbar.html"?>
 
     <?php
@@ -15,26 +17,38 @@
         <div class="max-w-3xl mx-auto">
             <!-- Profile Card (Visible when not editing) -->
             <div id="profile-view" class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
                     <div class="relative group">
                         <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
                             <?php if(isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
-                                <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile" class="h-full w-full object-cover">
+                            <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile"
+                                class="h-full w-full object-cover">
                             <?php else: ?>
-                                <svg class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
+                            <svg class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="flex-1">
-                        <h2 class="text-2xl font-bold text-gray-900"><?php echo htmlspecialchars($user['firstname'] . ' ' . $user['lastname']); ?></h2>
-                        <p class="text-gray-500 mb-2"><?php echo htmlspecialchars($user['email']); ?></p>
-                        <p class="text-gray-700"><?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?></p>
+                        <h2 class="text-2xl font-bold text-gray-900">
+                            <?php echo htmlspecialchars($user['firstname'] . ' ' . $user['lastname']); ?>
+                        </h2>
+                        <p class="text-gray-500 mb-2">
+                            <?php echo htmlspecialchars($user['email']); ?>
+                        </p>
+                        <p class="text-gray-700">
+                            <?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?>
+                        </p>
                     </div>
-                    <button onclick="toggleEdit()" class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                    <button onclick="toggleEdit()"
+                        class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                         <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                         Edit Profile
                     </button>
@@ -50,21 +64,46 @@
                             <div class="relative group">
                                 <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
                                     <?php if(isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
-                                        <img id="preview-image" src="<?php echo htmlspecialchars('../'.$user['profile_picture']); ?>" alt="Profile" class="h-full w-full object-cover">
+                                    <img id="preview-image"
+                                        src="<?php echo htmlspecialchars('../'.$user['profile_picture']); ?>"
+                                        alt="Profile" class="h-full w-full object-cover">
                                     <?php else: ?>
-                                        <img id="preview-image" src="#" alt="Profile" class="h-full w-full object-cover hidden">
-                                        <svg id="default-image" class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
+                                    <img id="preview-image" src="#" alt="Profile"
+                                        class="h-full w-full object-cover hidden">
+                                    <svg id="default-image" class="h-full w-full text-gray-400 p-6" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
                                     <?php endif; ?>
                                 </div>
-                                <label class="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition-colors">
-                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <!-- Upload button -->
+                                <label
+                                    class="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition-colors">
+                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                    <input type="file" name="profile_picture" accept="image/*" class="hidden" onchange="previewImage(this)">
+                                    <input type="file" name="profile_picture" id="profile-picture-input"
+                                        accept="image/*" class="hidden" onchange="previewImage(this)">
+                                    <input type="text" name="profile_picture_state" id="profile-picture-state" 
+                                    class="hidden" value="update">
                                 </label>
+                                <!-- Delete button -->
+                                <button type="button" id="delete-image-btn" onclick="deleteProfilePicture()"
+                                    class="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 cursor-pointer hover:bg-red-600 transition-colors">
+                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <!-- Hidden input to track deletion -->
+                                <input type="hidden" name="delete_profile_picture" id="delete-profile-picture"
+                                    value="0">
                             </div>
                             <div>
                                 <h3 class="text-sm font-medium text-gray-700">Profile photo</h3>
@@ -73,14 +112,12 @@
                         </div>
                     </div>
 
+
                     <!-- Bio Section -->
                     <div class="relative mb-8">
-                        <textarea 
-                            name="bio" 
-                            rows="4" 
+                        <textarea name="bio" rows="4"
                             class="peer w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all resize-none"
-                            placeholder="Write something about yourself..."
-                        ><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
+                            placeholder="Write something about yourself..."><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
                         <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                             Bio
                         </label>
@@ -89,78 +126,71 @@
                     <!-- Form Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
                         <div class="relative">
-                            <input type="text" 
-                                   name="username"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['username']); ?>"
-                                    />
+                            <input type="text" name="username"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                value="<?php echo htmlspecialchars($user['username']); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Username
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="text" 
-                                   name="firstname"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['firstname'] ?? ''); ?>" />
+                            <input type="text" name="firstname"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                value="<?php echo htmlspecialchars($user['firstname'] ?? ''); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 First name
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="text" 
-                                   name="lastname"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['lastname'] ?? ''); ?>" />
+                            <input type="text" name="lastname"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                value="<?php echo htmlspecialchars($user['lastname'] ?? ''); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Last name
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="email" 
-                                   name="email"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['email']); ?>" />
+                            <input type="email" name="email"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                value="<?php echo htmlspecialchars($user['email']); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Email
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="password" 
-                                   name="old_password"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   placeholder="Enter your current password" />
+                            <input type="password" name="old_password"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                placeholder="Enter your current password" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Current Password
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="password" 
-                                   name="new_password"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   placeholder="Leave blank to keep current password" />
+                            <input type="password" name="new_password"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                placeholder="Leave blank to keep current password" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 New Password
                             </label>
                         </div>
 
-                        
+
                     </div>
 
                     <!-- Buttons -->
-                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end space-y-4 space-y-reverse sm:space-y-0 sm:space-x-4">
-                        <button type="button" 
-                                onclick="toggleEdit()"
-                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-violet-600 bg-white border border-violet-600 rounded-lg hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
+                    <div
+                        class="flex flex-col-reverse sm:flex-row sm:justify-end space-y-4 space-y-reverse sm:space-y-0 sm:space-x-4">
+                        <button type="button" onclick="toggleEdit()"
+                            class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-violet-600 bg-white border border-violet-600 rounded-lg hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
                             Cancel
                         </button>
-                        <button type="submit" 
-                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
+                        <button type="submit"
+                            class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
                             Save changes
                         </button>
                     </div>
@@ -173,7 +203,7 @@
         function toggleEdit() {
             const profileView = document.getElementById('profile-view');
             const editForm = document.getElementById('edit-form');
-            
+
             if (profileView.classList.contains('hidden')) {
                 profileView.classList.remove('hidden');
                 editForm.classList.add('hidden');
@@ -186,11 +216,18 @@
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const preview = document.getElementById('preview-image');
+                    const fileInput = document.getElementById('profile-picture-input');
                     const defaultImage = document.getElementById('default-image');
+                    const deleteButton = document.getElementById('delete-image-btn');
+                    const profileState = document.querySelector("#profile-picture-state");
+
                     preview.src = e.target.result;
                     preview.classList.remove('hidden');
+                    deleteButton.style.display = 'block';
+                    document.getElementById('delete-profile-picture').value = "0";
+
                     if (defaultImage) {
                         defaultImage.classList.add('hidden');
                     }
@@ -199,7 +236,46 @@
             }
         }
 
+        function deleteProfilePicture() {
+            const preview = document.getElementById('preview-image');
+            const defaultImage = document.getElementById('default-image');
+            const fileInput = document.getElementById('profile-picture-input');
+            const deleteButton = document.getElementById('delete-image-btn');
+            const deleteFlag = document.getElementById('delete-profile-picture');
+            const profileState = document.querySelector("#profile-picture-state");
+
+
+            // Reset the file input
+            fileInput.value = '';
+            profileState.value="delete";
+
+            // Show default image
+            preview.classList.add('hidden');
+            preview.src = '#';
+            if (defaultImage) {
+                defaultImage.classList.remove('hidden');
+            }
+
+            // Set delete flag to true
+            deleteFlag.value = "1";
+
+            // Hide delete button if there's no default profile picture
+            if (!preview.src || preview.src === window.location.href) {
+                deleteButton.style.display = 'none';
+            }
+        }
+
+        // Initialize delete button visibility
+        document.addEventListener('DOMContentLoaded', function () {
+            const preview = document.getElementById('preview-image');
+            const deleteButton = document.getElementById('delete-image-btn');
+
+            if (!preview.src || preview.src === window.location.href || preview.classList.contains('hidden')) {
+                deleteButton.style.display = 'none';
+            }
+        });
 
     </script>
 </body>
+
 </html>

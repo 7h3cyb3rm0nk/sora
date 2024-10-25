@@ -243,6 +243,10 @@ public function update_user_details($username, $data){
 	
 
 	}
+
+	if($_POST["profile_picture_state"] === "delete"){
+		$data["profile_picture"] = NULL;
+	}
 	
 	
 
