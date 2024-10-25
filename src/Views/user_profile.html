@@ -38,15 +38,15 @@ require __DIR__ . "/../Views/navbar.html";
             
             <div class="flex space-x-8">
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900">42</div>
+                    <div class="text-xl font-bold text-gray-900"><?=  count($data["posts"])?></div>
                     <div class="text-gray-500">Posts</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900">1.2k</div>
+                    <div class="text-xl font-bold text-gray-900"><?=  count($data["followers"])?></div>
                     <div class="text-gray-500">Followers</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900">890</div>
+                    <div class="text-xl font-bold text-gray-900"><?=  count($data["following"])?></div>
                     <div class="text-gray-500">Following</div>
                 </div>
             </div>
@@ -69,26 +69,17 @@ require __DIR__ . "/../Views/navbar.html";
         
         <!-- Posts Grid -->
         <div class="grid grid-cols-1 gap-6">
-            <div class="bg-white rounded-lg shadow p-6">
+            <!-- <div class="bg-white rounded-lg shadow p-6">
                 <p class="text-gray-800">Just deployed my first web application! Check it out at example.com #webdev #coding</p>
                 <div class="mt-4 text-gray-500 text-sm">
                     2 hours ago
                 </div>
-            </div>
+            </div> -->
             
-            <div class="bg-white rounded-lg shadow p-6">
-                <p class="text-gray-800">Learning new frameworks and loving it! The developer community is amazing. 🚀 #learning #development</p>
-                <div class="mt-4 text-gray-500 text-sm">
-                    1 day ago
-                </div>
-            </div>
+          <?php $this->render_user_tweets($data); ?>
             
-            <div class="bg-white rounded-lg shadow p-6">
-                <p class="text-gray-800">Contributing to open source is a great way to learn and give back to the community.</p>
-                <div class="mt-4 text-gray-500 text-sm">
-                    3 days ago
-                </div>
-            </div>
         </div>
     </div>
 </main>
+
+</body>

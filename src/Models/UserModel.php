@@ -186,7 +186,88 @@ public function get_user_details($username): array{
 	}
 }
 
+public function get_user_posts($username){
+	$stmt = $this->db->prepare("SELECT p.*
+	FROM posts p
+	JOIN users u ON p.user_id = u.id
+	WHERE u.username = ?;");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+}
 
+public function get_user_likes($username){
+	$stmt = $this->db->prepare("SELECT p.*
+	FROM posts p
+	JOIN likes l on p.id = l.post_id
+	JOIN users u on l.user_id = u.id
+	WHERE u.username = ?");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+
+}
+
+public function get_user_comments($username){
+	$stmt = $this->db->prepare("SELECT p.*
+	FROM posts p
+	JOIN comments c on c.post_id = p.id
+	JOIN users u on c.user_id = u.id
+	WHERE u.username = ?");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+}
+
+public function get_user_followers($username){
+	$stmt = $this->db->prepare("SELECT u.* 
+	FROM users u
+	JOIN follows f on u.id = f.follower_id
+	WHERE f.followed_id = (SELECT  id from users where username = ?)");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+}
+
+public function get_user_following($username){
+	$stmt = $this->db->prepare("SELECT u.* 
+	FROM users u
+	JOIN follows f on u.id = f.followed_id
+	WHERE f.follower_id = (SELECT  id from users where username = ?)");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+}
 private function handle_profile_picture($files, $action) {
 	$userId = $_SESSION['user_id'];
 	

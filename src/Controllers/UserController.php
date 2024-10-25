@@ -117,9 +117,30 @@ class UserController {
     <body style="background: url('/images/sora-bg.png')" >
     BODY;
     
+    $data = [];
+
+    $data["posts"] = $this->userModel->get_user_posts($user["username"]);
+    $data["likes"] = $this->userModel->get_user_likes($user["username"]);
+    $data["comments"] = $this->userModel->get_user_comments($user["username"]);
+    $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+    $data["following"] = $this->userModel->get_user_following($user["username"]);
     
 
     require __DIR__ ."/../Views/user_profile.html";
+}
+
+public function render_user_tweets($data){
+  $posts = $data["posts"];
+  foreach( $posts as $post) {
+    echo <<<HTML
+    <div class="bg-white rounded-lg shadow p-6">
+                <p class="text-gray-800">{$post["content"]}</p>
+                <div class="mt-4 text-gray-500 text-sm">
+                    2 hours ago
+                </div>
+            </div>
+    HTML;
+  }
 }
 
   public function get_user_details($username) {
@@ -128,6 +149,7 @@ class UserController {
 
 
   }
+  
 
 
 
