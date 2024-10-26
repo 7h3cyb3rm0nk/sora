@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class=" sm:overflow-y-auto md:overflow-hidden">
+<html lang="en" class=" sm:overflow-y-auto md:overflow-auto">
 <?php include_once __DIR__."/html_head.html" ?>
 
 <body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover"
@@ -196,8 +196,91 @@
                     </div>
                 </form>
             </div>
+            <div class="flex flex-col space-y-4 overflow-y-auto">
+            <?php
+            $this->postController->render_tweets( $_SESSION["user_id"], $self=true);
+
+            ?>
+            </div>
         </div>
     </main>
+    <style>
+        /* Upvote button styles */
+        .upvotes {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .upvotes.liked {
+            color: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes.liked svg {
+            stroke: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes:hover {
+            color: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes:hover svg {
+            stroke: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes svg {
+            transition: stroke 0.2s ease-in-out;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add click event listener to all upvote buttons
+            document.querySelectorAll('.upvotes').forEach(button => {
+                button.addEventListener('click', handleLike);
+            });
+
+            async function handleLike(event) {
+                const button = event.currentTarget;
+                const postId = button.dataset.postId;
+                const isLiked = button.dataset.likedId === "1";
+                const upvoteSpan = button.querySelector('#upvotes');
+                const currentUpvotes = parseInt(upvoteSpan.textContent);
+
+                try {
+                    const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        // Toggle the liked state
+                        button.dataset.likedId = isLiked ? "0" : "1";
+                        button.classList.toggle('liked');
+
+                        // Update the upvote count
+                        upvoteSpan.textContent = isLiked ?
+                            (currentUpvotes - 1) :
+                            (currentUpvotes + 1);
+                    } else {
+                        console.error('Error:', data.message);
+                        // alert('Failed to update like. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    // alert('Failed to update like. Please try again.');
+                }
+            }
+        });
+    </script>
 
     <script>
         function toggleEdit() {

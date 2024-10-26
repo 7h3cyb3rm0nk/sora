@@ -33,9 +33,10 @@ class PostModel{
             ];
         }
     }
+    // self variable to check if the user wants only his/her posts
 
-    public function get_tweets($user_id) {
-        if($user_id == $_SESSION["user_id"]){
+    public function get_tweets($user_id, $self=false) {
+        if($user_id == $_SESSION["user_id"] && $self==false){
         $stmt = $this->db->prepare("SELECT 
                 p.id, 
                 p.content, 
@@ -58,6 +59,31 @@ class PostModel{
             ORDER BY 
                 p.created_at DESC;");
               $stmt->bind_param("iii", $user_id, $user_id, $user_id);
+        }
+        else if($user_id == $_SESSION["user_id"] && $self==true){
+            $stmt = $this->db->prepare("SELECT 
+            p.id, 
+            p.content, 
+            p.created_at,
+            u.username, 
+            u.profile_picture,
+            COUNT(l.post_id) AS upvotes
+        FROM 
+            posts p
+        JOIN 
+            users u ON p.user_id = u.id 
+        LEFT JOIN 
+            likes l ON p.id = l.post_id
+         
+        WHERE 
+            p.user_id = ? 
+        GROUP BY
+            p.id
+        ORDER BY 
+            p.created_at DESC;");
+            
+        $stmt->bind_param("i", $_SESSION["user_id"]);
+
         }
         else{
             $stmt = $this->db->prepare("SELECT 
@@ -82,12 +108,14 @@ class PostModel{
             p.created_at DESC;");
         $stmt->bind_param("i", $user_id);
         }
+        
     
        
     
         $stmt->execute();
     
         $result = $stmt->get_result();
+        
     
         return $result->fetch_all(MYSQLI_ASSOC);
     }

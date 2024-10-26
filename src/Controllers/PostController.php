@@ -43,7 +43,6 @@ class PostController {
     }
 
     public  function render_tweet($tweet){
-        // print_r($tweet);
         $is_liked = $this->postModel->check_user_likes($tweet["id"]);
         $like_class = $is_liked == 1 ? "liked" : "";
         $id = $tweet["id"];
@@ -95,15 +94,16 @@ class PostController {
 
     }
 
-    public function render_tweets($user_id=NULL){
+    public function render_tweets($user_id=NULL, $self=false){
         if($user_id == NULL){
 
-         $data = $this->postModel->get_tweets($_SESSION['user_id']);
+         $data = $this->postModel->get_tweets($_SESSION['user_id'], $self);
         }
         else{
-            $data = $this->postModel->get_tweets($user_id);
+            $data = $this->postModel->get_tweets($user_id, $self);
            
         }
+        
 
         foreach($data as $tweet){
             $html = $this->render_tweet($tweet);
