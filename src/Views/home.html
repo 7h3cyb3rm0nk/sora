@@ -150,6 +150,53 @@
     }
 });
     </script>   
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Comment toggle functionality
+        const commentToggles = document.querySelectorAll('.comment-toggle');
+        commentToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const postId = toggle.getAttribute('data-post-id');
+                const commentsSection = document.getElementById(`comments-section-${postId}`);
+                commentsSection.classList.toggle('hidden');
+            });
+        });
+    
+        // Comment submission
+        const commentForms = document.querySelectorAll('form[action="/add_comment"]');
+        commentForms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const response = await fetch('/add_comment', {
+                    method: 'POST',
+                    body: formData
+                });
+    
+                if (response.ok) {
+                    const postId = formData.get('post_id');
+                    const content = formData.get('content');
+                    const commentsContainer = document.getElementById(`comments-${postId}`);
+                    const newComment = document.createElement('div');
+                    newComment.className = 'bg-gray-100 p-3 rounded-md';
+                    newComment.innerHTML = 
+                    '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                    '<p class="text-gray-700">' + content + '</p>' +
+                    '<p class="text-xs text-gray-500 mt-1">Just now</p>';
+                    commentsContainer.prepend(newComment);
+                    form.reset();
+    
+                    // Update comment count
+                    const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                    const countSpan = commentToggle.querySelector('span');
+                    const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                    countSpan.textContent = `${currentCount + 1} comments`;
+                }
+            });
+        });
+    });
+    </script>
     </main>
 </body>
 </html>

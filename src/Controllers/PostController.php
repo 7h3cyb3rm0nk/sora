@@ -50,8 +50,9 @@ class PostController {
         $content = $tweet['content'];
         $created_at = Helper::time_ago($tweet['created_at']);
         $upvotes = $tweet['upvotes'] ?? 0;
-        $comments = $tweet['comments'] ?? 0;
+        $comments = $tweet['comment_count'] ?? 0;
         $dp_available = $tweet['profile_picture'] ?? false;
+        $comments_html = self::render_comments($id);
         if($dp_available){
             $pfp_avatar = <<<HTML
              <img src="{$tweet['profile_picture']}" alt="" class="w-10 h-10 rounded-full mr-3">
@@ -82,12 +83,26 @@ class PostController {
                 <i class="fas fa-arrow-up"></i>
                 <span id="upvotes">{$upvotes}</span>
             </button>
-            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300" data-post-id="$id">
+            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300 comment-toggle" data-post-id="$id">
             
                 <i class="fas fa-comment"></i>
                 <span>{$comments} comments</span>
             </button>
         </div>
+        <div class="comments-section mt-4 hidden" id="comments-section-{$id}">
+                <h4 class="text-lg font-semibold mb-2">Comments</h4>
+                <div class="space-y-2 mb-4" id="comments-{$id}">
+                    {$comments_html}
+                </div>
+                <form action="/add_comment" method="post" class="flex">
+                    <input type="hidden" name="post_id" value="{$id}">
+                    <input type="text" name="content" class="flex-grow p-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Add a comment...">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-200">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        
     </div>
     HTML;
     return $html;
@@ -112,7 +127,25 @@ class PostController {
     
     }
     
+    private static function render_comments($post_id) {
+        $db = Database::get_connection();
+        $postModel = new PostModel($db);
+        $comments = $postModel->get_comments($post_id);
 
+        $comments_html = '';
+        foreach ($comments as $comment) {
+            $comment_time = Helper::time_ago($comment['created_at']);
+            $comments_html .= <<<HTML
+            <div class="bg-gray-100 p-3 rounded-md">
+                <p class="font-semibold text-sm">{$comment['username']}</p>
+                <p class="text-gray-700">{$comment['content']}</p>
+                <p class="text-xs text-gray-500 mt-1">{$comment_time}</p>
+            </div>
+            HTML;
+        }
+
+        return $comments_html;
+    }
     
 
 
@@ -188,6 +221,28 @@ public function remove_likes(){
     }
 }
 
+
+public function add_comment() {
+    Helper::validate_user();
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $user_id = $_SESSION['user_id'];
+        $post_id = $_POST['post_id'];
+        $content = $_POST['content'];
+
+        if ($this->postModel->add_comment($user_id, $post_id, $content)) {
+            // Comment added successfully
+            header("Location: /?post_id=" . $post_id);
+            exit;
+        } else {
+            $error[] = "Error adding comment";
+        }
+    }
+}
+
+public function get_comments($post_id) {
+    return $this->postModel->get_comments($post_id);
+}
 
    
 }

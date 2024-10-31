@@ -43,7 +43,8 @@ class PostModel{
                 p.created_at,
                 u.username, 
                 u.profile_picture,
-                COUNT(l.post_id) AS upvotes
+                COUNT(l.post_id) AS upvotes,
+                COUNT(DISTINCT c.id) AS comment_count
             FROM 
                 posts p
             JOIN 
@@ -52,6 +53,8 @@ class PostModel{
                 likes l ON p.id = l.post_id
             LEFT JOIN
                 follows f ON p.user_id = f.followed_id AND f.follower_id = ? 
+            LEFT JOIN
+                 comments c on p.id = c.post_id
             WHERE 
                 p.user_id = ? OR f.follower_id = ?
             GROUP BY
@@ -67,13 +70,16 @@ class PostModel{
             p.created_at,
             u.username, 
             u.profile_picture,
-            COUNT(l.post_id) AS upvotes
+            COUNT(l.post_id) AS upvotes,
+            COUNT(DISTINCT c.id) AS comment_count
         FROM 
             posts p
         JOIN 
             users u ON p.user_id = u.id 
         LEFT JOIN 
             likes l ON p.id = l.post_id
+        LEFT JOIN 
+            comments c on p.id = c.post_id
          
         WHERE 
             p.user_id = ? 
@@ -92,13 +98,16 @@ class PostModel{
             p.created_at,
             u.username, 
             u.profile_picture,
-            COUNT(l.post_id) AS upvotes
+            COUNT(l.post_id) AS upvotes,
+            COUNT(DISTINCT c.id) AS comment_count
+            
         FROM 
             posts p
         JOIN 
             users u ON p.user_id = u.id 
         LEFT JOIN 
             likes l ON p.id = l.post_id
+        LEFT JOIN comments c on p.id = c.post_id
          
         WHERE 
             p.user_id = ? 
@@ -184,6 +193,35 @@ class PostModel{
         return $has_liked;
         }
         
+    }
+
+
+    public function add_comment() {
+        Helper::validate_user();
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $user_id = $_SESSION['user_id'];
+            $post_id = $_POST['post_id'];
+            $content = $_POST['content'];
+
+            if ($this->postModel->add_comment($user_id, $post_id, $content)) {
+                // Comment added successfully
+                header("Location: /#post-" . $post_id);
+                exit;
+            } else {
+                $_SESSION['error'] = "Error adding comment";
+                header("Location: /#post-" . $post_id);
+                exit;
+            }
+        }
+    }
+
+    public function get_comments($post_id) {
+        $stmt = $this->db->prepare("SELECT c.*, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC");
+        $stmt->bind_param("i", $post_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     
