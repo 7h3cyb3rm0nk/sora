@@ -205,8 +205,9 @@
     const searchResults = document.getElementById('search-results');
 
     searchInput.addEventListener('input', debounce(function() {
+        console.log("in here");
         const query = this.value;
-        if (query.length < 2) {
+        if (query.length < 1) {
             searchResults.innerHTML = '';
             return;
         }
@@ -227,20 +228,16 @@
                     searchResults.appendChild(li);
                 });
             });
-    }, 300));
+    }, 100));
 
     // Debounce function to limit API calls
     function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
+            let timeout;
+            return function(...args) {
                 clearTimeout(timeout);
-                func(...args);
+                timeout = setTimeout(() => func.apply(this, args), wait);
             };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
+        }
 });
 </script>
 
