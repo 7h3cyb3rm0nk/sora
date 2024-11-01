@@ -90,16 +90,25 @@ class UserController {
 
   public function profile($username=NULL) {
     if($username == NULL){
-
-    
       if($_SERVER['REQUEST_METHOD'] == "GET"){
         $username = $_SESSION['username'];
+        $user = $this->get_user_details($username);
+        unset($data);
+        $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+        $data["following"] = $this->userModel->get_user_following($user["username"]);
+        $data["posts"] = $this->userModel->get_user_posts($user["username"]);
         include __DIR__ ."/../Views/profile.html";
       
       }
     }
     else{
       if($username == $_SESSION["username"]){
+        $username = $_SESSION['username'];
+        $user = $this->get_user_details($username);
+        unset($data);
+        $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+        $data["following"] = $this->userModel->get_user_following($user["username"]);
+        $data["posts"] = $this->userModel->get_user_posts($user["username"]);
         header("Location: /profile");
         exit;
       }

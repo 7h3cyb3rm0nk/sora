@@ -44,6 +44,7 @@
                             <?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?>
                         </p>
                     </div>
+                    
                     <button onclick="toggleEdit()"
                         class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                         <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,6 +53,22 @@
                         </svg>
                         Edit Profile
                     </button>
+                </div>
+                <div class="border-t border-b border-gray-200 mt-4 py-3">
+                    <div class="flex justify-around items-center gap-3">
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['posts']); ?></span>
+                            <span class="text-sm text-gray-500">Posts</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['followers']); ?></span>
+                            <span class="text-sm text-gray-500">Followers</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['following']); ?></span>
+                            <span class="text-sm text-gray-500">Following</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 

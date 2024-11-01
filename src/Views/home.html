@@ -223,7 +223,7 @@
                         <div class="relative">
                             <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
                         </div>
-                        <span class="font-medium">${user.username}</span>
+                        <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
                     `;
                     searchResults.appendChild(li);
                 });
