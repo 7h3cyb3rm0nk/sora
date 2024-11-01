@@ -194,6 +194,27 @@ public function render_user_tweets($data){
   }
   
 
+
+public function get_followed_users() {
+  $user_id = $_SESSION['user_id'];
+  $followed_users = $this->userModel->get_followed_users($user_id);
+  echo json_encode($followed_users);
+}
+
+public function search_users() {
+  $query = $_GET['query'] ?? '';
+  $results = $this->userModel->search_users($query);
+  $formatted_results = array_map(function($user) {
+    return [
+        'id' => $user['id'],
+        'username' => $user['username'],
+        'profile_picture' => $user['profile_picture'] ?? '/images/icons/user-avatar.png'
+    ];
+}, $results);
+
+echo json_encode($formatted_results);
+}
+
   
 
 

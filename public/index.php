@@ -31,6 +31,8 @@ $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']
 $app->router->post('/add_likes', [PostController::class, 'add_likes']);
 $app->router->post('/remove_likes', [PostController::class, 'remove_likes']);
 $app->router->post('/add_comment', [PostController::class, 'add_comment']);
+$app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
+$app->router->get('/search_users', [UserController::class, 'search_users']);
 $app->run();
 
 

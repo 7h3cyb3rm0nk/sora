@@ -11,7 +11,25 @@ sora
 │   │   ├── sora-bg1.jpg
 │   │   ├── icons
 │   │   │   └── user-avatar.png
-│   │   ├── Profile _ Sora.html
+│   │   ├── pfps
+│   │   │   ├── profile_8_1729844133.png
+│   │   │   ├── profile_8_1729842219.png
+│   │   │   ├── profile_8_1729843607.png
+│   │   │   ├── arch.png
+│   │   │   ├── profile_8_1729846445.png
+│   │   │   ├── profile_8_1729846587.png
+│   │   │   ├── profile_8.png
+│   │   │   ├── profile_8_1729845933.png
+│   │   │   ├── profile_8_1729842162.png
+│   │   │   ├── profile_8_1729845713.png
+│   │   │   ├── profile_8_1729844742.png
+│   │   │   ├── profile_8_1729846207.png
+│   │   │   ├── profile_8_1729847225.png
+│   │   │   ├── profile_8_1729846223.png
+│   │   │   ├── profile_8_1729842549.png
+│   │   │   ├── profile_8_1729842280.png
+│   │   │   ├── profile_8_1729846182.png
+│   │   │   └── profile_6.png
 │   │   ├── user-edit.png
 │   │   └── sora-bg.png
 │   ├── css
@@ -46,7 +64,8 @@ sora
 │       ├── profile.html
 │       ├── signup.html
 │       ├── home.html
-│       └── html_head.html
+│       ├── html_head.html
+│       └── user_profile.html
 ├── composer.json
 └── README.md
 
@@ -72,224 +91,6 @@ module.exports = {
   plugins: [],
 }
 
-
-```````
-
-`/home/ramees/progs/php/sora/public/images/Profile _ Sora.html`:
-
-```````html
-<!DOCTYPE html>
-<html lang="en" class=" sm:overflow-y-auto md:overflow-hidden">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | Sora</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head><body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover" class="bg-no-repeat bg-center">
-    <header class="bg-gradient-to-r flex  from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg w-full">
-    <nav class=" md:mx-0 mx-auto flex-grow flex justify-between items-center w-full">
-        <span class="text-2xl sm:text-3xl md:text-4xl font-bold"><a href="/"> SORA</a></span>
-         
-        <div class="sm:flex hidden md:flex items-center md:space-x-8 md:mr-12"> 
-            <a href="/profile" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
-                <i class="fas fa-user mr-2"></i>ramees            </a>
-            <a href="/logout" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
-                <i class="fas fa-sign-out-alt mr-2"></i>Logout
-            </a>
-        </div>
-        
-        <button class="md:hidden text-2xl">
-            <i class="fas fa-bars"></i>
-        </button>
-    </nav>
-</header>
-    
-    <!-- Profile View (Default) -->
-    <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8  ">
-        <div class="max-w-3xl mx-auto">
-            <!-- Profile Card (Visible when not editing) -->
-            <div id="profile-view" class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
-                    <div class="relative group">
-                        <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
-                                                            <svg class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                                    </div>
-                    </div>
-                    <div class="flex-1">
-                        <h2 class="text-2xl font-bold text-gray-900">Ramees Mohammed M M</h2>
-                        <p class="text-gray-500 mb-2">rameesmohd2004@gmail.com</p>
-                        <p class="text-gray-700">C,C++, Rust Enthusiast, Systems Programmer</p>
-                    </div>
-                    <button onclick="toggleEdit()" class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-                        <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                        </svg>
-                        Edit Profile
-                    </button>
-                </div>
-            </div>
-
-            <!-- Edit Form (Hidden by default) -->
-            <div id="edit-form" class="hidden bg-white rounded-xl shadow-lg p-6 sm:p-8">
-                <form action="/edit_profile" method="POST" enctype="multipart/form-data">
-                    <!-- Profile Picture Upload -->
-                    <div class="mb-8">
-                        <div class="flex items-center space-x-6">
-                            <div class="relative group">
-                                <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
-                                                                            <img id="preview-image" src="#" alt="Profile" class="h-full w-full object-cover hidden">
-                                        <svg id="default-image" class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                                                    </div>
-                                <label class="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition-colors">
-                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    <input type="file" name="profile_picture" accept="image/*" class="hidden" onchange="previewImage(this)">
-                                </label>
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-medium text-gray-700">Profile photo</h3>
-                                <p class="text-xs text-gray-500">JPG, PNG, GIF up to 10MB</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Bio Section -->
-                    <div class="relative mb-8">
-                        <textarea 
-                            name="bio" 
-                            rows="4" 
-                            class="peer w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all resize-none"
-                            placeholder="Write something about yourself..."
-                        >C,C++, Rust Enthusiast, Systems Programmer</textarea>
-                        <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
-                            Bio
-                        </label>
-                    </div>
-
-                    <!-- Form Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                        <div class="relative">
-                            <input type="text" 
-                                   name="username"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="ramees"
-                                    />
-                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
-                                Username
-                            </label>
-                        </div>
-
-                        <div class="relative">
-                            <input type="text" 
-                                   name="firstname"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="Ramees" />
-                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
-                                First name
-                            </label>
-                        </div>
-
-                        <div class="relative">
-                            <input type="text" 
-                                   name="lastname"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="Mohammed M M" />
-                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
-                                Last name
-                            </label>
-                        </div>
-
-                        <div class="relative">
-                            <input type="email" 
-                                   name="email"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="rameesmohd2004@gmail.com" />
-                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
-                                Email
-                            </label>
-                        </div>
-
-                        <div class="relative">
-                            <input type="password" 
-                                   name="old_password"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   placeholder="Enter your current password" />
-                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
-                                Current Password
-                            </label>
-                        </div>
-
-                        <div class="relative">
-                            <input type="password" 
-                                   name="new_password"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   placeholder="Leave blank to keep current password" />
-                            <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
-                                New Password
-                            </label>
-                        </div>
-
-                        
-                    </div>
-
-                    <!-- Buttons -->
-                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end space-y-4 space-y-reverse sm:space-y-0 sm:space-x-4">
-                        <button type="button" 
-                                onclick="toggleEdit()"
-                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-violet-600 bg-white border border-violet-600 rounded-lg hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
-                            Cancel
-                        </button>
-                        <button type="submit" 
-                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
-                            Save changes
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        function toggleEdit() {
-            const profileView = document.getElementById('profile-view');
-            const editForm = document.getElementById('edit-form');
-            
-            if (profileView.classList.contains('hidden')) {
-                profileView.classList.remove('hidden');
-                editForm.classList.add('hidden');
-            } else {
-                profileView.classList.add('hidden');
-                editForm.classList.remove('hidden');
-            }
-        }
-
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('preview-image');
-                    const defaultImage = document.getElementById('default-image');
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
-                    if (defaultImage) {
-                        defaultImage.classList.add('hidden');
-                    }
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-
-    </script>
-</body>
-</html>
 
 ```````
 
@@ -928,6 +729,14 @@ video {
   position: sticky;
 }
 
+.-right-2 {
+  right: -0.5rem;
+}
+
+.-top-2 {
+  top: -0.5rem;
+}
+
 .-top-2\.5 {
   top: -0.625rem;
 }
@@ -965,6 +774,10 @@ video {
   margin-right: auto;
 }
 
+.-mb-px {
+  margin-bottom: -1px;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -997,8 +810,16 @@ video {
   margin-right: 0.75rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .mt-2 {
   margin-top: 0.5rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
 }
 
 .block {
@@ -1214,6 +1035,18 @@ video {
   margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+.space-x-8 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(2rem * var(--tw-space-x-reverse));
+  margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+
 .space-y-3 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
@@ -1258,6 +1091,16 @@ video {
   border-radius: 0.75rem;
 }
 
+.rounded-l-md {
+  border-top-left-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+}
+
+.rounded-r-md {
+  border-top-right-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+}
+
 .border {
   border-width: 1px;
 }
@@ -1266,9 +1109,26 @@ video {
   border-width: 2px;
 }
 
+.border-b {
+  border-bottom-width: 1px;
+}
+
+.border-b-2 {
+  border-bottom-width: 2px;
+}
+
+.border-blue-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(59 130 246 / var(--tw-border-opacity));
+}
+
 .border-gray-200 {
   --tw-border-opacity: 1;
   border-color: rgb(229 231 235 / var(--tw-border-opacity));
+}
+
+.border-transparent {
+  border-color: transparent;
 }
 
 .border-violet-600 {
@@ -1284,6 +1144,16 @@ video {
 .bg-black {
   --tw-bg-opacity: 1;
   background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
+.bg-blue-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+}
+
+.bg-blue-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(37 99 235 / var(--tw-bg-opacity));
 }
 
 .bg-gray-100 {
@@ -1314,6 +1184,11 @@ video {
 .bg-indigo-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(79 70 229 / var(--tw-bg-opacity));
+}
+
+.bg-red-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity));
 }
 
 .bg-sora-bg {
@@ -1382,6 +1257,11 @@ video {
   padding: 1.5rem;
 }
 
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -1422,8 +1302,21 @@ video {
   padding-bottom: 1rem;
 }
 
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.pb-4 {
+  padding-bottom: 1rem;
+}
+
 .pr-12 {
   padding-right: 3rem;
+}
+
+.pt-3 {
+  padding-top: 0.75rem;
 }
 
 .text-center {
@@ -1439,6 +1332,11 @@ video {
   line-height: 2rem;
 }
 
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -1447,6 +1345,11 @@ video {
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 
 .text-xs {
@@ -1483,6 +1386,11 @@ video {
   line-height: 1.25;
 }
 
+.text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity));
+}
+
 .text-gray-400 {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
@@ -1501,6 +1409,11 @@ video {
 .text-gray-700 {
   --tw-text-opacity: 1;
   color: rgb(55 65 81 / var(--tw-text-opacity));
+}
+
+.text-gray-800 {
+  --tw-text-opacity: 1;
+  color: rgb(31 41 55 / var(--tw-text-opacity));
 }
 
 .text-gray-900 {
@@ -1632,6 +1545,10 @@ video {
   transition-duration: 150ms;
 }
 
+.duration-200 {
+  transition-duration: 200ms;
+}
+
 .duration-300 {
   transition-duration: 300ms;
 }
@@ -1648,9 +1565,29 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.hover\:border-gray-300:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
+}
+
+.hover\:bg-blue-600:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(37 99 235 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-blue-700:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(29 78 216 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-indigo-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(67 56 202 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-red-600:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(220 38 38 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-violet-50:hover {
@@ -1671,6 +1608,11 @@ video {
 .hover\:text-blue-500:hover {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
+}
+
+.hover\:text-gray-700:hover {
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
 }
 
 .hover\:text-green-500:hover {
@@ -1707,6 +1649,11 @@ video {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.focus\:ring-blue-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity));
 }
 
 .focus\:ring-sora-bg:focus {
@@ -1834,6 +1781,10 @@ video {
     margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
+  .md\:overflow-auto {
+    overflow: auto;
+  }
+
   .md\:overflow-hidden {
     overflow: hidden;
   }
@@ -1899,10 +1850,13 @@ $app->router->get('/register', [HomeController::class, 'register']);
 $app->router->post('/register', [UserController::class, 'register']);
 $app->router->get('/logout', [UserController::class, 'logout']);
 $app->router->get('/profile', [UserController::class, 'profile']);
+$app->router->get('/profile/:any', [UserController::class, 'profile']);
 
 $app->router->post('/create', [PostController::class, 'create']);
 $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
 $app->router->post('/add_likes', [PostController::class, 'add_likes']);
+$app->router->post('/remove_likes', [PostController::class, 'remove_likes']);
+$app->router->post('/add_comment', [PostController::class, 'add_comment']);
 $app->run();
 
 
@@ -2023,9 +1977,9 @@ class Database {
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 15, 2024 at 04:56 PM
+-- Generation Time: Nov 01, 2024 at 06:56 PM
 -- Server version: 11.4.2-MariaDB
--- PHP Version: 8.3.9
+-- PHP Version: 8.3.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -2040,6 +1994,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `sora`
 --
+CREATE DATABASE IF NOT EXISTS `sora` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `sora`;
 
 -- --------------------------------------------------------
 
@@ -2056,6 +2012,16 @@ CREATE TABLE `comments` (
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`id`, `user_id`, `post_id`, `content`, `created_at`, `updated_at`) VALUES
+(1, 8, 21, 'hi', '2024-10-31 13:54:29', '2024-10-31 13:54:29'),
+(2, 8, 21, 'hello', '2024-10-31 13:54:32', '2024-10-31 13:54:32'),
+(3, 8, 32, 'hi', '2024-10-31 13:59:05', '2024-10-31 13:59:05'),
+(4, 8, 22, 'hi', '2024-10-31 14:20:51', '2024-10-31 14:20:51');
+
 -- --------------------------------------------------------
 
 --
@@ -2067,6 +2033,13 @@ CREATE TABLE `follows` (
   `followed_id` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `follows`
+--
+
+INSERT INTO `follows` (`follower_id`, `followed_id`, `created_at`) VALUES
+(8, 6, '2024-10-22 22:21:38');
 
 -- --------------------------------------------------------
 
@@ -2081,6 +2054,23 @@ CREATE TABLE `likes` (
   `created_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `likes`
+--
+
+INSERT INTO `likes` (`id`, `user_id`, `post_id`, `created_at`) VALUES
+(76, 8, 29, '2024-10-24 18:21:05'),
+(93, 6, 22, '2024-10-25 10:35:35'),
+(94, 6, 21, '2024-10-25 10:35:37'),
+(95, 6, 23, '2024-10-25 10:35:39'),
+(99, 6, 28, '2024-10-25 17:39:52'),
+(105, 8, 31, '2024-10-31 14:36:40'),
+(118, 8, 32, '2024-10-31 14:37:04'),
+(120, 8, 28, '2024-10-31 14:38:13'),
+(126, 8, 30, '2024-10-31 14:40:50'),
+(137, 8, 22, '2024-10-31 14:44:54'),
+(138, 8, 23, '2024-10-31 15:12:35');
+
 -- --------------------------------------------------------
 
 --
@@ -2094,6 +2084,20 @@ CREATE TABLE `posts` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`id`, `user_id`, `content`, `created_at`, `updated_at`) VALUES
+(21, 6, 'hellooo', '2024-10-18 09:32:45', '2024-10-18 09:32:45'),
+(22, 6, 'haai guyysss\r\n', '2024-10-18 09:33:01', '2024-10-18 09:33:01'),
+(23, 6, 'hiiii', '2024-10-18 09:37:11', '2024-10-18 09:37:11'),
+(28, 8, 'hi\r\n', '2024-10-22 20:17:53', '2024-10-22 20:17:53'),
+(29, 8, 'hi', '2024-10-22 20:26:52', '2024-10-22 20:26:52'),
+(30, 8, 'hi', '2024-10-22 22:21:59', '2024-10-22 22:21:59'),
+(31, 8, 'hello\r\n', '2024-10-23 05:21:57', '2024-10-23 05:21:57'),
+(32, 8, 'hi', '2024-10-25 17:09:51', '2024-10-25 17:09:51');
 
 -- --------------------------------------------------------
 
@@ -2111,8 +2115,17 @@ CREATE TABLE `users` (
   `profile_picture` varchar(255) DEFAULT NULL,
   `bio` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `status` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `profile_picture`, `bio`, `created_at`, `updated_at`, `status`) VALUES
+(6, 'Irene', 'J Kooran', 'irene', 'irene@gmail.com', '$2y$10$1z346OHrI8UQqkPyMNWS4e1SkrhvKJDpTtxCJ6Odk1t.CkF0dD6CC', '/images/icons/user-avatar.png', 'Hello guyss', '2024-10-18 09:32:40', '2024-10-31 14:12:07', 'hii guyss'),
+(8, 'Ramees', 'Mohammed M M', 'ramees', 'rameesmohd2004@gmail.com', '$2y$10$YUoHmD.7bEGe/vqYJoJk1O199bzV1zziBycJooDKvIw.uw8W6QGYy', '/images/pfps/profile_8.png', 'C,C++, Rust Enthusiast, Systems Programmer', '2024-10-22 20:15:34', '2024-10-31 14:36:32', 'hi');
 
 --
 -- Indexes for dumped tables
@@ -2166,25 +2179,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
@@ -2239,79 +2252,110 @@ define("APPROOT", __DIR__."/../../public/");
 `/home/ramees/progs/php/sora/src/Core/Router.php`:
 
 ```````php
-<?php 
+<?php
 namespace Sora\Core;
 
 class Router {
-  protected $routes = [];
+    protected $routes = [];
 
-/** route to get requests
- *
- * @param string $path              path to route for
- * @param array| string $callback   array with the classname and the method
- *                                  to call or a string containing the function name.
- */
-  public function get($path, $callback){
-    $this->routes['GET'][$path] = $callback;
-
-  }
-
-
-  /** route to get requests
-   *
-   * @param string $path            path to route for.
-   * @param array|string $callback  array with the classname and the method
-   *                               to call or a string containing the function name.
-   *
-   */
-
-  public function post($path, $callback) {
-    $this->routes['POST'][$path] = $callback;
-
-  }
-
-  /**
-   * function to dispatch to the routes from the uri
-   *
-   *
-   */
-
-  public function dispatch(){
-    $method = $_SERVER['REQUEST_METHOD'];
-    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-    if(substr($uri, -1) === '/' && strlen($uri) > 1){
-      $uri = substr($uri, 0, -1);
+    /**
+     * Route GET requests
+     *
+     * @param string $path Path to route for
+     * @param array|string $callback Array with the classname and method
+     * to call or a string containing the function name
+     */
+    public function get($path, $callback) {
+        $path = $this->prepareRoute($path);
+        $this->routes['GET'][$path] = $callback;
     }
 
-    if(isset($this->routes[$method][$uri])){
-      $callback = $this->routes[$method][$uri];
+    /**
+     * Route POST requests
+     *
+     * @param string $path Path to route for
+     * @param array|string $callback Array with the classname and method
+     * to call or a string containing the function name
+     */
+    public function post($path, $callback) {
+        $path = $this->prepareRoute($path);
+        $this->routes['POST'][$path] = $callback;
+    }
 
-      if(is_callable($callback)){
-        call_user_func($callback);
+    /**
+     * Prepare route pattern by converting :any and :num to regex
+     *
+     * @param string $path Original route path
+     * @return string Prepared route pattern
+     */
+    protected function prepareRoute($path) {
+        $path = str_replace(
+            array(':any', ':num'),
+            array('([^/]+)', '([0-9]+)'),
+            $path
+        );
+        return '#^' . $path . '/?$#';
+    }
 
-      }else if(is_array($callback)){
-        $controller = new $callback[0]();
-        $method = $callback[1];
-        if (method_exists($controller, $method)) {
-                call_user_func_array([$controller, $method], []);
-            } else {
-                http_response_code(500);
-                echo "Error: Method '$method' not found in controller '$callback[0]'.";
+    /**
+     * Match URI against route pattern
+     *
+     * @param string $pattern Route pattern
+     * @param string $uri Request URI
+     * @return bool|array False if no match, array of matches if found
+     */
+    protected function matchRoute($pattern, $uri) {
+        $matches = array();
+        if (preg_match($pattern, $uri, $matches)) {
+            array_shift($matches); 
+            return $matches;
+        }
+        return false;
+    }
+
+    /**
+     * Dispatch to the routes from the URI
+     */
+    public function dispatch() {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        
+        if (substr($uri, -1) === '/' && strlen($uri) > 1) {
+            $uri = substr($uri, 0, -1);
+        }
+
+        // Check each route pattern for the current method
+        if (isset($this->routes[$method])) {
+            foreach ($this->routes[$method] as $pattern => $callback) {
+                $matches = $this->matchRoute($pattern, $uri);
+                         
+                if ($matches !== false) {
+                    if (is_callable($callback)) {
+                        call_user_func_array($callback, $matches);
+                        return;
+                    } else if (is_array($callback)) {
+                        $controller = new $callback[0]();
+                        $method = $callback[1];
+                        
+                        if (method_exists($controller, $method)) {
+                            call_user_func_array([$controller, $method], $matches);
+                            return;
+                        } else {
+                            http_response_code(500);
+                            echo "Error: Method '$method' not found in controller '$callback[0]'.";
+                            return;
+                        }
+                    }
+                }
             }
-      }
+        }
+
+        // No matching route found
+        http_response_code(404);
+        echo "404 Not Found\n";
+        echo $_SERVER['REQUEST_URI'];
     }
-    else{
-      http_response_code(404);
-      echo "404 Not Found";
-      echo $_SERVER['REQUEST_URI'];
-    }
-
-
-  }
-
 }
-
 ```````
 
 `/home/ramees/progs/php/sora/src/Core/Application.php`:
@@ -2427,18 +2471,20 @@ class PostController {
         }
     }
 
-    public static function render_tweet($tweet){
-        // print_r($tweet); 
+    public  function render_tweet($tweet){
+        $is_liked = $this->postModel->check_user_likes($tweet["id"]);
+        $like_class = $is_liked == 1 ? "liked" : "";
         $id = $tweet["id"];
         $username = $tweet["username"];
         $content = $tweet['content'];
         $created_at = Helper::time_ago($tweet['created_at']);
         $upvotes = $tweet['upvotes'] ?? 0;
-        $comments = $tweet['comments'] ?? 0;
+        $comments = $tweet['comment_count'] ?? 0;
         $dp_available = $tweet['profile_picture'] ?? false;
+        $comments_html = self::render_comments($id);
         if($dp_available){
             $pfp_avatar = <<<HTML
-             <img src="images/pfps/{$tweet['profile_picture']}" alt="" class="w-10 h-10 rounded-full mr-3">
+             <img src="{$tweet['profile_picture']}" alt="" class="w-10 h-10 rounded-full mr-3">
             HTML;
         }
 
@@ -2452,7 +2498,7 @@ class PostController {
         <div class="flex items-center mb-2">
             $pfp_avatar
             <div>
-                <a href="/" class="font-bold text-slate-900 block">@{$username}</a>
+                <a href="/profile/{$username}" class="font-bold text-slate-900 block">@{$username}</a>
                 <div class="flex items-center text-sm text-gray-500">
                     <i class="fas fa-clock mr-1"></i>
                     <span>{$created_at}</span>
@@ -2462,42 +2508,171 @@ class PostController {
         <p class="mb-3 text-slate-900">{$content}</p>
         <div class="flex items-center space-x-4 text-gray-500">
             
-            <button class="upvotes flex items-center space-x-1 hover:text-blue-500 transition duration-300" data-post-id="$id">
+            <button class="upvotes flex items-center space-x-1 hover:text-blue-500 transition duration-300 $like_class " data-post-id="$id" data-liked-id="$is_liked">
                 <i class="fas fa-arrow-up"></i>
                 <span id="upvotes">{$upvotes}</span>
             </button>
-            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300" data-post-id="$id">
+            <button class="flex items-center space-x-1 hover:text-green-500 transition duration-300 comment-toggle" data-post-id="$id">
             
                 <i class="fas fa-comment"></i>
                 <span>{$comments} comments</span>
             </button>
         </div>
+        <div class="comments-section mt-4 hidden" id="comments-section-{$id}">
+                <h4 class="text-lg font-semibold mb-2">Comments</h4>
+                <div class="space-y-2 mb-4" id="comments-{$id}">
+                    {$comments_html}
+                </div>
+                <form action="/add_comment" method="post" class="flex">
+                    <input type="hidden" name="post_id" value="{$id}">
+                    <input type="text" name="content" class="flex-grow p-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Add a comment...">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-200">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        
     </div>
     HTML;
     return $html;
 
     }
 
-    public function render_tweets(){
+    public function render_tweets($user_id=NULL, $self=false){
+        if($user_id == NULL){
 
-         $data = $this->postModel->get_tweets($_SESSION['user_id']);
+         $data = $this->postModel->get_tweets($_SESSION['user_id'], $self);
+        }
+        else{
+            $data = $this->postModel->get_tweets($user_id, $self);
+           
+        }
+        
 
         foreach($data as $tweet){
             $html = $this->render_tweet($tweet);
             echo $html;
         }
-
+    
     }
+    
+    private static function render_comments($post_id) {
+        $db = Database::get_connection();
+        $postModel = new PostModel($db);
+        $comments = $postModel->get_comments($post_id);
+
+        $comments_html = '';
+        foreach ($comments as $comment) {
+            $comment_time = Helper::time_ago($comment['created_at']);
+            $comments_html .= <<<HTML
+            <div class="bg-gray-100 p-3 rounded-md">
+                <p class="font-semibold text-sm">{$comment['username']}</p>
+                <p class="text-gray-700">{$comment['content']}</p>
+                <p class="text-xs text-gray-500 mt-1">{$comment_time}</p>
+            </div>
+            HTML;
+        }
+
+        return $comments_html;
+    }
+    
 
 
-    public function add_likes(){
+    public function add_likes()
+{
+    // Fetch the raw POST body and decode the JSON
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
 
-       if($_SERVER['REQUEST_METHOD' == "POST"]){
+    // Check if post_id exists in the decoded JSON
+    if (isset($data['post_id'])) {
+        $postId = $data['post_id'];
+
+        // Assuming you have a method to increment the like count in your model
+        $result = $this->postModel->add_likes($postId);
+
+        if ($result) {
+            // Return a success response
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Like added successfully',
+                'post_id' => $postId
+            ]);
+        } else {
+            // Handle database failure
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to add like. Please try again later.',
+                'post_id' => $postId
+            ]);
+        }
+    } else {
+        // Return an error response if post_id is not found
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'post_id not found in request'
+        ]);
+    }
+}
+
+public function remove_likes(){
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
+
+    // Check if post_id exists in the decoded JSON
+    if (isset($data['post_id'])) {
+        $postId = $data['post_id'];
+
+        // Assuming you have a method to increment the like count in your model
+        $result = $this->postModel->remove_likes($postId);
+
+        if ($result) {
+            // Return a success response
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Like removed successfully',
+                'post_id' => $postId
+            ]);
+        } else {
+            // Handle database failure
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to remove like. Please try again later.',
+                'post_id' => $postId
+            ]);
+        }
+    } else {
+        // Return an error response if post_id is not found
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'post_id not found in request'
+        ]);
+    }
+}
+
+
+public function add_comment() {
+    Helper::validate_user();
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $user_id = $_SESSION['user_id'];
         $post_id = $_POST['post_id'];
-        $this->postModel($post_id);
-       }
+        $content = $_POST['content'];
 
+        if ($this->postModel->add_comment($user_id, $post_id, $content)) {
+            // Comment added successfully
+            header("Location: /?post_id=" . $post_id);
+            exit;
+        } else {
+            $error[] = "Error adding comment";
+        }
     }
+}
+
+public function get_comments($post_id) {
+    return $this->postModel->get_comments($post_id);
+}
+
    
 }
 
@@ -2523,6 +2698,7 @@ class UserController {
   /**@var Sora\Models\User $userModel user model object
    */
   private $userModel;
+  public $postController;
   
   /**Constructor for User Controller
    */
@@ -2539,6 +2715,7 @@ class UserController {
   }
 
   $this->userModel = new UserModel($db);
+  $this->postController = new PostController();
 
     
   }
@@ -2595,13 +2772,55 @@ class UserController {
   
   }
 
-  public function profile() {
-    if($_SERVER['REQUEST_METHOD'] == "GET"){
-      $username = $_SESSION['username'];
-      include __DIR__ ."/../Views/profile.html";
+  public function profile($username=NULL) {
+    if($username == NULL){
+
+    
+      if($_SERVER['REQUEST_METHOD'] == "GET"){
+        $username = $_SESSION['username'];
+        include __DIR__ ."/../Views/profile.html";
       
+      }
+    }
+    else{
+      if($username == $_SESSION["username"]){
+        header("Location: /profile");
+        exit;
+      }
+      $user = $this->get_user_details($username);
+      if (empty($user)){
+        http_response_code(404);
+        echo "404 Not Found\n";
+        exit;
+      }
+      $this->render_profile($user);
     }
   } 
+
+  protected function render_profile($user) {
+    
+    echo <<<BODY
+    <body style="background: url('/images/sora-bg.png')" >
+    BODY;
+    
+    $data = [];
+    $data["user"] = $user;
+
+    $data["posts"] = $this->userModel->get_user_posts($user["username"]);
+    $data["likes"] = $this->userModel->get_user_likes($user["username"]);
+    $data["comments"] = $this->userModel->get_user_comments($user["username"]);
+    $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+    $data["following"] = $this->userModel->get_user_following($user["username"]);
+    
+
+    require __DIR__ ."/../Views/user_profile.html";
+}
+
+public function render_user_tweets($data){
+  $posts = $data["posts"];
+  $user_id = $data["user"]["id"];
+  $this->postController->render_tweets($user_id);
+}
 
   public function get_user_details($username) {
     $user = $this->userModel->get_user_details($username);
@@ -2609,15 +2828,21 @@ class UserController {
 
 
   }
+  
+
+
 
   public function edit_user_details(){
     if($_SERVER['REQUEST_METHOD'] == "POST"){
+
+
       $username = $_SESSION['username'];
       $password = $_POST['old_password'];
       $response = $this->userModel->authenticate($username, $password);
       if($response['success'] != true){
         $_SESSION['update_error'] = "Invalid Credentials";
         header("Location: /profile");
+        exit;
 
       }
       else{
@@ -2627,14 +2852,19 @@ class UserController {
         "firstname" => $_POST['firstname'] ?? "",
         "lastname" => $_POST['lastname'] ?? "",
         "bio" =>     $_POST['bio'],
-        "profile_picture" => $_POST['profile_picture'] ?? "",
+        // "profile_picture" => $_FILES['profile_picture'] ?? "",
         ];
+
+        if($_POST['new_password'] == ""){
+          unset($data["password"]);
+        }
         
         
       }
       if ($this->userModel->update_user_details($username, $data)) {
         // Success message (optional)
         $_SESSION['update_success'] = "Profile updated successfully!"; 
+        $_SESSION['username'] = $data["username"];
       } else {
         // Handle the case where no changes were made (optional)
         $_SESSION['update_info'] = "No changes were made to your profile."; 
@@ -2647,6 +2877,9 @@ class UserController {
     }
   }
   
+
+  
+
 
 }
 
@@ -2834,14 +3067,155 @@ public function get_user_details($username): array{
 	$stmt->bind_param("s", $username);
 	$stmt->execute();
 	$result = $stmt->get_result();
+	if($result->num_rows > 0){
 	$rows = $result->fetch_assoc();
 	return $rows;
+	}
+	else{
+		return Array();
+	}
+}
+
+public function get_user_posts($username){
+	$stmt = $this->db->prepare("SELECT p.*
+	FROM posts p
+	JOIN users u ON p.user_id = u.id
+	WHERE u.username = ?;");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+}
+
+public function get_user_likes($username){
+	$stmt = $this->db->prepare("SELECT p.*
+	FROM posts p
+	JOIN likes l on p.id = l.post_id
+	JOIN users u on l.user_id = u.id
+	WHERE u.username = ?");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+
+}
+
+public function get_user_comments($username){
+	$stmt = $this->db->prepare("SELECT p.*
+	FROM posts p
+	JOIN comments c on c.post_id = p.id
+	JOIN users u on c.user_id = u.id
+	WHERE u.username = ?");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+}
+
+public function get_user_followers($username){
+	$stmt = $this->db->prepare("SELECT u.* 
+	FROM users u
+	JOIN follows f on u.id = f.follower_id
+	WHERE f.followed_id = (SELECT  id from users where username = ?)");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+}
+
+public function get_user_following($username){
+	$stmt = $this->db->prepare("SELECT u.* 
+	FROM users u
+	JOIN follows f on u.id = f.followed_id
+	WHERE f.follower_id = (SELECT  id from users where username = ?)");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if($result->num_rows > 0){
+		return $result->fetch_all(MYSQLI_ASSOC);
+	}
+	else{
+		return Array();
+	}
+}
+private function handle_profile_picture($files, $action) {
+	$userId = $_SESSION['user_id'];
+	
+	// Get current profile picture
+	$stmt = $this->db->prepare("SELECT profile_picture FROM users WHERE id = ?");
+	$stmt->execute([$userId]);
+	$user = $stmt->fetch();
+	$current_picture = $user['profile_picture'] ?? null;
+
+	
+			if (isset($files['profile_picture']) && $files['profile_picture']['error'] === UPLOAD_ERR_OK) {
+				// Delete old file if exists
+				if ($current_picture && file_exists($current_picture)) {
+					unlink($current_picture);
+				}
+				
+				// Handle new upload
+				$file = $files['profile_picture'];
+				$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+				$filename = 'profile_' . $userId .'.' . $ext;
+				$upload_path = 'images/pfps/' . $filename;
+				
+				if (!move_uploaded_file($file['tmp_name'], $upload_path)) {
+					throw new \Exception("Failed to upload profile picture");
+				}
+				
+				return $upload_path;
+			}
+			
+		
+	
+	return null;
 }
 
 public function update_user_details($username, $data){
-		$update_fields = array();
+	$update_fields = array();
+	if (isset($_FILES["profile_picture"]) && $_FILES["profile_picture"]["name"] != ""  ){
+
+	$uploadfile = $this->handle_profile_picture($_FILES, 'update');
+	move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $uploadfile);
+	$data["profile_picture"] = "/".$uploadfile;
+	
+
+	}
+
+	if($_POST["profile_picture_state"] === "delete"){
+		$data["profile_picture"] = "/images/icons/user-avatar.png";
+	}
+	
+	
 
 		$original_fields = $this->get_user_details($username);
+		// if($data["profile_picture"] == "./images/pfps/"){
+		// 	$data["profile_picture"] = NULL;
+		// }
+		if(!isset($_FILES["profile_picture"]) && file_exists($original_fields["profile_picture"])){
+			unlink($current_picture);
+		}
 		if($original_fields){
 			foreach($data as $field => $value){
 				if ($original_fields[$field] !== $value){
@@ -2856,7 +3230,8 @@ public function update_user_details($username, $data){
 }
 
 function update($username, $data){
-	if (isset($data)){
+	
+	if (!empty($data)){
 		$sql = "UPDATE users set ";
 		foreach($data as $key => $value){
 			$sql .= "$key = '$value', ";
@@ -2864,8 +3239,13 @@ function update($username, $data){
 		}
 		$sql = rtrim($sql, ", ");
 		$sql .= " WHERE username=?";
+		
+
 		$stmt = $this->db->prepare($sql);
+		
 		$stmt->bind_param("s", $username);
+		
+		
 		return $stmt->execute();
 	}
 	else{
@@ -2927,15 +3307,18 @@ class PostModel{
             ];
         }
     }
+    // self variable to check if the user wants only his/her posts
 
-    public function get_tweets($user_id) {
+    public function get_tweets($user_id, $self=false) {
+        if($user_id == $_SESSION["user_id"] && $self==false){
         $stmt = $this->db->prepare("SELECT 
                 p.id, 
                 p.content, 
                 p.created_at,
                 u.username, 
                 u.profile_picture,
-                COUNT(l.post_id) AS upvotes
+                COUNT(l.post_id) AS upvotes,
+                COUNT(DISTINCT c.id) AS comment_count
             FROM 
                 posts p
             JOIN 
@@ -2944,43 +3327,175 @@ class PostModel{
                 likes l ON p.id = l.post_id
             LEFT JOIN
                 follows f ON p.user_id = f.followed_id AND f.follower_id = ? 
+            LEFT JOIN
+                 comments c on p.id = c.post_id
             WHERE 
                 p.user_id = ? OR f.follower_id = ?
             GROUP BY
                 p.id
             ORDER BY 
                 p.created_at DESC;");
+              $stmt->bind_param("iii", $user_id, $user_id, $user_id);
+        }
+        else if($user_id == $_SESSION["user_id"] && $self==true){
+            $stmt = $this->db->prepare("SELECT 
+            p.id, 
+            p.content, 
+            p.created_at,
+            u.username, 
+            u.profile_picture,
+            COUNT(l.post_id) AS upvotes,
+            COUNT(DISTINCT c.id) AS comment_count
+        FROM 
+            posts p
+        JOIN 
+            users u ON p.user_id = u.id 
+        LEFT JOIN 
+            likes l ON p.id = l.post_id
+        LEFT JOIN 
+            comments c on p.id = c.post_id
+         
+        WHERE 
+            p.user_id = ? 
+        GROUP BY
+            p.id
+        ORDER BY 
+            p.created_at DESC;");
+            
+        $stmt->bind_param("i", $_SESSION["user_id"]);
+
+        }
+        else{
+            $stmt = $this->db->prepare("SELECT 
+            p.id, 
+            p.content, 
+            p.created_at,
+            u.username, 
+            u.profile_picture,
+            COUNT(l.post_id) AS upvotes,
+            COUNT(DISTINCT c.id) AS comment_count
+            
+        FROM 
+            posts p
+        JOIN 
+            users u ON p.user_id = u.id 
+        LEFT JOIN 
+            likes l ON p.id = l.post_id
+        LEFT JOIN comments c on p.id = c.post_id
+         
+        WHERE 
+            p.user_id = ? 
+        GROUP BY
+            p.id
+        ORDER BY 
+            p.created_at DESC;");
+        $stmt->bind_param("i", $user_id);
+        }
+        
     
-        $stmt->bind_param("iii", $user_id, $user_id, $user_id); // Bind parameters
+       
     
         $stmt->execute();
     
         $result = $stmt->get_result();
+        
     
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     public function add_likes($post_id){
+        
         $user_id = $_SESSION['user_id'];
-        if($this->like_not_exists($user_id, $post_id) ){
+       
 
-            $stmt = "insert into likes(user_id, post_id) values(?,?)";
+            $stmt = $this->db->prepare("insert ignore into likes(user_id, post_id) values(?,?)");
             $stmt->bind_param("ss",$user_id, $post_id );
             $result = $stmt->execute();
-            return;
-
-        }
-
+            return $result;
 
     }
-    function like_not_exists($user_id, $post_id){
-        $stmt = $this->db->prepare("SELECT exists(select 1 from likes where user_id = ? and post_id=?  ");
+
+    public function remove_likes($post_id) {
+        $user_id = $_SESSION['user_id'];
+
+        $stmt = $this->db->prepare("delete from likes where user_id=? and post_id=?");
         $stmt->bind_param("ss", $user_id, $post_id);
+        $result = $stmt->execute();
+        return $result;
+    }
+    
+    public function check_user_likes($post_id){
+        if(!isset($_SESSION["user_id"])){
+            return false;
+        }
+        else {
+
+            $user_id = $_SESSION["user_id"];
+            $stmt = $this->db->prepare("SELECT * FROM likes WHERE post_id = ? AND user_id = ? LIMIT 1");
+            if (!$stmt) {
+              error_log("Error preparing statement: " . $this->db->error);
+             return false;
+            }
+
+    // Bind parameters with error handling
+        if (!$stmt->bind_param("ss", $post_id, $user_id)) {
+            error_log("Error binding parameters: " . $stmt->error);
+           $stmt->close();
+           return false;
+        }
+
+    // Execute with error handling
+        if (!$stmt->execute()) {
+            error_log("Error executing statement: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+
+    // Get result
+        $result = $stmt->get_result();
+        if (!$result) {
+            error_log("Error getting result: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+
+    // Get row count and clean up
+        $has_liked = $result->num_rows;
+        $result->close();
+        $stmt->close();
+
+        return $has_liked;
+        }
+        
+    }
+
+
+    public function add_comment() {
+        Helper::validate_user();
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $user_id = $_SESSION['user_id'];
+            $post_id = $_POST['post_id'];
+            $content = $_POST['content'];
+
+            if ($this->postModel->add_comment($user_id, $post_id, $content)) {
+                // Comment added successfully
+                header("Location: /#post-" . $post_id);
+                exit;
+            } else {
+                $_SESSION['error'] = "Error adding comment";
+                header("Location: /#post-" . $post_id);
+                exit;
+            }
+        }
+    }
+
+    public function get_comments($post_id) {
+        $stmt = $this->db->prepare("SELECT c.*, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC");
+        $stmt->bind_param("i", $post_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        $row = $result->fetch_row();
-        $exists = $row[0];
-        return !$exists;
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     
@@ -3155,9 +3670,11 @@ class PostModel{
 
 ```````html
 <!DOCTYPE html>
-<html lang="en" class=" sm:overflow-y-auto md:overflow-hidden">
+<html lang="en" class=" sm:overflow-y-auto md:overflow-auto">
 <?php include_once __DIR__."/html_head.html" ?>
-<body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover" class="bg-no-repeat bg-center">
+
+<body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover"
+    class="bg-no-repeat bg-center">
     <?php include_once __DIR__ ."/navbar.html"?>
 
     <?php
@@ -3171,26 +3688,38 @@ class PostModel{
         <div class="max-w-3xl mx-auto">
             <!-- Profile Card (Visible when not editing) -->
             <div id="profile-view" class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
                     <div class="relative group">
                         <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
                             <?php if(isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
-                                <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile" class="h-full w-full object-cover">
+                            <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile"
+                                class="h-full w-full object-cover">
                             <?php else: ?>
-                                <svg class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
+                            <svg class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="flex-1">
-                        <h2 class="text-2xl font-bold text-gray-900"><?php echo htmlspecialchars($user['firstname'] . ' ' . $user['lastname']); ?></h2>
-                        <p class="text-gray-500 mb-2"><?php echo htmlspecialchars($user['email']); ?></p>
-                        <p class="text-gray-700"><?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?></p>
+                        <h2 class="text-2xl font-bold text-gray-900">
+                            <?php echo htmlspecialchars($user['firstname'] . ' ' . $user['lastname']); ?>
+                        </h2>
+                        <p class="text-gray-500 mb-2">
+                            <?php echo htmlspecialchars($user['email']); ?>
+                        </p>
+                        <p class="text-gray-700">
+                            <?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?>
+                        </p>
                     </div>
-                    <button onclick="toggleEdit()" class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                    <button onclick="toggleEdit()"
+                        class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                         <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                         Edit Profile
                     </button>
@@ -3206,21 +3735,46 @@ class PostModel{
                             <div class="relative group">
                                 <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
                                     <?php if(isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
-                                        <img id="preview-image" src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile" class="h-full w-full object-cover">
+                                    <img id="preview-image"
+                                        src="<?php echo htmlspecialchars('../'.$user['profile_picture']); ?>"
+                                        alt="Profile" class="h-full w-full object-cover">
                                     <?php else: ?>
-                                        <img id="preview-image" src="#" alt="Profile" class="h-full w-full object-cover hidden">
-                                        <svg id="default-image" class="h-full w-full text-gray-400 p-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
+                                    <img id="preview-image" src="#" alt="Profile"
+                                        class="h-full w-full object-cover hidden">
+                                    <svg id="default-image" class="h-full w-full text-gray-400 p-6" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
                                     <?php endif; ?>
                                 </div>
-                                <label class="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition-colors">
-                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <!-- Upload button -->
+                                <label
+                                    class="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition-colors">
+                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                    <input type="file" name="profile_picture" accept="image/*" class="hidden" onchange="previewImage(this)">
+                                    <input type="file" name="profile_picture" id="profile-picture-input"
+                                        accept="image/*" class="hidden" onchange="previewImage(this)">
+                                    <input type="text" name="profile_picture_state" id="profile-picture-state" 
+                                    class="hidden" value="update">
                                 </label>
+                                <!-- Delete button -->
+                                <button type="button" id="delete-image-btn" onclick="deleteProfilePicture()"
+                                    class="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 cursor-pointer hover:bg-red-600 transition-colors">
+                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <!-- Hidden input to track deletion -->
+                                <input type="hidden" name="delete_profile_picture" id="delete-profile-picture"
+                                    value="0">
                             </div>
                             <div>
                                 <h3 class="text-sm font-medium text-gray-700">Profile photo</h3>
@@ -3229,14 +3783,12 @@ class PostModel{
                         </div>
                     </div>
 
+
                     <!-- Bio Section -->
                     <div class="relative mb-8">
-                        <textarea 
-                            name="bio" 
-                            rows="4" 
+                        <textarea name="bio" rows="4"
                             class="peer w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all resize-none"
-                            placeholder="Write something about yourself..."
-                        ><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
+                            placeholder="Write something about yourself..."><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
                         <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                             Bio
                         </label>
@@ -3245,91 +3797,167 @@ class PostModel{
                     <!-- Form Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
                         <div class="relative">
-                            <input type="text" 
-                                   name="username"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['username']); ?>"
-                                    />
+                            <input type="text" name="username"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                value="<?php echo htmlspecialchars($user['username']); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Username
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="text" 
-                                   name="firstname"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['firstname'] ?? ''); ?>" />
+                            <input type="text" name="firstname"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                value="<?php echo htmlspecialchars($user['firstname'] ?? ''); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 First name
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="text" 
-                                   name="lastname"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['lastname'] ?? ''); ?>" />
+                            <input type="text" name="lastname"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                value="<?php echo htmlspecialchars($user['lastname'] ?? ''); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Last name
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="email" 
-                                   name="email"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   value="<?php echo htmlspecialchars($user['email']); ?>" />
+                            <input type="email" name="email"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                value="<?php echo htmlspecialchars($user['email']); ?>" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Email
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="password" 
-                                   name="old_password"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   placeholder="Enter your current password" />
+                            <input type="password" name="old_password"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                placeholder="Enter your current password" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 Current Password
                             </label>
                         </div>
 
                         <div class="relative">
-                            <input type="password" 
-                                   name="new_password"
-                                   class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
-                                   placeholder="Leave blank to keep current password" />
+                            <input type="password" name="new_password"
+                                class="peer w-full h-12 px-4 border border-gray-200 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all"
+                                placeholder="Leave blank to keep current password" />
                             <label class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600">
                                 New Password
                             </label>
                         </div>
 
-                        
+
                     </div>
 
                     <!-- Buttons -->
-                    <div class="flex flex-col-reverse sm:flex-row sm:justify-end space-y-4 space-y-reverse sm:space-y-0 sm:space-x-4">
-                        <button type="button" 
-                                onclick="toggleEdit()"
-                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-violet-600 bg-white border border-violet-600 rounded-lg hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
+                    <div
+                        class="flex flex-col-reverse sm:flex-row sm:justify-end space-y-4 space-y-reverse sm:space-y-0 sm:space-x-4">
+                        <button type="button" onclick="toggleEdit()"
+                            class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-violet-600 bg-white border border-violet-600 rounded-lg hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
                             Cancel
                         </button>
-                        <button type="submit" 
-                                class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
+                        <button type="submit"
+                            class="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-violet-600 rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition-all">
                             Save changes
                         </button>
                     </div>
                 </form>
             </div>
+            <div class="flex flex-col space-y-4 overflow-y-auto">
+            <?php
+            $this->postController->render_tweets( $_SESSION["user_id"], $self=true);
+
+            ?>
+            </div>
         </div>
     </main>
+    <style>
+        /* Upvote button styles */
+        .upvotes {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .upvotes.liked {
+            color: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes.liked svg {
+            stroke: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes:hover {
+            color: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes:hover svg {
+            stroke: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes svg {
+            transition: stroke 0.2s ease-in-out;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add click event listener to all upvote buttons
+            document.querySelectorAll('.upvotes').forEach(button => {
+                button.addEventListener('click', handleLike);
+            });
+
+            async function handleLike(event) {
+                const button = event.currentTarget;
+                const postId = button.dataset.postId;
+                const isLiked = button.dataset.likedId === "1";
+                const upvoteSpan = button.querySelector('#upvotes');
+                const currentUpvotes = parseInt(upvoteSpan.textContent);
+
+                try {
+                    const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        // Toggle the liked state
+                        button.dataset.likedId = isLiked ? "0" : "1";
+                        button.classList.toggle('liked');
+
+                        // Update the upvote count
+                        upvoteSpan.textContent = isLiked ?
+                            (currentUpvotes - 1) :
+                            (currentUpvotes + 1);
+                    } else {
+                        console.error('Error:', data.message);
+                        // alert('Failed to update like. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    // alert('Failed to update like. Please try again.');
+                }
+            }
+        });
+    </script>
 
     <script>
         function toggleEdit() {
             const profileView = document.getElementById('profile-view');
             const editForm = document.getElementById('edit-form');
-            
+
             if (profileView.classList.contains('hidden')) {
                 profileView.classList.remove('hidden');
                 editForm.classList.add('hidden');
@@ -3342,11 +3970,18 @@ class PostModel{
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const preview = document.getElementById('preview-image');
+                    const fileInput = document.getElementById('profile-picture-input');
                     const defaultImage = document.getElementById('default-image');
+                    const deleteButton = document.getElementById('delete-image-btn');
+                    const profileState = document.querySelector("#profile-picture-state");
+
                     preview.src = e.target.result;
                     preview.classList.remove('hidden');
+                    deleteButton.style.display = 'block';
+                    document.getElementById('delete-profile-picture').value = "0";
+
                     if (defaultImage) {
                         defaultImage.classList.add('hidden');
                     }
@@ -3355,9 +3990,94 @@ class PostModel{
             }
         }
 
+        function deleteProfilePicture() {
+            const preview = document.getElementById('preview-image');
+            const defaultImage = document.getElementById('default-image');
+            const fileInput = document.getElementById('profile-picture-input');
+            const deleteButton = document.getElementById('delete-image-btn');
+            const deleteFlag = document.getElementById('delete-profile-picture');
+            const profileState = document.querySelector("#profile-picture-state");
+
+
+            // Reset the file input
+            fileInput.value = '';
+            profileState.value="delete";
+
+            // Show default image
+            preview.classList.add('hidden');
+            preview.src = '#';
+            if (defaultImage) {
+                defaultImage.classList.remove('hidden');
+            }
+
+            // Set delete flag to true
+            deleteFlag.value = "1";
+
+            // Hide delete button if there's no default profile picture
+            if (!preview.src || preview.src === window.location.href) {
+                deleteButton.style.display = 'none';
+            }
+        }
+
+        // Initialize delete button visibility
+        document.addEventListener('DOMContentLoaded', function () {
+            const preview = document.getElementById('preview-image');
+            const deleteButton = document.getElementById('delete-image-btn');
+
+            if (!preview.src || preview.src === window.location.href || preview.classList.contains('hidden')) {
+                deleteButton.style.display = 'none';
+            }
+        });
 
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Comment toggle functionality
+            const commentToggles = document.querySelectorAll('.comment-toggle');
+            commentToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const postId = toggle.getAttribute('data-post-id');
+                    const commentsSection = document.getElementById(`comments-section-${postId}`);
+                    commentsSection.classList.toggle('hidden');
+                });
+            });
+        
+            // Comment submission
+            const commentForms = document.querySelectorAll('form[action="/add_comment"]');
+            commentForms.forEach(form => {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    const response = await fetch('/add_comment', {
+                        method: 'POST',
+                        body: formData
+                    });
+        
+                    if (response.ok) {
+                        const postId = formData.get('post_id');
+                        const content = formData.get('content');
+                        const commentsContainer = document.getElementById(`comments-${postId}`);
+                        const newComment = document.createElement('div');
+                        newComment.className = 'bg-gray-100 p-3 rounded-md';
+                        newComment.innerHTML = 
+                        '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                        '<p class="text-gray-700">' + content + '</p>' +
+                        '<p class="text-xs text-gray-500 mt-1">Just now</p>';
+                        commentsContainer.prepend(newComment);
+                        form.reset();
+        
+                        // Update comment count
+                        const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                        const countSpan = commentToggle.querySelector('span');
+                        const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                        countSpan.textContent = `${currentCount + 1} comments`;
+                    }
+                });
+            });
+        });
+        </script>
 </body>
+
 </html>
 ```````
 
@@ -3507,7 +4227,7 @@ class PostModel{
 <!DOCTYPE html>
 <html class="h-full" lang="en">
 <?php include_once __DIR__."/html_head.html"?>
-<body class="h-full text-gray-900 flex flex-col w-full" style="background: url('images/sora-bg.png')">
+<body class="h-full text-gray-900 flex flex-col w-full" style="background: url('/images/sora-bg.png')">
        
 <?php include_once __DIR__."/navbar.html" ?>
     <main class="flex-grow flex overflow-hidden">
@@ -3554,81 +4274,155 @@ class PostModel{
             <section class="flex-grow p-4 overflow-y-auto">
                 <h1 class="text-2xl font-bold mb-4 text-sora-primary bg-gray-300 w-fit p-2 rounded-md shadow-md">Tweets</h1>
                 <div class="space-y-4">
-                    <!-- Tweet cards (repeated for each tweet) -->
-                    
-
                     <?php
                     use Sora\Controllers\PostController;
                     
-
                     $postController = new PostController();
                     $postController->render_tweets();
-                   ;
-                    
                     ?>
-
-                    <!-- Repeat the above div for each tweet -->
                 </div>
             </section>
-            <footer class="bg-gradient-to-r from-sora-primary to-sora-secondary p-4 shadow-lg m-2  rounded-lg">
+            <footer class="bg-gradient-to-r from-sora-primary to-sora-secondary p-4 shadow-lg m-2 rounded-lg">
                 <div class="max-w-4xl mx-auto">
-                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center  gap-3">
+                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center gap-3">
                         <div class="relative flex-grow">
-                            <textarea name="content" id="tweet" rows="3" class="w-full p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500 " placeholder="What's on your mind?"></textarea>
+                            <textarea name="content" id="tweet" rows="3" class="w-full p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500" placeholder="What's on your mind?"></textarea>
                             <div class="absolute bottom-3 right-3 flex space-x-2">
-                                <!-- <button type="button" class="text-sora-primary hover:text-sora-secondary transition-colors duration-300" title="Add image">
-                                    <i class="fas fa-image"></i>
-                                </button>
-                                <button type="button" class="text-sora-primary hover:text-sora-secondary transition-colors duration-300" title="Add emoji">
-                                    <i class="fas fa-smile"></i>
-                                </button> -->
                             </div>
                         </div>
-                        <!-- csrf protection -->
-                        <?php use Sora\Helpers\Helper;
+                        <?php 
+                        use Sora\Helpers\Helper;
                         $_SESSION['csrf_token'] = Helper::generate_token()
-                         ?>
+                        ?>
                         <input type="hidden" name="csrf_token" value=<?=$_SESSION['csrf_token'] ?>>
                         <button name="post-btn" class="bg-sora-bg text-sora-primary py-2 px-6 rounded-full hover:bg-white hover:text-sora-secondary transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sora-bg">
                             <i class="fas fa-paper-plane mr-2"></i>Post
                         </button>
                     </form>
-                   
                 </div>
             </footer>
         </div>
-        <script>
-            // Select all elements with the class 'upvotes_button'
-const upvoteButtons = document.querySelectorAll('.upvotes');
 
-// Loop through each button and add an event listener
-upvoteButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    // Get the post_id from a data attribute (assuming each button has a data-post-id attribute)
-    const postId = button.getAttribute('data-post-id');
-    
-    // Send the POST request using Fetch API
-    fetch('/add_likes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        post_id: postId
-      })
+        <style>
+            /* Upvote button styles */
+            .upvotes {
+                transition: color 0.2s ease-in-out;
+            }
+
+            .upvotes.liked {
+                color: #3b82f6; /* Tailwind blue-500 */
+            }
+
+            .upvotes.liked svg {
+                stroke: #3b82f6; /* Tailwind blue-500 */
+            }
+
+            .upvotes:hover {
+                color: #60a5fa; /* Tailwind blue-400 for hover */
+            }
+
+            .upvotes:hover svg {
+                stroke: #60a5fa; /* Tailwind blue-400 for hover */
+            }
+
+            .upvotes svg {
+                transition: stroke 0.2s ease-in-out;
+            }
+        </style>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listener to all upvote buttons
+    document.querySelectorAll('.upvotes').forEach(button => {
+        button.addEventListener('click', handleLike);
     });
-    
-    // Optionally, add code to update the UI (e.g., increment the upvote count visually)
-    // You can adjust the DOM based on what you want to do
-    const countElement = button.querySelector('#upvotes');
-    if (countElement) {
-      let currentCount = parseInt(countElement.textContent) || 0;
-      countElement.textContent = currentCount + 1// Increment the count
-    }
-  });
-});
 
-        </script>
+    async function handleLike(event) {
+        const button = event.currentTarget;
+        const postId = button.dataset.postId;
+        const isLiked = button.dataset.likedId === "1";
+        const upvoteSpan = button.querySelector('#upvotes');
+        const currentUpvotes = parseInt(upvoteSpan.textContent);
+
+        try {
+            const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ post_id: postId })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                // Toggle the liked state
+                button.dataset.likedId = isLiked ? "0" : "1";
+                button.classList.toggle('liked');
+                
+                // Update the upvote count
+                upvoteSpan.textContent = isLiked ? 
+                    (currentUpvotes - 1) : 
+                    (currentUpvotes + 1);
+            } else {
+                console.error('Error:', data.message);
+                // alert('Failed to update like. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // alert('Failed to update like. Please try again.');
+        }
+    }
+});
+    </script>   
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Comment toggle functionality
+        const commentToggles = document.querySelectorAll('.comment-toggle');
+        commentToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const postId = toggle.getAttribute('data-post-id');
+                const commentsSection = document.getElementById(`comments-section-${postId}`);
+                commentsSection.classList.toggle('hidden');
+            });
+        });
+    
+        // Comment submission
+        const commentForms = document.querySelectorAll('form[action="/add_comment"]');
+        commentForms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const response = await fetch('/add_comment', {
+                    method: 'POST',
+                    body: formData
+                });
+    
+                if (response.ok) {
+                    const postId = formData.get('post_id');
+                    const content = formData.get('content');
+                    const commentsContainer = document.getElementById(`comments-${postId}`);
+                    const newComment = document.createElement('div');
+                    newComment.className = 'bg-gray-100 p-3 rounded-md';
+                    newComment.innerHTML = 
+                    '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                    '<p class="text-gray-700">' + content + '</p>' +
+                    '<p class="text-xs text-gray-500 mt-1">Just now</p>';
+                    commentsContainer.prepend(newComment);
+                    form.reset();
+    
+                    // Update comment count
+                    const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                    const countSpan = commentToggle.querySelector('span');
+                    const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                    countSpan.textContent = `${currentCount + 1} comments`;
+                }
+            });
+        });
+    });
+    </script>
     </main>
 </body>
 </html>
@@ -3641,9 +4435,233 @@ upvoteButtons.forEach(button => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile | Sora</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/user_profile.html`:
+
+```````html
+<?php
+require __DIR__ . "/../Views/html_head.html";
+require __DIR__ . "/../Views/navbar.html";
+
+
+?>
+
+
+<main class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Profile Header -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <div class="flex items-start justify-between mb-6">
+                <div class="flex items-center space-x-6">
+                    <div class="w-24 h-24 rounded-full bg-gray-200 overflow-hidden">
+                        <img src="<?=$user['profile_picture']?>" alt="<?= $user['username']?>'s avatar"
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">
+                            <?=$user["username"]?>
+                        </h1>
+                        <!-- <p class="text-gray-500">Student at University</p>
+                        <p class="text-gray-600 mt-1">
+                            <i class="fas fa-map-marker-alt"></i> Kerala, India
+                        </p> -->
+                    </div>
+                </div>
+                <div class="space-x-3">
+                    <button
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Follow
+                    </button>
+                </div>
+            </div>
+
+            <p class="text-gray-700 mb-6">
+                <?= $user["bio"]?>
+            </p>
+
+            <div class="flex space-x-8">
+                <div class="text-center">
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["posts"])?>
+                    </div>
+                    <div class="text-gray-500">Posts</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["followers"])?>
+                    </div>
+                    <div class="text-gray-500">Followers</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["following"])?>
+                    </div>
+                    <div class="text-gray-500">Following</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="border-b border-gray-200 bg-gray-100 pt-3 px-4 rounded-md mb-6 hover:shadow-md">
+            <nav class="-mb-px flex space-x-8">
+                <a href="#" class="border-b-2 border-blue-500 pb-4 px-1 text-sm font-medium text-blue-600">
+                    Posts
+                </a>
+                <a href="#"
+                    class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Comments
+                </a>
+                <a href="#"
+                    class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Likes
+                </a>
+            </nav>
+        </div>
+
+        <!-- Posts Grid -->
+        <div class="grid grid-cols-1 gap-6">
+            <!-- <div class="bg-white rounded-lg shadow p-6">
+                <p class="text-gray-800">Just deployed my first web application! Check it out at example.com #webdev #coding</p>
+                <div class="mt-4 text-gray-500 text-sm">
+                    2 hours ago
+                </div>
+            </div> -->
+
+            <?php $this->render_user_tweets($data); ?>
+
+        </div>
+    </div>
+    <style>
+        /* Upvote button styles */
+        .upvotes {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .upvotes.liked {
+            color: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes.liked svg {
+            stroke: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes:hover {
+            color: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes:hover svg {
+            stroke: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes svg {
+            transition: stroke 0.2s ease-in-out;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add click event listener to all upvote buttons
+            document.querySelectorAll('.upvotes').forEach(button => {
+                button.addEventListener('click', handleLike);
+            });
+
+            async function handleLike(event) {
+                const button = event.currentTarget;
+                const postId = button.dataset.postId;
+                const isLiked = button.dataset.likedId === "1";
+                const upvoteSpan = button.querySelector('#upvotes');
+                const currentUpvotes = parseInt(upvoteSpan.textContent);
+
+                try {
+                    const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        // Toggle the liked state
+                        button.dataset.likedId = isLiked ? "0" : "1";
+                        button.classList.toggle('liked');
+
+                        // Update the upvote count
+                        upvoteSpan.textContent = isLiked ?
+                            (currentUpvotes - 1) :
+                            (currentUpvotes + 1);
+                    } else {
+                        console.error('Error:', data.message);
+                        // alert('Failed to update like. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    // alert('Failed to update like. Please try again.');
+                }
+            }
+        });
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Comment toggle functionality
+        const commentToggles = document.querySelectorAll('.comment-toggle');
+        commentToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const postId = toggle.getAttribute('data-post-id');
+                const commentsSection = document.getElementById(`comments-section-${postId}`);
+                commentsSection.classList.toggle('hidden');
+            });
+        });
+    
+        // Comment submission
+        const commentForms = document.querySelectorAll('form[action="/add_comment"]');
+        commentForms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const response = await fetch('/add_comment', {
+                    method: 'POST',
+                    body: formData
+                });
+    
+                if (response.ok) {
+                    const postId = formData.get('post_id');
+                    const content = formData.get('content');
+                    const commentsContainer = document.getElementById(`comments-${postId}`);
+                    const newComment = document.createElement('div');
+                    newComment.className = 'bg-gray-100 p-3 rounded-md';
+                    newComment.innerHTML = 
+                    '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                    '<p class="text-gray-700">' + content + '</p>' +
+                    '<p class="text-xs text-gray-500 mt-1">Just now</p>';
+                    commentsContainer.prepend(newComment);
+                    form.reset();
+    
+                    // Update comment count
+                    const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                    const countSpan = commentToggle.querySelector('span');
+                    const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                    countSpan.textContent = `${currentCount + 1} comments`;
+                }
+            });
+        });
+    });
+    </script>
+</main>
+
+</body>
 ```````
 
 `/home/ramees/progs/php/sora/README.md`:

@@ -364,6 +364,35 @@ function update($username, $data){
 	
 }
 
+
+
+public function get_followed_users($user_id) {
+    $stmt = $this->db->prepare("
+        SELECT u.id, u.username, u.profile_picture
+        FROM users u
+        JOIN follows f ON u.id = f.followed_id
+        WHERE f.follower_id = ?
+    ");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+public function search_users($query) {
+    $query = "%$query%";
+    $stmt = $this->db->prepare("
+        SELECT id, username, profile_picture
+        FROM users
+        WHERE username LIKE ?
+        LIMIT 10
+    ");
+    $stmt->bind_param("s", $query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
 }                   
 
 function test_input(string $data): string{

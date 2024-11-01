@@ -10,34 +10,16 @@
                 <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
                 <div class="space-y-4">
                     <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
-                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Online</h3>
-                        <ul class="space-y-3">
-                            <li class="flex items-center space-x-3">
-                                <div class="relative">
-                                    <img src="/api/placeholder/40/40" alt="Alice" class="w-10 h-10 rounded-full">
-                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
-                                </div>
-                                <span class="font-medium">Alice Johnson</span>
-                            </li>
-                            <li class="flex items-center space-x-3">
-                                <div class="relative">
-                                    <img src="/api/placeholder/40/40" alt="Bob" class="w-10 h-10 rounded-full">
-                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
-                                </div>
-                                <span class="font-medium">Bob Smith</span>
-                            </li>
+                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Followed Users</h3>
+                        <ul class="space-y-3" id="followed-users-list">
+                            <!-- Followed users will be populated here -->
                         </ul>
                     </div>
                     <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
-                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Offline</h3>
-                        <ul class="space-y-3">
-                            <li class="flex items-center space-x-3">
-                                <div class="relative">
-                                    <img src="/api/placeholder/40/40" alt="Charlie" class="w-10 h-10 rounded-full">
-                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-gray-400 border-2 border-white rounded-full"></span>
-                                </div>
-                                <span class="font-medium text-gray-500">Charlie Brown</span>
-                            </li>
+                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Search Users</h3>
+                        <input type="text" id="user-search" class="w-full p-2 rounded-md" placeholder="Search users...">
+                        <ul class="space-y-3 mt-3" id="search-results">
+                            <!-- Search results will be populated here -->
                         </ul>
                     </div>
                 </div>
@@ -197,6 +179,71 @@
         });
     });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded' , function() {
+    // Load followed users
+    fetch('/get_followed_users')
+        .then(response => response.json())
+        .then(users => {
+            const usersList = document.getElementById('followed-users-list');
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center space-x-3';
+                li.innerHTML = `
+                    <div class="relative">
+                        <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
+                    </div>
+                    <span class="font-medium">${user.username}</span>
+                `;
+                usersList.appendChild(li);
+            });
+        });
+
+    // Handle user search
+    const searchInput = document.getElementById('user-search');
+    const searchResults = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', debounce(function() {
+        const query = this.value;
+        if (query.length < 2) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        fetch(`/search_users?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(users => {
+                searchResults.innerHTML = '';
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center space-x-3';
+                    li.innerHTML = `
+                        <div class="relative">
+                            <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
+                        </div>
+                        <span class="font-medium">${user.username}</span>
+                    `;
+                    searchResults.appendChild(li);
+                });
+            });
+    }, 300));
+
+    // Debounce function to limit API calls
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+});
+</script>
+
     </main>
 </body>
 </html>
