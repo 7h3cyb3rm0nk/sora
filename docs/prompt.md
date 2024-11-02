@@ -6,6 +6,9 @@ Source Tree:
 sora
 ├── tailwind.config.js
 ├── public
+│   ├── js
+│   │   ├── status.js
+│   │   └── follow.js
 │   ├── images
 │   │   ├── sora-login.jpg
 │   │   ├── sora-bg1.jpg
@@ -92,6 +95,196 @@ module.exports = {
 }
 
 
+```````
+
+`/home/ramees/progs/php/sora/public/js/status.js`:
+
+```````js
+document.addEventListener('DOMContentLoaded', function() {
+    const statusForm = document.getElementById('status-form');
+    const statusInput = document.getElementById('status-input');
+    const currentStatus = document.getElementById('current-status');
+    const removeStatusBtn = document.getElementById('remove-status-btn');
+
+    statusForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newStatus = statusInput.value.trim();
+        updateStatus(newStatus);
+    });
+
+    removeStatusBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        updateStatus('');
+    });
+
+    function updateStatus(status) {
+        fetch('/update_status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: status })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (status === '') {
+                    currentStatus.textContent = 'No status set';
+                    currentStatus.classList.add('text-gray-500');
+                } else {
+                    currentStatus.textContent = status;
+                    currentStatus.classList.remove('text-gray-500');
+                }
+                statusInput.value = '';
+                updateRemoveButtonVisibility();
+            } else {
+                alert('Failed to update status. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating status.');
+        });
+    }
+
+    function updateRemoveButtonVisibility() {
+        if (currentStatus.textContent === 'No status set') {
+            removeStatusBtn.classList.add('hidden');
+        } else {
+            removeStatusBtn.classList.remove('hidden');
+        }
+    }
+
+    // Initial call to set the correct visibility of the remove button
+    // updateRemoveButtonVisibility();
+});
+```````
+
+`/home/ramees/progs/php/sora/public/js/follow.js`:
+
+```````js
+document.addEventListener('DOMContentLoaded', function() {
+    const followedUsersList = document.getElementById('followed-users-list');
+    const searchInput = document.getElementById('user-search');
+    const searchResults = document.getElementById('search-results');
+    const followersUsersList = document.getElementById('followers-users-list');
+
+    // Load followed users and followers
+    loadFollowedUsers();
+    loadFollowersUsers();
+
+    // Handle user search
+    searchInput.addEventListener('input', debounce(searchUsers, 300));
+
+    // Function to load followed users
+    function loadFollowedUsers() {
+        fetch('/get_followed_users')
+            .then(response => response.json())
+            .then(users => {
+                followedUsersList.innerHTML = '';
+                users.forEach(user => {
+                    followedUsersList.appendChild(createUserListItem(user, true));
+                });
+            });
+    }
+
+    // Function to load followers
+    function loadFollowersUsers() {
+        fetch('/get_followers_users')
+            .then(response => response.json())
+            .then(users => {
+                followersUsersList.innerHTML = '';
+                users.forEach(user => {
+                    followersUsersList.appendChild(createUserListItem(user, user.isFollowing));
+                });
+            });
+    }
+
+    // Function to search users
+    function searchUsers() {
+        const query = searchInput.value;
+        if (query.length < 1) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        fetch(`/search_users?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(users => {
+                searchResults.innerHTML = '';
+                users.forEach(user => {
+                    searchResults.appendChild(createUserListItem(user, user.isFollowing));
+                });
+            });
+    }
+
+    // Function to create a user list item
+    function createUserListItem(user, isFollowed) {
+        const li = document.createElement('li');
+        li.className = 'flex items-center justify-between space-x-3';
+        
+        const statusHtml = user.status ? `<p class="text-xs text-gray-500">${user.status}</p>` : '';
+        
+        li.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
+                <div>
+                    <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
+                    ${statusHtml}
+                </div>
+            </div>
+            <button class="follow-btn px-2 py-1 rounded-full text-sm font-medium ${isFollowed ? 'bg-gray-200 text-gray-800' : 'bg-blue-500 text-white'}" data-user-id="${user.id}">
+                ${isFollowed ? 'Unfollow' : 'Follow'}
+            </button>
+        `;
+
+        const followBtn = li.querySelector('.follow-btn');
+        followBtn.addEventListener('click', () => toggleFollow(user.id, followBtn));
+
+        return li;
+    }
+
+    // Function to toggle follow/unfollow
+    function toggleFollow(userId, button) {
+        const isFollowing = button.textContent.trim() === 'Unfollow';
+        const action = isFollowing ? 'unfollow' : 'follow';
+
+        fetch(`/${action}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: userId })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                if (isFollowing) {
+                    button.textContent = 'Follow';
+                    button.classList.remove('bg-gray-200', 'text-gray-800');
+                    button.classList.add('bg-blue-500', 'text-white');
+                } else {
+                    button.textContent = 'Unfollow';
+                    button.classList.remove('bg-blue-500', 'text-white');
+                    button.classList.add('bg-gray-200', 'text-gray-800');
+                }
+                // Refresh the followed users list and followers list
+                loadFollowedUsers();
+                loadFollowersUsers();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Debounce function to limit API calls
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+});
 ```````
 
 `/home/ramees/progs/php/sora/public/css/imports.css`:
@@ -902,8 +1095,8 @@ video {
   width: 1rem;
 }
 
-.w-64 {
-  width: 16rem;
+.w-72 {
+  width: 18rem;
 }
 
 .w-fit {
@@ -1067,6 +1260,14 @@ video {
   align-self: flex-end;
 }
 
+.justify-self-end {
+  justify-self: end;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
 .overflow-hidden {
   overflow: hidden;
 }
@@ -1170,6 +1371,11 @@ video {
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 
+.bg-gray-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(75 85 99 / var(--tw-bg-opacity));
+}
+
 .bg-indigo-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(79 70 229 / var(--tw-bg-opacity));
@@ -1183,6 +1389,11 @@ video {
 .bg-sora-bg {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
+.bg-sora-primary {
+  --tw-bg-opacity: 1;
+  background-color: rgb(79 70 229 / var(--tw-bg-opacity));
 }
 
 .bg-violet-600 {
@@ -1271,6 +1482,11 @@ video {
   padding-right: 1.5rem;
 }
 
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
 .py-12 {
   padding-top: 3rem;
   padding-bottom: 3rem;
@@ -1324,6 +1540,10 @@ video {
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
+}
+
+.text-\[1\.16em\] {
+  font-size: 1.16em;
 }
 
 .text-lg {
@@ -1464,10 +1684,6 @@ video {
   color: rgb(107 114 128 / var(--tw-placeholder-opacity));
 }
 
-.opacity-85 {
-  opacity: 0.85;
-}
-
 .opacity-95 {
   opacity: 0.95;
 }
@@ -1574,6 +1790,11 @@ video {
   background-color: rgb(29 78 216 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-gray-700:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-indigo-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(67 56 202 / var(--tw-bg-opacity));
@@ -1582,6 +1803,11 @@ video {
 .hover\:bg-red-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(220 38 38 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-sora-secondary:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(129 140 248 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-violet-50:hover {
@@ -1856,7 +2082,10 @@ $app->router->get('/logout', [UserController::class, 'logout']);
 $app->router->get('/profile', [UserController::class, 'profile']);
 $app->router->get('/profile/:any', [UserController::class, 'profile']);
 $app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
+$app->router->get('/get_followers_users', [UserController::class, 'get_followers_users']);
 $app->router->get('/search_users', [UserController::class, 'search_users']);
+$app->router->get('/get_user_status', [UserController::class, 'getUserStatus']);
+
 
 $app->router->post('/create', [PostController::class, 'create']);
 $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
@@ -1867,6 +2096,7 @@ $app->router->post('/delete_post', [PostController::class, 'delete_post']);
 $app->router->post('/delete_comment', [PostController::class, 'delete_comment']);
 $app->router->post('/follow', [UserController::class, 'follow']);
 $app->router->post('/unfollow', [UserController::class, 'unfollow']);
+$app->router->post('/update_status', [UserController::class, 'updateStatus']);
 
 $app->run();
 
@@ -2543,7 +2773,7 @@ class PostController {
         HTML;
     }
         $html = <<<HTML
-    <div class="bg-gray-300 p-4 rounded-lg shadow opacity-95 shadow-sm hover:shadow-md transition duration-300">
+    <div class="bg-gray-300 p-4 rounded-lg shadow opacity-95 text-[1.16em] shadow-sm hover:shadow-md transition duration-300">
         <div class="flex items-center mb-2">
             $pfp_avatar
             <div>
@@ -2819,6 +3049,7 @@ class UserController {
     if($response['success'] === true) {
       $_SESSION['username'] = $_POST['username'];
       $_SESSION['user_id'] = $response['user']['id'];
+      $_SESSION['user_status'] = $response['user']['status'];
       header('Location: /');
       exit;
     }
@@ -2844,7 +3075,7 @@ class UserController {
     session_regenerate_id(true);
     $_SESSION['username'] = $response['user']['username'];
     $_SESSION['user_id'] = $response['user']['id'];
-    
+    $_SESSION['user_status'] = $response['user']['status'];
     header('Location: /');
     exit;
     }
@@ -2976,14 +3207,30 @@ public function get_followed_users() {
   echo json_encode($followed_users);
 }
 
+public function get_followers_users(){
+  $user_id = $_SESSION['user_id'];
+  $followers_users = $this->userModel->get_followers_users($user_id);
+  $formatted_result = array_map(function($user){
+    $isFollowing = $this->userModel->isFollowing($_SESSION["user_id"], $user["id"]);
+    $user['isFollowing'] = $isFollowing;
+    return $user;
+  }, $followers_users);
+  echo json_encode($formatted_result);
+}
+
 public function search_users() {
   $query = $_GET['query'] ?? '';
   $results = $this->userModel->search_users($query);
+  
   $formatted_results = array_map(function($user) {
+
+    $isFollowing = $this->userModel->isFollowing($_SESSION["user_id"], $user["id"]);
+    $user["isFollowing"] = $isFollowing;
     return [
         'id' => $user['id'],
         'username' => $user['username'],
-        'profile_picture' => $user['profile_picture'] ?? '/images/icons/user-avatar.png'
+        'profile_picture' => $user['profile_picture'] ?? '/images/icons/user-avatar.png',
+        'isFollowing'    => $user["isFollowing"] 
     ];
 }, $results);
 
@@ -3020,8 +3267,35 @@ public function unfollow() {
 }
   
 
-
+public function updateStatus() {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = json_decode(file_get_contents('php://input'), true);
+      $userId = $_SESSION['user_id'];
+      $status = $input['status'];
+      
+      // If status is empty, set it to NULL in the database
+      $status = empty($status) ? null : $status;
+      // $_SESSION['status'] = empty($status) ? "" : $status;
+      
+      if ($this->userModel->updateStatus($userId, $status)) {
+        
+          $_SESSION['user_status'] = $status;
+          echo json_encode(['success' => true]);
+          exit;
+      }
+  }
+  echo json_encode(['success' => false]);
 }
+
+public function getUserStatus() {
+  $userId = $_SESSION['user_id'];
+  $status = $this->userModel->getUserStatus($userId);
+  echo json_encode(['status' => $status]);
+}
+}
+
+
+
 
 ```````
 
@@ -3091,7 +3365,7 @@ class UserModel {
 				                          values(?,?,?,?,?)");
 			$stmt->bind_param("sssss", $firstName, $lastName, $username, $email, $hashed_password);
 			if($stmt->execute()){
-				$query = $this->db->prepare("select id from users where username = ?");
+				$query = $this->db->prepare("select id,status from users where username = ?");
 				$query->bind_param("s", $username);
 				$query->execute();
 				$result = $query->get_result();
@@ -3122,7 +3396,7 @@ class UserModel {
 		*                 'user'  (array) - user details.
 		*/                                                                                     
 	public function authenticate(string $username, string $password): ?array { 
-       $stmt = $this->db->prepare("SELECT id, username, password FROM users where username = ? or email = ?" );
+       $stmt = $this->db->prepare("SELECT id, username, status, password FROM users where username = ? or email = ?" );
        $stmt->bind_param("ss", $username,$username);     
  			 $stmt->execute();
  			 $result = $stmt->get_result();
@@ -3305,7 +3579,7 @@ public function isFollowing($followerId, $followedId) {
     $stmt->bind_param("ii", $followerId, $followedId);
     $stmt->execute();
     $result = $stmt->get_result();
-    return $result->num_rows > 0;
+    return $result->num_rows > 0 ;
 }
 
 
@@ -3431,7 +3705,7 @@ function update($username, $data){
 
 public function get_followed_users($user_id) {
     $stmt = $this->db->prepare("
-        SELECT u.id, u.username, u.profile_picture
+        SELECT u.id, u.username, u.profile_picture, u.status
         FROM users u
         JOIN follows f ON u.id = f.followed_id
         WHERE f.follower_id = ?
@@ -3442,18 +3716,48 @@ public function get_followed_users($user_id) {
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
-public function search_users($query) {
-    $query = "%$query%";
-    $stmt = $this->db->prepare("
-        SELECT id, username, profile_picture
-        FROM users
-        WHERE username LIKE ?
-        LIMIT 10
+public function get_followers_users($user_id){
+	$stmt = $this->db->prepare("
+        SELECT u.id, u.username, u.profile_picture, u.status
+        FROM users u
+        JOIN follows f ON u.id = f.follower_id
+        WHERE f.followed_id = ? 
     ");
-    $stmt->bind_param("s", $query);
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
     return $result->fetch_all(MYSQLI_ASSOC);
+
+}
+
+public function search_users($query) {
+    $query = "%$query%";
+    $stmt = $this->db->prepare("
+        SELECT id, username, profile_picture, status
+        FROM users
+        WHERE username LIKE ? AND username != ?
+        LIMIT 10
+    ");
+    $stmt->bind_param("ss", $query, $_SESSION["username"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+public function updateStatus($userId, $status) {
+	$stmt = $this->db->prepare("UPDATE users SET status = ? WHERE id = ?");
+	$stmt->bind_param("si", $status, $userId);
+	return $stmt->execute();
+}
+
+
+public function getUserStatus($userId) {
+	$stmt = $this->db->prepare("SELECT status FROM users WHERE id = ?");
+	$stmt->bind_param("i", $userId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$row = $result->fetch_assoc();
+	return $row ? $row['status'] : null;
 }
 
 }                   
@@ -4096,7 +4400,21 @@ class PostModel{
                     </div>
                 </form>
             </div>
-            <div class="flex flex-col space-y-4 overflow-y-auto">
+
+            <!-- <div class="border-b border-gray-200 bg-gray-100 pt-3 px-4 rounded-md mb-6 hover:shadow-md">
+                <nav class="-mb-px flex space-x-8">
+                    <a href="#" class="border-b-2 border-blue-500 pb-4 px-1 text-sm font-medium text-blue-600">
+                        Posts
+                    </a>
+                    <a href="#"
+                        class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Comments
+                    </a>
+                    
+                </nav>
+            </div> -->
+
+            <div class="flex flex-col space-y-4 overflow-y-auto" id="tweets-pane">
                 <?php
             $this->postController->render_tweets( $_SESSION["user_id"], $self=true);
 
@@ -4536,33 +4854,59 @@ class PostModel{
 ```````html
 <!DOCTYPE html>
 <html class="h-full" lang="en">
+<!-- <?php $_SERVER["title"] = "SORA | HOME" ?> -->
+
 <?php include_once __DIR__."/html_head.html"?>
 <body class="h-full text-gray-900 flex flex-col w-full" style="background: url('/images/sora-bg.png')">
        
 <?php include_once __DIR__."/navbar.html" ?>
-    <main class="flex-grow flex overflow-hidden">
-        <aside class="w-64 bg-gray-100 opacity-85 shadow-lg overflow-y-auto hidden md:block">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
-                <div class="space-y-4">
-                    <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
-                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Followed Users</h3>
-                        <ul class="space-y-3" id="followed-users-list">
-                            <!-- Followed users will be populated here -->
-                        </ul>
-                    </div>
-                    <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
-                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Search Users</h3>
-                        <input type="text" id="user-search" class="w-full p-2 rounded-md" placeholder="Search users...">
-                        <ul class="space-y-3 mt-3" id="search-results">
-                            <!-- Search results will be populated here -->
-                        </ul>
+    
+        <main class="flex-grow flex overflow-hidden">
+            <aside class="w-72 bg-gray-100 opacity-95 shadow-lg overflow-y-auto hidden md:block">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
+                    <div class="space-y-4">
+                        <div class="bg-gray-300 rounded-lg p-4 transition overflow-auto duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Following</h3>
+                            <ul class="space-y-3" id="followed-users-list">
+                                <!-- Followed users will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 overflow-auto transition duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Followers</h3>
+                            <ul class="space-y-3" id="followers-users-list">
+                                <!-- Followers  will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 transition duration-300 overflow-auto hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Search Users</h3>
+                            <input type="text" id="user-search" class="w-full p-2 rounded-md" placeholder="Search users...">
+                            <ul class="space-y-3 mt-3" id="search-results">
+                                <!-- Search results will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Your Status</h3>
+                            <p id="current-status" class="mb-2 text-gray-700 <?php echo empty($_SESSION['user_status']) ? 'text-gray-500' : ''; ?>">
+                                <?php echo htmlspecialchars($_SESSION['user_status'] ?? 'No status set'); ?>
+                            </p>
+                            <form id="status-form" class="mt-2">
+                                <input type="text" id="status-input" class="w-full p-2 rounded-md mb-2" placeholder="Update your status...">
+                                <div class="flex justify-between gap-3  ">
+                                <button type="submit" id="update-status-btn" class="bg-sora-primary text-white px-4 py-2 rounded-md hover:bg-sora-secondary transition-colors duration-300 text-sm">
+                                    Update Status
+                                </button>
+                                <button id="remove-status-btn" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300 text-sm <?php echo empty($_SESSION['user_status']) ? 'hidden' : ''; ?>">
+                                    Remove Status
+                                </button>
+                            </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </aside> 
+            </aside> 
 
-        <div class="flex-grow flex flex-col overflow-hidden">
+        <div class="flex-grow flex flex-col w-24 overflow-hidden">
             <section class="flex-grow p-4 overflow-y-auto">
                 <h1 class="text-2xl font-bold mb-4 text-sora-primary bg-gray-300 w-fit p-2 rounded-md shadow-md">Tweets</h1>
                 <div class="space-y-4">
@@ -4594,6 +4938,7 @@ class PostModel{
                 </div>
             </footer>
         </div>
+        </main> 
 
         <style>
             /* Upvote button styles */
@@ -4621,6 +4966,9 @@ class PostModel{
                 transition: stroke 0.2s ease-in-out;
             }
         </style>
+        <script src="/js/status.js"></script>
+        <script src="/js/follow.js"></script>
+    </body>
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -4752,72 +5100,14 @@ class PostModel{
                     const countSpan = commentToggle.querySelector('span');
                     const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
                     countSpan.textContent = `${currentCount + 1} comments`;
+                    window.location.reload();
                 }
             });
         });
     });
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded' , function() {
-    // Load followed users
-    fetch('/get_followed_users')
-        .then(response => response.json())
-        .then(users => {
-            const usersList = document.getElementById('followed-users-list');
-            users.forEach(user => {
-                const li = document.createElement('li');
-                li.className = 'flex items-center space-x-3';
-                li.innerHTML = `
-                    <div class="relative">
-                        <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
-                    </div>
-                    <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
-                `;
-                usersList.appendChild(li);
-            });
-        });
 
-    // Handle user search
-    const searchInput = document.getElementById('user-search');
-    const searchResults = document.getElementById('search-results');
-
-    searchInput.addEventListener('input', debounce(function() {
-        console.log("in here");
-        const query = this.value;
-        if (query.length < 1) {
-            searchResults.innerHTML = '';
-            return;
-        }
-
-        fetch(`/search_users?query=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(users => {
-                searchResults.innerHTML = '';
-                users.forEach(user => {
-                    const li = document.createElement('li');
-                    li.className = 'flex items-center space-x-3';
-                    li.innerHTML = `
-                        <div class="relative">
-                            <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
-                        </div>
-                        <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
-                    `;
-                    searchResults.appendChild(li);
-                });
-            });
-    }, 100));
-
-    // Debounce function to limit API calls
-    function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
-});
-</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -4908,9 +5198,10 @@ class PostModel{
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | Sora</title>
+    <title><?= $_SERVER["title"]??"SORA" ?></title>
     <link rel="stylesheet" href="/css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
 </head>
 ```````
 
@@ -4988,7 +5279,7 @@ require __DIR__ . "/../Views/navbar.html";
         </div>
 
         <!-- Tab Navigation -->
-        <div class="border-b border-gray-200 bg-gray-100 pt-3 px-4 rounded-md mb-6 hover:shadow-md">
+        <!-- <div class="border-b border-gray-200 bg-gray-100 pt-3 px-4 rounded-md mb-6 hover:shadow-md">
             <nav class="-mb-px flex space-x-8">
                 <a href="#" class="border-b-2 border-blue-500 pb-4 px-1 text-sm font-medium text-blue-600">
                     Posts
@@ -4997,21 +5288,13 @@ require __DIR__ . "/../Views/navbar.html";
                     class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
                     Comments
                 </a>
-                <a href="#"
-                    class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                    Likes
-                </a>
+                
             </nav>
-        </div>
+        </div> -->
 
         <!-- Posts Grid -->
         <div class="grid grid-cols-1 gap-6">
-            <!-- <div class="bg-white rounded-lg shadow p-6">
-                <p class="text-gray-800">Just deployed my first web application! Check it out at example.com #webdev #coding</p>
-                <div class="mt-4 text-gray-500 text-sm">
-                    2 hours ago
-                </div>
-            </div> -->
+           
 
             <?php $this->render_user_tweets($data); ?>
 

@@ -166,6 +166,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_get_followed_users"
         },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Aget_followers_users\u0028\u0029",
+            "name": "get_followers_users",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_get_followers_users"
+        },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Asearch_users\u0028\u0029",
             "name": "search_users",
             "summary": "",
@@ -180,6 +185,16 @@ Search.appendIndex(
             "name": "unfollow",
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_unfollow"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003AupdateStatus\u0028\u0029",
+            "name": "updateStatus",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_updateStatus"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003AgetUserStatus\u0028\u0029",
+            "name": "getUserStatus",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_getUserStatus"
         },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003A\u0024userModel",
             "name": "userModel",
@@ -436,10 +451,25 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_get_followed_users"
         },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_followers_users\u0028\u0029",
+            "name": "get_followers_users",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_followers_users"
+        },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Asearch_users\u0028\u0029",
             "name": "search_users",
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_search_users"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AupdateStatus\u0028\u0029",
+            "name": "updateStatus",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_updateStatus"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AgetUserStatus\u0028\u0029",
+            "name": "getUserStatus",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_getUserStatus"
         },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003A\u0024db",
             "name": "db",
