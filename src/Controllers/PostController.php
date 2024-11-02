@@ -103,7 +103,7 @@ class PostController {
         HTML;
     }
         $html = <<<HTML
-    <div class="bg-gray-300 p-4 rounded-lg shadow opacity-95 shadow-sm hover:shadow-md transition duration-300">
+    <div class="bg-gray-300 p-4 rounded-lg shadow opacity-95 text-[1.16em] shadow-sm hover:shadow-md transition duration-300">
         <div class="flex items-center mb-2">
             $pfp_avatar
             <div>

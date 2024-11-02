@@ -1236,6 +1236,10 @@ video {
   line-height: 2.25rem;
 }
 
+.text-\[1\.16em\] {
+  font-size: 1.16em;
+}
+
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -1372,10 +1376,6 @@ video {
 .placeholder-gray-500::placeholder {
   --tw-placeholder-opacity: 1;
   color: rgb(107 114 128 / var(--tw-placeholder-opacity));
-}
-
-.opacity-85 {
-  opacity: 0.85;
 }
 
 .opacity-95 {
