@@ -4,27 +4,51 @@
 <body class="h-full text-gray-900 flex flex-col w-full" style="background: url('/images/sora-bg.png')">
        
 <?php include_once __DIR__."/navbar.html" ?>
-    <main class="flex-grow flex overflow-hidden">
-        <aside class="w-64 bg-gray-100 opacity-85 shadow-lg overflow-y-auto hidden md:block">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
-                <div class="space-y-4">
-                    <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
-                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Followed Users</h3>
-                        <ul class="space-y-3" id="followed-users-list">
-                            <!-- Followed users will be populated here -->
-                        </ul>
-                    </div>
-                    <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
-                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Search Users</h3>
-                        <input type="text" id="user-search" class="w-full p-2 rounded-md" placeholder="Search users...">
-                        <ul class="space-y-3 mt-3" id="search-results">
-                            <!-- Search results will be populated here -->
-                        </ul>
+    
+        <main class="flex-grow flex overflow-hidden">
+            <aside class="w-72 bg-gray-100 opacity-95 shadow-lg overflow-y-auto hidden md:block">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
+                    <div class="space-y-4">
+                        <div class="bg-gray-300 rounded-lg p-4 transition overflow-auto duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Following</h3>
+                            <ul class="space-y-3" id="followed-users-list">
+                                <!-- Followed users will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 overflow-auto transition duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Followers</h3>
+                            <ul class="space-y-3" id="followers-users-list">
+                                <!-- Followers  will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 transition duration-300 overflow-auto hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Search Users</h3>
+                            <input type="text" id="user-search" class="w-full p-2 rounded-md" placeholder="Search users...">
+                            <ul class="space-y-3 mt-3" id="search-results">
+                                <!-- Search results will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Your Status</h3>
+                            <p id="current-status" class="mb-2 text-gray-700 <?php echo empty($_SESSION['user_status']) ? 'text-gray-500' : ''; ?>">
+                                <?php echo htmlspecialchars($_SESSION['user_status'] ?? 'No status set'); ?>
+                            </p>
+                            <form id="status-form" class="mt-2">
+                                <input type="text" id="status-input" class="w-full p-2 rounded-md mb-2" placeholder="Update your status...">
+                                <div class="flex justify-between gap-3  ">
+                                <button type="submit" id="update-status-btn" class="bg-sora-primary text-white px-4 py-2 rounded-md hover:bg-sora-secondary transition-colors duration-300 text-sm">
+                                    Update Status
+                                </button>
+                                <button id="remove-status-btn" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300 text-sm <?php echo empty($_SESSION['user_status']) ? 'hidden' : ''; ?>">
+                                    Remove Status
+                                </button>
+                            </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </aside> 
+            </aside> 
 
         <div class="flex-grow flex flex-col overflow-hidden">
             <section class="flex-grow p-4 overflow-y-auto">
@@ -58,6 +82,7 @@
                 </div>
             </footer>
         </div>
+        </main> 
 
         <style>
             /* Upvote button styles */
@@ -85,6 +110,9 @@
                 transition: stroke 0.2s ease-in-out;
             }
         </style>
+        <script src="/js/status.js"></script>
+        <script src="/js/follow.js"></script>
+    </body>
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -216,72 +244,14 @@
                     const countSpan = commentToggle.querySelector('span');
                     const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
                     countSpan.textContent = `${currentCount + 1} comments`;
+                    window.location.reload();
                 }
             });
         });
     });
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded' , function() {
-    // Load followed users
-    fetch('/get_followed_users')
-        .then(response => response.json())
-        .then(users => {
-            const usersList = document.getElementById('followed-users-list');
-            users.forEach(user => {
-                const li = document.createElement('li');
-                li.className = 'flex items-center space-x-3';
-                li.innerHTML = `
-                    <div class="relative">
-                        <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
-                    </div>
-                    <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
-                `;
-                usersList.appendChild(li);
-            });
-        });
 
-    // Handle user search
-    const searchInput = document.getElementById('user-search');
-    const searchResults = document.getElementById('search-results');
-
-    searchInput.addEventListener('input', debounce(function() {
-        console.log("in here");
-        const query = this.value;
-        if (query.length < 1) {
-            searchResults.innerHTML = '';
-            return;
-        }
-
-        fetch(`/search_users?query=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(users => {
-                searchResults.innerHTML = '';
-                users.forEach(user => {
-                    const li = document.createElement('li');
-                    li.className = 'flex items-center space-x-3';
-                    li.innerHTML = `
-                        <div class="relative">
-                            <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
-                        </div>
-                        <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
-                    `;
-                    searchResults.appendChild(li);
-                });
-            });
-    }, 100));
-
-    // Debounce function to limit API calls
-    function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
-});
-</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

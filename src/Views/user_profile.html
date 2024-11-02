@@ -69,7 +69,7 @@ require __DIR__ . "/../Views/navbar.html";
         </div>
 
         <!-- Tab Navigation -->
-        <div class="border-b border-gray-200 bg-gray-100 pt-3 px-4 rounded-md mb-6 hover:shadow-md">
+        <!-- <div class="border-b border-gray-200 bg-gray-100 pt-3 px-4 rounded-md mb-6 hover:shadow-md">
             <nav class="-mb-px flex space-x-8">
                 <a href="#" class="border-b-2 border-blue-500 pb-4 px-1 text-sm font-medium text-blue-600">
                     Posts
@@ -78,21 +78,13 @@ require __DIR__ . "/../Views/navbar.html";
                     class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
                     Comments
                 </a>
-                <a href="#"
-                    class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                    Likes
-                </a>
+                
             </nav>
-        </div>
+        </div> -->
 
         <!-- Posts Grid -->
         <div class="grid grid-cols-1 gap-6">
-            <!-- <div class="bg-white rounded-lg shadow p-6">
-                <p class="text-gray-800">Just deployed my first web application! Check it out at example.com #webdev #coding</p>
-                <div class="mt-4 text-gray-500 text-sm">
-                    2 hours ago
-                </div>
-            </div> -->
+           
 
             <?php $this->render_user_tweets($data); ?>
 

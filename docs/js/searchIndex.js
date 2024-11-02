@@ -56,6 +56,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-PostController.html#method_create"
         },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Adelete_post\u0028\u0029",
+            "name": "delete_post",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_delete_post"
+        },                {
             "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Arender_tweet\u0028\u0029",
             "name": "render_tweet",
             "summary": "",
@@ -85,6 +90,11 @@ Search.appendIndex(
             "name": "add_comment",
             "summary": "",
             "url": "classes/Sora-Controllers-PostController.html#method_add_comment"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Adelete_comment\u0028\u0029",
+            "name": "delete_comment",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_delete_comment"
         },                {
             "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Aget_comments\u0028\u0029",
             "name": "get_comments",
@@ -160,6 +170,16 @@ Search.appendIndex(
             "name": "search_users",
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_search_users"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Afollow\u0028\u0029",
+            "name": "follow",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_follow"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Aunfollow\u0028\u0029",
+            "name": "unfollow",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_unfollow"
         },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003A\u0024userModel",
             "name": "userModel",
@@ -261,6 +281,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Models-PostModel.html#method_create_post"
         },                {
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Adelete_post\u0028\u0029",
+            "name": "delete_post",
+            "summary": "",
+            "url": "classes/Sora-Models-PostModel.html#method_delete_post"
+        },                {
             "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Aview_posts\u0028\u0029",
             "name": "view_posts",
             "summary": "",
@@ -290,6 +315,11 @@ Search.appendIndex(
             "name": "add_comment",
             "summary": "",
             "url": "classes/Sora-Models-PostModel.html#method_add_comment"
+        },                {
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Adelete_comment\u0028\u0029",
+            "name": "delete_comment",
+            "summary": "",
+            "url": "classes/Sora-Models-PostModel.html#method_delete_comment"
         },                {
             "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Aget_comments\u0028\u0029",
             "name": "get_comments",
@@ -365,6 +395,26 @@ Search.appendIndex(
             "name": "get_user_following",
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_get_user_following"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AisFollowing\u0028\u0029",
+            "name": "isFollowing",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_isFollowing"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Afollow\u0028\u0029",
+            "name": "follow",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_follow"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aunfollow\u0028\u0029",
+            "name": "unfollow",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_unfollow"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AgetUsernameById\u0028\u0029",
+            "name": "getUsernameById",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_getUsernameById"
         },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Ahandle_profile_picture\u0028\u0029",
             "name": "handle_profile_picture",
