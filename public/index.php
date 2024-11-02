@@ -26,6 +26,7 @@ $app->router->get('/logout', [UserController::class, 'logout']);
 $app->router->get('/profile', [UserController::class, 'profile']);
 $app->router->get('/profile/:any', [UserController::class, 'profile']);
 $app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
+$app->router->get('/get_followers_users', [UserController::class, 'get_followers_users']);
 $app->router->get('/search_users', [UserController::class, 'search_users']);
 
 $app->router->post('/create', [PostController::class, 'create']);

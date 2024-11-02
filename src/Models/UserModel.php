@@ -412,6 +412,20 @@ public function get_followed_users($user_id) {
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+public function get_followers_users($user_id){
+	$stmt = $this->db->prepare("
+        SELECT u.id, u.username, u.profile_picture
+        FROM users u
+        JOIN follows f ON u.id = f.follower_id
+        WHERE f.followed_id = ? 
+    ");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+
+}
+
 public function search_users($query) {
     $query = "%$query%";
     $stmt = $this->db->prepare("

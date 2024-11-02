@@ -210,6 +210,17 @@ public function get_followed_users() {
   echo json_encode($followed_users);
 }
 
+public function get_followers_users(){
+  $user_id = $_SESSION['user_id'];
+  $followers_users = $this->userModel->get_followers_users($user_id);
+  $formatted_result = array_map(function($user){
+    $isFollowing = $this->userModel->isFollowing($_SESSION["user_id"], $user["id"]);
+    $user['isFollowing'] = $isFollowing;
+    return $user;
+  }, $followers_users);
+  echo json_encode($formatted_result);
+}
+
 public function search_users() {
   $query = $_GET['query'] ?? '';
   $results = $this->userModel->search_users($query);

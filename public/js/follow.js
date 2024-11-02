@@ -2,9 +2,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const followedUsersList = document.getElementById('followed-users-list');
     const searchInput = document.getElementById('user-search');
     const searchResults = document.getElementById('search-results');
+    const followersUsersList = document.getElementById('followers-users-list')
 
     // Load followed users
     loadFollowedUsers();
+    loadFollowersUsers();
 
     // Handle user search
     searchInput.addEventListener('input', debounce(searchUsers, 300));
@@ -19,6 +21,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     followedUsersList.appendChild(createUserListItem(user, true));
                 });
             });
+    }
+
+    function loadFollowersUsers() {
+        fetch('/get_followers_users')
+        .then(response => response.json())
+        .then(users => {
+            followersUsersList.innerHTML = '';
+            users.forEach(user => {
+                followersUsersList.appendChild(createUserListItem(user, user.isFollowing));
+            })
+        })
     }
 
     // Function to search users
@@ -86,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 // Refresh the followed users list
                 loadFollowedUsers();
+                loadFollowersUsers();
             }
         })
         .catch(error => console.error('Error:', error));
