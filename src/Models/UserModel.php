@@ -429,7 +429,7 @@ public function get_followers_users($user_id){
 public function search_users($query) {
     $query = "%$query%";
     $stmt = $this->db->prepare("
-        SELECT id, username, profile_picture, u.status
+        SELECT id, username, profile_picture, status
         FROM users
         WHERE username LIKE ? AND username != ?
         LIMIT 10
