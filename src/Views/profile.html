@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class=" sm:overflow-y-auto md:overflow-hidden">
+<html lang="en" class=" sm:overflow-y-auto md:overflow-auto">
 <?php include_once __DIR__."/html_head.html" ?>
 
 <body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover"
@@ -44,6 +44,7 @@
                             <?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?>
                         </p>
                     </div>
+
                     <button onclick="toggleEdit()"
                         class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                         <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,6 +53,28 @@
                         </svg>
                         Edit Profile
                     </button>
+                </div>
+                <div class="border-t border-b border-gray-200 mt-4 py-3">
+                    <div class="flex justify-around items-center gap-3">
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900">
+                                <?php echo count($data['posts']); ?>
+                            </span>
+                            <span class="text-sm text-gray-500">Posts</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900">
+                                <?php echo count($data['followers']); ?>
+                            </span>
+                            <span class="text-sm text-gray-500">Followers</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900">
+                                <?php echo count($data['following']); ?>
+                            </span>
+                            <span class="text-sm text-gray-500">Following</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -89,8 +112,8 @@
                                     </svg>
                                     <input type="file" name="profile_picture" id="profile-picture-input"
                                         accept="image/*" class="hidden" onchange="previewImage(this)">
-                                    <input type="text" name="profile_picture_state" id="profile-picture-state" 
-                                    class="hidden" value="update">
+                                    <input type="text" name="profile_picture_state" id="profile-picture-state"
+                                        class="hidden" value="update">
                                 </label>
                                 <!-- Delete button -->
                                 <button type="button" id="delete-image-btn" onclick="deleteProfilePicture()"
@@ -196,8 +219,91 @@
                     </div>
                 </form>
             </div>
+            <div class="flex flex-col space-y-4 overflow-y-auto">
+                <?php
+            $this->postController->render_tweets( $_SESSION["user_id"], $self=true);
+
+            ?>
+            </div>
         </div>
     </main>
+    <style>
+        /* Upvote button styles */
+        .upvotes {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .upvotes.liked {
+            color: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes.liked svg {
+            stroke: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes:hover {
+            color: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes:hover svg {
+            stroke: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes svg {
+            transition: stroke 0.2s ease-in-out;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add click event listener to all upvote buttons
+            document.querySelectorAll('.upvotes').forEach(button => {
+                button.addEventListener('click', handleLike);
+            });
+
+            async function handleLike(event) {
+                const button = event.currentTarget;
+                const postId = button.dataset.postId;
+                const isLiked = button.dataset.likedId === "1";
+                const upvoteSpan = button.querySelector('#upvotes');
+                const currentUpvotes = parseInt(upvoteSpan.textContent);
+
+                try {
+                    const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        // Toggle the liked state
+                        button.dataset.likedId = isLiked ? "0" : "1";
+                        button.classList.toggle('liked');
+
+                        // Update the upvote count
+                        upvoteSpan.textContent = isLiked ?
+                            (currentUpvotes - 1) :
+                            (currentUpvotes + 1);
+                    } else {
+                        console.error('Error:', data.message);
+                        // alert('Failed to update like. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    // alert('Failed to update like. Please try again.');
+                }
+            }
+        });
+    </script>
 
     <script>
         function toggleEdit() {
@@ -247,7 +353,7 @@
 
             // Reset the file input
             fileInput.value = '';
-            profileState.value="delete";
+            profileState.value = "delete";
 
             // Show default image
             preview.classList.add('hidden');
@@ -276,6 +382,133 @@
         });
 
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Comment toggle functionality
+            const commentToggles = document.querySelectorAll('.comment-toggle');
+            commentToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const postId = toggle.getAttribute('data-post-id');
+                    const commentsSection = document.getElementById(`comments-section-${postId}`);
+                    commentsSection.classList.toggle('hidden');
+                });
+            });
+        
+            // Comment submission
+            const commentForms = document.querySelectorAll('form[action="/add_comment"]');
+            commentForms.forEach(form => {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    const response = await fetch('/add_comment', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const username = form.dataset.username;
+        
+                    if (response.ok) {
+                        const postId = formData.get('post_id');
+                        const content = formData.get('content');
+                        const commentsContainer = document.getElementById(`comments-${postId}`);
+                        const newComment = document.createElement('div');
+                        newComment.className = 'bg-gray-100 p-3 rounded-md';
+                        newComment.innerHTML = 
+                        '<p class="font-semibold text-sm">' + username + '</p>' +
+                        '<p class="text-gray-700">' + content + '</p>' +
+                        '<p class="text-xs text-gray-500 mt-1">Just now</p>';
+                        commentsContainer.prepend(newComment);
+                        form.reset();
+        
+                        // Update comment count
+                        const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                        const countSpan = commentToggle.querySelector('span');
+                        const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                        countSpan.textContent = `${currentCount + 1} comments`;
+                    }
+                });
+            });
+        });
+        </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.delete-tweet').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const postId = button.getAttribute('data-post-id');
+                    if (confirm('Are you sure you want to delete this tweet?')) {
+                        try {
+                            const response = await fetch('/delete_post', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ post_id: postId })
+                            });
+
+                            const data = await response.json();
+
+                            if (data.status === 'success') {
+                                // Remove the tweet from the DOM
+                                const tweetElement = button.closest('.bg-gray-300');
+                                tweetElement.remove();
+                            } else {
+                                alert('Failed to delete tweet: ' + data.message);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Failed to delete tweet. Please try again.');
+                        }
+                    }
+                });
+            });
+        });
+
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Existing event listeners
+        
+            // Add event listener for delete comment buttons
+            document.body.addEventListener('click', async function(e) {
+                if (e.target.closest('.delete-comment')) {
+                    e.preventDefault();
+                    const button = e.target.closest('.delete-comment');
+                    if (confirm('Are you sure you want to delete this comment?')) {
+                        const commentId = button.getAttribute('data-comment-id');
+                        const response = await fetch('/delete_comment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `comment_id=${commentId}`
+                        });
+        
+                        const result = await response.json();
+        
+                        if (result.status === 'success') {
+                            // Remove the comment from the DOM
+                            const commentElement = button.closest('.bg-gray-100');
+                            const commentsContainer = commentElement.closest('.space-y-2');
+                            commentElement.remove();
+        
+                            // Update comment count
+                            const postId = commentsContainer.id.split('-')[1];
+                            const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                            const countSpan = commentToggle.querySelector('span');
+                            const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                            countSpan.textContent = `${currentCount - 1} comments`;
+                        } else {
+                            alert('Failed to delete comment. Please try again.');
+                        }
+                    }
+                }
+            });
+        });
+        </script>
+
+        
 </body>
 
 </html>

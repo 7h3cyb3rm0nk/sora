@@ -13,82 +13,342 @@ require __DIR__ . "/../Views/navbar.html";
             <div class="flex items-start justify-between mb-6">
                 <div class="flex items-center space-x-6">
                     <div class="w-24 h-24 rounded-full bg-gray-200 overflow-hidden">
-                        <img src="<?=$user['profile_picture']?>" 
-                             alt="<?= $user['username']?>'s avatar"
-                             class="w-full h-full object-cover">
+                        <img src="<?=$user['profile_picture']?>" alt="<?= $user['username']?>'s avatar"
+                            class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900"><?=$user["username"]?></h1>
+                        <h1 class="text-3xl font-bold text-gray-900">
+                            <?=$user["username"]?>
+                        </h1>
                         <!-- <p class="text-gray-500">Student at University</p>
                         <p class="text-gray-600 mt-1">
                             <i class="fas fa-map-marker-alt"></i> Kerala, India
                         </p> -->
                     </div>
                 </div>
+                
                 <div class="space-x-3">
-                    <button class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Follow
-                    </button>
+                    <?php if ($user['id'] !== $_SESSION['user_id']|| 1 ): ?>
+                        <button id="followButton" 
+                                data-user-id="<?= $user['id'] ?>" 
+                                data-following="<?= $this->userModel->isFollowing($_SESSION['user_id'], $user['id']) ? 'true' : 'false' ?>"
+                                class="inline-flex bg-blue-500 items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200">
+                            <span id="followButtonText">
+                                <?= $this->userModel->isFollowing($_SESSION['user_id'], $user['id']) ? 'Unfollow' : 'Follow' ?>
+                            
+                            </span>
+                        </button>
+                    <?php endif; ?>
                 </div>
             </div>
-            
+
             <p class="text-gray-700 mb-6">
                 <?= $user["bio"]?>
             </p>
-            
+
             <div class="flex space-x-8">
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900">42</div>
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["posts"])?>
+                    </div>
                     <div class="text-gray-500">Posts</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900">1.2k</div>
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["followers"])?>
+                    </div>
                     <div class="text-gray-500">Followers</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-xl font-bold text-gray-900">890</div>
+                    <div class="text-xl font-bold text-gray-900">
+                        <?=  count($data["following"])?>
+                    </div>
                     <div class="text-gray-500">Following</div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Tab Navigation -->
         <div class="border-b border-gray-200 bg-gray-100 pt-3 px-4 rounded-md mb-6 hover:shadow-md">
             <nav class="-mb-px flex space-x-8">
                 <a href="#" class="border-b-2 border-blue-500 pb-4 px-1 text-sm font-medium text-blue-600">
                     Posts
                 </a>
-                <a href="#" class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                    Media
+                <a href="#"
+                    class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Comments
                 </a>
-                <a href="#" class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                <a href="#"
+                    class="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
                     Likes
                 </a>
             </nav>
         </div>
-        
+
         <!-- Posts Grid -->
         <div class="grid grid-cols-1 gap-6">
-            <div class="bg-white rounded-lg shadow p-6">
+            <!-- <div class="bg-white rounded-lg shadow p-6">
                 <p class="text-gray-800">Just deployed my first web application! Check it out at example.com #webdev #coding</p>
                 <div class="mt-4 text-gray-500 text-sm">
                     2 hours ago
                 </div>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow p-6">
-                <p class="text-gray-800">Learning new frameworks and loving it! The developer community is amazing. 🚀 #learning #development</p>
-                <div class="mt-4 text-gray-500 text-sm">
-                    1 day ago
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow p-6">
-                <p class="text-gray-800">Contributing to open source is a great way to learn and give back to the community.</p>
-                <div class="mt-4 text-gray-500 text-sm">
-                    3 days ago
-                </div>
-            </div>
+            </div> -->
+
+            <?php $this->render_user_tweets($data); ?>
+
         </div>
     </div>
+    <style>
+        /* Upvote button styles */
+        .upvotes {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .upvotes.liked {
+            color: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes.liked svg {
+            stroke: #3b82f6;
+            /* Tailwind blue-500 */
+        }
+
+        .upvotes:hover {
+            color: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes:hover svg {
+            stroke: #60a5fa;
+            /* Tailwind blue-400 for hover */
+        }
+
+        .upvotes svg {
+            transition: stroke 0.2s ease-in-out;
+        }
+    </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const followButton = document.getElementById('followButton');
+        if (followButton) {
+            followButton.addEventListener('click', async function() {
+                const userId = this.dataset.userId;
+                const isFollowing = this.dataset.following === 'true';
+                const action = isFollowing ? 'unfollow' : 'follow';
+    
+                try {
+                    const response = await fetch(`/${action}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ user_id: userId })
+                    });
+    
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success) {
+                            // Toggle button state
+                            this.dataset.following = isFollowing ? 'false' : 'true';
+                            document.getElementById('followButtonText').textContent = isFollowing ? 'Follow' : 'Unfollow';
+                            
+                            // Update follower count
+                            const followerCountElement = document.querySelector('.follower-count');
+                            if (followerCountElement) {
+                                let count = parseInt(followerCountElement.textContent);
+                                followerCountElement.textContent = isFollowing ? count - 1 : count + 1;
+                            }
+    
+                            // Toggle button color
+                            this.classList.toggle('bg-blue-600');
+                            this.classList.toggle('hover:bg-blue-700');
+                            this.classList.toggle('bg-gray-600');
+                            this.classList.toggle('hover:bg-gray-700');
+                        }
+                    } else {
+                        console.error('Failed to update follow status');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add click event listener to all upvote buttons
+            document.querySelectorAll('.upvotes').forEach(button => {
+                button.addEventListener('click', handleLike);
+            });
+
+            async function handleLike(event) {
+                const button = event.currentTarget;
+                const postId = button.dataset.postId;
+                const isLiked = button.dataset.likedId === "1";
+                const upvoteSpan = button.querySelector('#upvotes');
+                const currentUpvotes = parseInt(upvoteSpan.textContent);
+
+                try {
+                    const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ post_id: postId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        // Toggle the liked state
+                        button.dataset.likedId = isLiked ? "0" : "1";
+                        button.classList.toggle('liked');
+
+                        // Update the upvote count
+                        upvoteSpan.textContent = isLiked ?
+                            (currentUpvotes - 1) :
+                            (currentUpvotes + 1);
+                    } else {
+                        console.error('Error:', data.message);
+                        // alert('Failed to update like. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    // alert('Failed to update like. Please try again.');
+                }
+            }
+        });
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Comment toggle functionality
+        const commentToggles = document.querySelectorAll('.comment-toggle');
+        commentToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const postId = toggle.getAttribute('data-post-id');
+                const commentsSection = document.getElementById(`comments-section-${postId}`);
+                commentsSection.classList.toggle('hidden');
+            });
+        });
+    
+        // Comment submission
+        const commentForms = document.querySelectorAll('form[action="/add_comment"]');
+        commentForms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const response = await fetch('/add_comment', {
+                    method: 'POST',
+                    body: formData
+                });
+                const username = form.dataset.username;
+    
+                if (response.ok) {
+                    const postId = formData.get('post_id');
+                    const content = formData.get('content');
+                    const commentsContainer = document.getElementById(`comments-${postId}`);
+                    const newComment = document.createElement('div');
+                    newComment.className = 'bg-gray-100 p-3 rounded-md';
+                    newComment.innerHTML = 
+                    '<p class="font-semibold text-sm">' + username + '</p>' +
+                    '<p class="text-gray-700">' + content + '</p>' +
+                    '<p class="text-xs text-gray-500 mt-1">Just now</p>';
+                    commentsContainer.prepend(newComment);
+                    form.reset();
+    
+                    // Update comment count
+                    const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                    const countSpan = commentToggle.querySelector('span');
+                    const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                    countSpan.textContent = `${currentCount + 1} comments`;
+                }
+            });
+        });
+    });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Existing event listeners
+    
+        // Add event listener for delete comment buttons
+        document.body.addEventListener('click', async function(e) {
+            if (e.target.closest('.delete-comment')) {
+                e.preventDefault();
+                const button = e.target.closest('.delete-comment');
+                if (confirm('Are you sure you want to delete this comment?')) {
+                    const commentId = button.getAttribute('data-comment-id');
+                    const response = await fetch('/delete_comment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `comment_id=${commentId}`
+                    });
+    
+                    const result = await response.json();
+    
+                    if (result.status === 'success') {
+                        // Remove the comment from the DOM
+                        const commentElement = button.closest('.bg-gray-100');
+                        const commentsContainer = commentElement.closest('.space-y-2');
+                        commentElement.remove();
+    
+                        // Update comment count
+                        const postId = commentsContainer.id.split('-')[1];
+                        const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                        const countSpan = commentToggle.querySelector('span');
+                        const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                        countSpan.textContent = `${currentCount - 1} comments`;
+                    } else {
+                        alert('Failed to delete comment. Please try again.');
+                    }
+                }
+            }
+        });
+    });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.delete-tweet').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const postId = button.getAttribute('data-post-id');
+                    if (confirm('Are you sure you want to delete this tweet?')) {
+                        try {
+                            const response = await fetch('/delete_post', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ post_id: postId })
+                            });
+
+                            const data = await response.json();
+
+                            if (data.status === 'success') {
+                                // Remove the tweet from the DOM
+                                const tweetElement = button.closest('.bg-gray-300');
+                                tweetElement.remove();
+                            } else {
+                                alert('Failed to delete tweet: ' + data.message);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Failed to delete tweet. Please try again.');
+                        }
+                    }
+                });
+            });
+        });
+
+    </script>
 </main>
+
+</body>

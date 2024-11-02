@@ -66,10 +66,30 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-PostController.html#method_render_tweets"
         },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Arender_comments\u0028\u0029",
+            "name": "render_comments",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_render_comments"
+        },                {
             "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Aadd_likes\u0028\u0029",
             "name": "add_likes",
             "summary": "",
             "url": "classes/Sora-Controllers-PostController.html#method_add_likes"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Aremove_likes\u0028\u0029",
+            "name": "remove_likes",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_remove_likes"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Aadd_comment\u0028\u0029",
+            "name": "add_comment",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_add_comment"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003Aget_comments\u0028\u0029",
+            "name": "get_comments",
+            "summary": "",
+            "url": "classes/Sora-Controllers-PostController.html#method_get_comments"
         },                {
             "fqsen": "\\Sora\\Controllers\\PostController\u003A\u003A\u0024postModel",
             "name": "postModel",
@@ -111,6 +131,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_profile"
         },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Arender_profile\u0028\u0029",
+            "name": "render_profile",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_render_profile"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Arender_user_tweets\u0028\u0029",
+            "name": "render_user_tweets",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_render_user_tweets"
+        },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Aget_user_details\u0028\u0029",
             "name": "get_user_details",
             "summary": "",
@@ -121,10 +151,25 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_edit_user_details"
         },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Aget_followed_users\u0028\u0029",
+            "name": "get_followed_users",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_get_followed_users"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Asearch_users\u0028\u0029",
+            "name": "search_users",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_search_users"
+        },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003A\u0024userModel",
             "name": "userModel",
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#property_userModel"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003A\u0024postController",
+            "name": "postController",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#property_postController"
         },                {
             "fqsen": "\\Sora\\Core\\Application",
             "name": "Application",
@@ -153,17 +198,27 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Sora\\Core\\Router\u003A\u003Aget\u0028\u0029",
             "name": "get",
-            "summary": "route\u0020to\u0020get\u0020requests",
+            "summary": "Route\u0020GET\u0020requests",
             "url": "classes/Sora-Core-Router.html#method_get"
         },                {
             "fqsen": "\\Sora\\Core\\Router\u003A\u003Apost\u0028\u0029",
             "name": "post",
-            "summary": "route\u0020to\u0020get\u0020requests",
+            "summary": "Route\u0020POST\u0020requests",
             "url": "classes/Sora-Core-Router.html#method_post"
+        },                {
+            "fqsen": "\\Sora\\Core\\Router\u003A\u003AprepareRoute\u0028\u0029",
+            "name": "prepareRoute",
+            "summary": "Prepare\u0020route\u0020pattern\u0020by\u0020converting\u0020\u003Aany\u0020and\u0020\u003Anum\u0020to\u0020regex",
+            "url": "classes/Sora-Core-Router.html#method_prepareRoute"
+        },                {
+            "fqsen": "\\Sora\\Core\\Router\u003A\u003AmatchRoute\u0028\u0029",
+            "name": "matchRoute",
+            "summary": "Match\u0020URI\u0020against\u0020route\u0020pattern",
+            "url": "classes/Sora-Core-Router.html#method_matchRoute"
         },                {
             "fqsen": "\\Sora\\Core\\Router\u003A\u003Adispatch\u0028\u0029",
             "name": "dispatch",
-            "summary": "function\u0020to\u0020dispatch\u0020to\u0020the\u0020routes\u0020from\u0020the\u0020uri",
+            "summary": "Dispatch\u0020to\u0020the\u0020routes\u0020from\u0020the\u0020URI",
             "url": "classes/Sora-Core-Router.html#method_dispatch"
         },                {
             "fqsen": "\\Sora\\Core\\Router\u003A\u003A\u0024routes",
@@ -221,10 +276,25 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Models-PostModel.html#method_add_likes"
         },                {
-            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Alike_not_exists\u0028\u0029",
-            "name": "like_not_exists",
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Aremove_likes\u0028\u0029",
+            "name": "remove_likes",
             "summary": "",
-            "url": "classes/Sora-Models-PostModel.html#method_like_not_exists"
+            "url": "classes/Sora-Models-PostModel.html#method_remove_likes"
+        },                {
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Acheck_user_likes\u0028\u0029",
+            "name": "check_user_likes",
+            "summary": "",
+            "url": "classes/Sora-Models-PostModel.html#method_check_user_likes"
+        },                {
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Aadd_comment\u0028\u0029",
+            "name": "add_comment",
+            "summary": "",
+            "url": "classes/Sora-Models-PostModel.html#method_add_comment"
+        },                {
+            "fqsen": "\\Sora\\Models\\PostModel\u003A\u003Aget_comments\u0028\u0029",
+            "name": "get_comments",
+            "summary": "",
+            "url": "classes/Sora-Models-PostModel.html#method_get_comments"
         },                {
             "fqsen": "\\Sora\\Models\\PostModel\u003A\u003A\u0024db",
             "name": "db",
@@ -271,6 +341,36 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_get_user_details"
         },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_user_posts\u0028\u0029",
+            "name": "get_user_posts",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_user_posts"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_user_likes\u0028\u0029",
+            "name": "get_user_likes",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_user_likes"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_user_comments\u0028\u0029",
+            "name": "get_user_comments",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_user_comments"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_user_followers\u0028\u0029",
+            "name": "get_user_followers",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_user_followers"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_user_following\u0028\u0029",
+            "name": "get_user_following",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_user_following"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Ahandle_profile_picture\u0028\u0029",
+            "name": "handle_profile_picture",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_handle_profile_picture"
+        },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aupdate_user_details\u0028\u0029",
             "name": "update_user_details",
             "summary": "",
@@ -280,6 +380,16 @@ Search.appendIndex(
             "name": "update",
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_update"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_followed_users\u0028\u0029",
+            "name": "get_followed_users",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_followed_users"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Asearch_users\u0028\u0029",
+            "name": "search_users",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_search_users"
         },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003A\u0024db",
             "name": "db",

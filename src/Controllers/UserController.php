@@ -14,6 +14,7 @@ class UserController {
   /**@var Sora\Models\User $userModel user model object
    */
   private $userModel;
+  public $postController;
   
   /**Constructor for User Controller
    */
@@ -30,6 +31,7 @@ class UserController {
   }
 
   $this->userModel = new UserModel($db);
+  $this->postController = new PostController();
 
     
   }
@@ -88,16 +90,25 @@ class UserController {
 
   public function profile($username=NULL) {
     if($username == NULL){
-
-    
       if($_SERVER['REQUEST_METHOD'] == "GET"){
         $username = $_SESSION['username'];
+        $user = $this->get_user_details($username);
+        unset($data);
+        $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+        $data["following"] = $this->userModel->get_user_following($user["username"]);
+        $data["posts"] = $this->userModel->get_user_posts($user["username"]);
         include __DIR__ ."/../Views/profile.html";
       
       }
     }
     else{
       if($username == $_SESSION["username"]){
+        $username = $_SESSION['username'];
+        $user = $this->get_user_details($username);
+        unset($data);
+        $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+        $data["following"] = $this->userModel->get_user_following($user["username"]);
+        $data["posts"] = $this->userModel->get_user_posts($user["username"]);
         header("Location: /profile");
         exit;
       }
@@ -117,9 +128,23 @@ class UserController {
     <body style="background: url('/images/sora-bg.png')" >
     BODY;
     
+    $data = [];
+    $data["user"] = $user;
+
+    $data["posts"] = $this->userModel->get_user_posts($user["username"]);
+    $data["likes"] = $this->userModel->get_user_likes($user["username"]);
+    $data["comments"] = $this->userModel->get_user_comments($user["username"]);
+    $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+    $data["following"] = $this->userModel->get_user_following($user["username"]);
     
 
     require __DIR__ ."/../Views/user_profile.html";
+}
+
+public function render_user_tweets($data){
+  $posts = $data["posts"];
+  $user_id = $data["user"]["id"];
+  $this->postController->render_tweets($user_id);
 }
 
   public function get_user_details($username) {
@@ -128,6 +153,7 @@ class UserController {
 
 
   }
+  
 
 
 
@@ -177,6 +203,55 @@ class UserController {
   }
   
 
+
+public function get_followed_users() {
+  $user_id = $_SESSION['user_id'];
+  $followed_users = $this->userModel->get_followed_users($user_id);
+  echo json_encode($followed_users);
+}
+
+public function search_users() {
+  $query = $_GET['query'] ?? '';
+  $results = $this->userModel->search_users($query);
+  $formatted_results = array_map(function($user) {
+    return [
+        'id' => $user['id'],
+        'username' => $user['username'],
+        'profile_picture' => $user['profile_picture'] ?? '/images/icons/user-avatar.png'
+    ];
+}, $results);
+
+echo json_encode($formatted_results);
+}
+
+
+public function follow() {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = json_decode(file_get_contents('php://input'), true);
+      $followerId = $_SESSION['user_id'];
+      $followedId = $input['user_id'];
+      
+      if ($this->userModel->follow($followerId, $followedId)) {
+          echo json_encode(['success' => true]);
+          exit;
+      }
+  }
+  echo json_encode(['success' => false]);
+}
+
+public function unfollow() {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = json_decode(file_get_contents('php://input'), true);
+      $followerId = $_SESSION['user_id'];
+      $followedId = $input['user_id'];
+      
+      if ($this->userModel->unfollow($followerId, $followedId)) {
+          echo json_encode(['success' => true]);
+          exit;
+      }
+  }
+  echo json_encode(['success' => false]);
+}
   
 
 

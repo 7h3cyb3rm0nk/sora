@@ -17,6 +17,11 @@ class PostModel{
         return $stmt->execute();
 
     }
+    public function delete_post($post_id, $user_id) {
+        $stmt = $this->db->prepare("DELETE FROM posts WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $post_id, $user_id);
+        return $stmt->execute();
+    }
 
     public function view_posts(): array{
         $stmt = $this->db->prepare("Select * from posts");
@@ -33,15 +38,19 @@ class PostModel{
             ];
         }
     }
+    // self variable to check if the user wants only his/her posts
 
-    public function get_tweets($user_id) {
+    public function get_tweets($user_id, $self=false) {
+        if($user_id == $_SESSION["user_id"] && $self==false){
         $stmt = $this->db->prepare("SELECT 
                 p.id, 
                 p.content, 
                 p.created_at,
-                u.username, 
+                u.username,
+                u.id as user_id, 
                 u.profile_picture,
-                COUNT(l.post_id) AS upvotes
+                COUNT(l.post_id) AS upvotes,
+                COUNT(DISTINCT c.id) AS comment_count
             FROM 
                 posts p
             JOIN 
@@ -50,18 +59,80 @@ class PostModel{
                 likes l ON p.id = l.post_id
             LEFT JOIN
                 follows f ON p.user_id = f.followed_id AND f.follower_id = ? 
+            LEFT JOIN
+                 comments c on p.id = c.post_id
             WHERE 
                 p.user_id = ? OR f.follower_id = ?
             GROUP BY
                 p.id
             ORDER BY 
                 p.created_at DESC;");
+              $stmt->bind_param("iii", $user_id, $user_id, $user_id);
+        }
+        else if($user_id == $_SESSION["user_id"] && $self==true){
+            $stmt = $this->db->prepare("SELECT 
+            p.id, 
+            p.content, 
+            p.created_at,
+            u.username, 
+            u.id as user_id,
+            u.profile_picture,
+            COUNT(l.post_id) AS upvotes,
+            COUNT(DISTINCT c.id) AS comment_count
+        FROM 
+            posts p
+        JOIN 
+            users u ON p.user_id = u.id 
+        LEFT JOIN 
+            likes l ON p.id = l.post_id
+        LEFT JOIN 
+            comments c on p.id = c.post_id
+         
+        WHERE 
+            p.user_id = ? 
+        GROUP BY
+            p.id
+        ORDER BY 
+            p.created_at DESC;");
+            
+        $stmt->bind_param("i", $_SESSION["user_id"]);
+
+        }
+        else{
+            $stmt = $this->db->prepare("SELECT 
+            p.id, 
+            p.content, 
+            p.created_at,
+            u.username, 
+            u.id as user_id,
+            u.profile_picture,
+            COUNT(l.post_id) AS upvotes,
+            COUNT(DISTINCT c.id) AS comment_count
+            
+        FROM 
+            posts p
+        JOIN 
+            users u ON p.user_id = u.id 
+        LEFT JOIN 
+            likes l ON p.id = l.post_id
+        LEFT JOIN comments c on p.id = c.post_id
+         
+        WHERE 
+            p.user_id = ? 
+        GROUP BY
+            p.id
+        ORDER BY 
+            p.created_at DESC;");
+        $stmt->bind_param("i", $user_id);
+        }
+        
     
-        $stmt->bind_param("iii", $user_id, $user_id, $user_id); // Bind parameters
+       
     
         $stmt->execute();
     
         $result = $stmt->get_result();
+        
     
         return $result->fetch_all(MYSQLI_ASSOC);
     }
@@ -130,6 +201,31 @@ class PostModel{
         return $has_liked;
         }
         
+    }
+
+
+    public function add_comment($user_id, $post_id, $content) {
+
+        $stmt = $this->db->prepare("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)");
+        $stmt->bind_param("iis", $user_id, $post_id, $content);
+        return $stmt->execute();
+        
+
+        
+    }
+
+    public function delete_comment($comment_id, $user_id) {
+        $stmt = $this->db->prepare("DELETE FROM comments WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $comment_id, $user_id);
+        return $stmt->execute();
+    }
+
+    public function get_comments($post_id) {
+        $stmt = $this->db->prepare("SELECT c.*, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC");
+        $stmt->bind_param("i", $post_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     
