@@ -40,7 +40,7 @@
             </section>
             <footer class="bg-gradient-to-r from-sora-primary to-sora-secondary p-4 shadow-lg m-2 rounded-lg">
                 <div class="max-w-4xl mx-auto">
-                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center gap-3">
+                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center gap-3" id="post-tweet">
                         <div class="relative flex-grow">
                             <textarea name="content" id="tweet" rows="3" class="w-full p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500" placeholder="What's on your mind?"></textarea>
                             <div class="absolute bottom-3 right-3 flex space-x-2">
@@ -85,6 +85,47 @@
                 transition: stroke 0.2s ease-in-out;
             }
         </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+    const tweetTextarea = document.getElementById('tweet');
+    const tweetForm = tweetTextarea.closest('form');
+
+    tweetTextarea.addEventListener('keydown', async function(e) {
+        // Check if Enter was pressed without Shift (Shift+Enter allows multiline)
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevent default newline
+            
+            // Get the form data
+            const formData = new FormData(tweetForm);
+            
+            // Only submit if there's content
+            const content = formData.get('content').trim();
+            if (content) {
+                try {
+                    const response = await fetch('/create', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        // Clear the textarea
+                        tweetForm.reset();
+                        
+                        // Optionally reload the page to show the new tweet
+                        // or you could insert the new tweet dynamically
+                        window.location.reload();
+                    } else {
+                        console.error('Failed to post tweet');
+                    }
+                } catch (error) {
+                    console.error('Error posting tweet:', error);
+                }
+            }
+        }
+    });
+});
+        </script>
 
 <script>
    document.addEventListener('DOMContentLoaded', function() {
