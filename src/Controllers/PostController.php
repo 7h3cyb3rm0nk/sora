@@ -73,7 +73,7 @@ class PostController {
 
     public  function render_tweet($tweet){
         $is_liked = $this->postModel->check_user_likes($tweet["id"]);
-        $like_class = $is_liked == 1 ? "liked" : "";
+        $like_class = $is_liked >= 1 ? "liked" : "";
         $id = $tweet["id"];
         $username = $tweet["username"];
         $content = $tweet['content'];
