@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const followedUsersList = document.getElementById('followed-users-list');
     const searchInput = document.getElementById('user-search');
     const searchResults = document.getElementById('search-results');
-    const followersUsersList = document.getElementById('followers-users-list')
+    const followersUsersList = document.getElementById('followers-users-list');
 
-    // Load followed users
+    // Load followed users and followers
     loadFollowedUsers();
     loadFollowersUsers();
 
@@ -23,15 +23,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // Function to load followers
     function loadFollowersUsers() {
         fetch('/get_followers_users')
-        .then(response => response.json())
-        .then(users => {
-            followersUsersList.innerHTML = '';
-            users.forEach(user => {
-                followersUsersList.appendChild(createUserListItem(user, user.isFollowing));
-            })
-        })
+            .then(response => response.json())
+            .then(users => {
+                followersUsersList.innerHTML = '';
+                users.forEach(user => {
+                    followersUsersList.appendChild(createUserListItem(user, user.isFollowing));
+                });
+            });
     }
 
     // Function to search users
@@ -45,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/search_users?query=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(users => {
-                
                 searchResults.innerHTML = '';
                 users.forEach(user => {
                     searchResults.appendChild(createUserListItem(user, user.isFollowing));
@@ -57,12 +57,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function createUserListItem(user, isFollowed) {
         const li = document.createElement('li');
         li.className = 'flex items-center justify-between space-x-3';
+        
+        const statusHtml = user.status ? `<p class="text-xs text-gray-500">${user.status}</p>` : '';
+        
         li.innerHTML = `
             <div class="flex items-center space-x-3">
                 <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
-                <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
+                <div>
+                    <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
+                    ${statusHtml}
+                </div>
             </div>
-            <button class="follow-btn px-3 py-1 rounded-full text-sm font-medium ${isFollowed ? 'bg-gray-200 text-gray-800' : 'bg-blue-500 text-white'}" data-user-id="${user.id}">
+            <button class="follow-btn px-2 py-1 rounded-full text-sm font-medium ${isFollowed ? 'bg-gray-200 text-gray-800' : 'bg-blue-500 text-white'}" data-user-id="${user.id}">
                 ${isFollowed ? 'Unfollow' : 'Follow'}
             </button>
         `;
@@ -97,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     button.classList.remove('bg-blue-500', 'text-white');
                     button.classList.add('bg-gray-200', 'text-gray-800');
                 }
-                // Refresh the followed users list
+                // Refresh the followed users list and followers list
                 loadFollowedUsers();
                 loadFollowersUsers();
             }

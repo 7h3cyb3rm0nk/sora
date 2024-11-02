@@ -4,9 +4,9 @@
 <body class="h-full text-gray-900 flex flex-col w-full" style="background: url('/images/sora-bg.png')">
        
 <?php include_once __DIR__."/navbar.html" ?>
-    <main class="flex-grow flex overflow-hidden">
+    
         <main class="flex-grow flex overflow-hidden">
-            <aside class="w-64 bg-gray-100 opacity-85 shadow-lg overflow-y-auto hidden md:block">
+            <aside class="w-72 bg-gray-100 opacity-85 shadow-lg overflow-y-auto hidden md:block">
                 <div class="p-6">
                     <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
                     <div class="space-y-4">
@@ -28,6 +28,23 @@
                             <ul class="space-y-3 mt-3" id="search-results">
                                 <!-- Search results will be populated here -->
                             </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Your Status</h3>
+                            <p id="current-status" class="mb-2 text-gray-700 <?php echo empty($_SESSION['user_status']) ? 'text-gray-500' : ''; ?>">
+                                <?php echo htmlspecialchars($_SESSION['user_status'] ?? 'No status set'); ?>
+                            </p>
+                            <form id="status-form" class="mt-2">
+                                <input type="text" id="status-input" class="w-full p-2 rounded-md mb-2" placeholder="Update your status...">
+                                <div class="flex justify-between gap-3  ">
+                                <button type="submit" id="update-status-btn" class="bg-sora-primary text-white px-4 py-2 rounded-md hover:bg-sora-secondary transition-colors duration-300 text-sm">
+                                    Update Status
+                                </button>
+                                <button id="remove-status-btn" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300 text-sm <?php echo empty($_SESSION['user_status']) ? 'hidden' : ''; ?>">
+                                    Remove Status
+                                </button>
+                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -65,6 +82,7 @@
                 </div>
             </footer>
         </div>
+        </main> 
 
         <style>
             /* Upvote button styles */
@@ -92,6 +110,7 @@
                 transition: stroke 0.2s ease-in-out;
             }
         </style>
+        <script src="/js/status.js"></script>
         <script src="/js/follow.js"></script>
     </body>
 

@@ -28,6 +28,8 @@ $app->router->get('/profile/:any', [UserController::class, 'profile']);
 $app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
 $app->router->get('/get_followers_users', [UserController::class, 'get_followers_users']);
 $app->router->get('/search_users', [UserController::class, 'search_users']);
+$app->router->get('/get_user_status', [UserController::class, 'getUserStatus']);
+
 
 $app->router->post('/create', [PostController::class, 'create']);
 $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
@@ -38,6 +40,7 @@ $app->router->post('/delete_post', [PostController::class, 'delete_post']);
 $app->router->post('/delete_comment', [PostController::class, 'delete_comment']);
 $app->router->post('/follow', [UserController::class, 'follow']);
 $app->router->post('/unfollow', [UserController::class, 'unfollow']);
+$app->router->post('/update_status', [UserController::class, 'updateStatus']);
 
 $app->run();
 

@@ -61,7 +61,7 @@ class UserModel {
 				                          values(?,?,?,?,?)");
 			$stmt->bind_param("sssss", $firstName, $lastName, $username, $email, $hashed_password);
 			if($stmt->execute()){
-				$query = $this->db->prepare("select id from users where username = ?");
+				$query = $this->db->prepare("select id,status from users where username = ?");
 				$query->bind_param("s", $username);
 				$query->execute();
 				$result = $query->get_result();
@@ -401,7 +401,7 @@ function update($username, $data){
 
 public function get_followed_users($user_id) {
     $stmt = $this->db->prepare("
-        SELECT u.id, u.username, u.profile_picture
+        SELECT u.id, u.username, u.profile_picture, u.status
         FROM users u
         JOIN follows f ON u.id = f.followed_id
         WHERE f.follower_id = ?
@@ -414,7 +414,7 @@ public function get_followed_users($user_id) {
 
 public function get_followers_users($user_id){
 	$stmt = $this->db->prepare("
-        SELECT u.id, u.username, u.profile_picture
+        SELECT u.id, u.username, u.profile_picture, u.status
         FROM users u
         JOIN follows f ON u.id = f.follower_id
         WHERE f.followed_id = ? 
@@ -429,7 +429,7 @@ public function get_followers_users($user_id){
 public function search_users($query) {
     $query = "%$query%";
     $stmt = $this->db->prepare("
-        SELECT id, username, profile_picture
+        SELECT id, username, profile_picture, u.status
         FROM users
         WHERE username LIKE ? AND username != ?
         LIMIT 10
@@ -438,6 +438,22 @@ public function search_users($query) {
     $stmt->execute();
     $result = $stmt->get_result();
     return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+public function updateStatus($userId, $status) {
+	$stmt = $this->db->prepare("UPDATE users SET status = ? WHERE id = ?");
+	$stmt->bind_param("si", $status, $userId);
+	return $stmt->execute();
+}
+
+
+public function getUserStatus($userId) {
+	$stmt = $this->db->prepare("SELECT status FROM users WHERE id = ?");
+	$stmt->bind_param("i", $userId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$row = $result->fetch_assoc();
+	return $row ? $row['status'] : null;
 }
 
 }                   

@@ -53,6 +53,7 @@ class UserController {
     if($response['success'] === true) {
       $_SESSION['username'] = $_POST['username'];
       $_SESSION['user_id'] = $response['user']['id'];
+      $_SESSION['status'] = $response['user']['status'];
       header('Location: /');
       exit;
     }
@@ -270,5 +271,32 @@ public function unfollow() {
 }
   
 
-
+public function updateStatus() {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = json_decode(file_get_contents('php://input'), true);
+      $userId = $_SESSION['user_id'];
+      $status = $input['status'];
+      
+      // If status is empty, set it to NULL in the database
+      $status = empty($status) ? null : $status;
+      // $_SESSION['status'] = empty($status) ? "" : $status;
+      
+      if ($this->userModel->updateStatus($userId, $status)) {
+        
+          $_SESSION['user_status'] = $status;
+          echo json_encode(['success' => true]);
+          exit;
+      }
+  }
+  echo json_encode(['success' => false]);
 }
+
+public function getUserStatus() {
+  $userId = $_SESSION['user_id'];
+  $status = $this->userModel->getUserStatus($userId);
+  echo json_encode(['status' => $status]);
+}
+}
+
+
+
