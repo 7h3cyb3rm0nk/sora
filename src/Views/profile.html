@@ -404,6 +404,7 @@
                         method: 'POST',
                         body: formData
                     });
+                    const username = form.dataset.username;
         
                     if (response.ok) {
                         const postId = formData.get('post_id');
@@ -412,7 +413,7 @@
                         const newComment = document.createElement('div');
                         newComment.className = 'bg-gray-100 p-3 rounded-md';
                         newComment.innerHTML = 
-                        '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                        '<p class="font-semibold text-sm">' + username + '</p>' +
                         '<p class="text-gray-700">' + content + '</p>' +
                         '<p class="text-xs text-gray-500 mt-1">Just now</p>';
                         commentsContainer.prepend(newComment);

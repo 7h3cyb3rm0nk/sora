@@ -133,7 +133,7 @@ class PostController {
                 <div class="space-y-2 mb-4" id="comments-{$id}">
                     {$comments_html}
                 </div>
-                <form action="/add_comment" method="post" class="flex">
+                <form action="/add_comment" method="post" class="flex" data-username="{$_SESSION['username']}">
                     <input type="hidden" name="post_id" value="{$id}">
                     <input type="text" name="content" class="flex-grow p-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Add a comment...">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-200">
