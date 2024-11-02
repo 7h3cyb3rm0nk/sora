@@ -5,14 +5,14 @@
     <?php include_once __DIR__ ."/navbar.html"?>
     
     <main class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6"><?= htmlspecialchars($space['name']) ?></h1>
+        <h1 class="text-3xl font-bold mb-6 text-sora-primary w-fit bg-slate-200 shadow-md px-4 py-1 rounded-md"><?= htmlspecialchars($space['name']) ?></h1>
         
         <div class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Space Tweets</h2>
+            <h2 class="text-2xl font-bold mb-4 text-sora-secondary">Space Tweets</h2>
             <form id="space-tweet-form" class="mb-4">
                 <textarea name="content" class="w-full p-2 border rounded" placeholder="What's happening in this space?"></textarea>
                 <input type="hidden" name="space_id" value="<?= $space['id'] ?>">
-                <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Post Tweet</button>
+                <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Post Message</button>
             </form>
             <div id="space-tweets">
                 <?php foreach ($tweets as $tweet): ?>
