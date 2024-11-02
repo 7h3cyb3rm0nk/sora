@@ -219,6 +219,7 @@
                     const countSpan = commentToggle.querySelector('span');
                     const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
                     countSpan.textContent = `${currentCount + 1} comments`;
+                    window.location.reload();
                 }
             });
         });
