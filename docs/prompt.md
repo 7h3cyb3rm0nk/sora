@@ -985,6 +985,10 @@ video {
   justify-content: space-between;
 }
 
+.justify-around {
+  justify-content: space-around;
+}
+
 .gap-3 {
   gap: 0.75rem;
 }
@@ -1059,6 +1063,10 @@ video {
   --tw-space-y-reverse: 1;
 }
 
+.self-end {
+  align-self: flex-end;
+}
+
 .overflow-hidden {
   overflow: hidden;
 }
@@ -1107,6 +1115,10 @@ video {
 
 .border-b-2 {
   border-bottom-width: 2px;
+}
+
+.border-t {
+  border-top-width: 1px;
 }
 
 .border-blue-500 {
@@ -1398,6 +1410,11 @@ video {
   color: rgb(17 24 39 / var(--tw-text-opacity));
 }
 
+.text-red-500 {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
@@ -1595,6 +1612,16 @@ video {
 .hover\:text-green-500:hover {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity));
+}
+
+.hover\:text-red-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.hover\:text-red-700:hover {
+  --tw-text-opacity: 1;
+  color: rgb(185 28 28 / var(--tw-text-opacity));
 }
 
 .hover\:text-sora-bg:hover {
@@ -1828,14 +1855,19 @@ $app->router->post('/register', [UserController::class, 'register']);
 $app->router->get('/logout', [UserController::class, 'logout']);
 $app->router->get('/profile', [UserController::class, 'profile']);
 $app->router->get('/profile/:any', [UserController::class, 'profile']);
+$app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
+$app->router->get('/search_users', [UserController::class, 'search_users']);
 
 $app->router->post('/create', [PostController::class, 'create']);
 $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
 $app->router->post('/add_likes', [PostController::class, 'add_likes']);
 $app->router->post('/remove_likes', [PostController::class, 'remove_likes']);
 $app->router->post('/add_comment', [PostController::class, 'add_comment']);
-$app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
-$app->router->get('/search_users', [UserController::class, 'search_users']);
+$app->router->post('/delete_post', [PostController::class, 'delete_post']);
+$app->router->post('/delete_comment', [PostController::class, 'delete_comment']);
+$app->router->post('/follow', [UserController::class, 'follow']);
+$app->router->post('/unfollow', [UserController::class, 'unfollow']);
+
 $app->run();
 
 
@@ -2450,9 +2482,38 @@ class PostController {
         }
     }
 
+    public function delete_post() {
+        Helper::validate_user();
+    
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+    
+        if (isset($data['post_id'])) {
+            $post_id = $data['post_id'];
+            $user_id = $_SESSION['user_id'];
+    
+            if ($this->postModel->delete_post($post_id, $user_id)) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Post deleted successfully'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Failed to delete post'
+                ]);
+            }
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'post_id not found in request'
+            ]);
+        }
+    }
+
     public  function render_tweet($tweet){
         $is_liked = $this->postModel->check_user_likes($tweet["id"]);
-        $like_class = $is_liked == 1 ? "liked" : "";
+        $like_class = $is_liked >= 1 ? "liked" : "";
         $id = $tweet["id"];
         $username = $tweet["username"];
         $content = $tweet['content'];
@@ -2472,6 +2533,15 @@ class PostController {
             <img src="images/icons/user-avatar.png" alt="" class="w-10 h-10 rounded-full mr-3">
             HTML;
         }
+        $delete_button = '';
+    if ($tweet['user_id'] == $_SESSION['user_id']) {
+        $delete_button = <<<HTML
+        <button class="delete-tweet flex items-center space-x-1 hover:text-red-500 transition duration-300" data-post-id="$id">
+            <i class="fas fa-trash"></i>
+            <span>Delete</span>
+        </button>
+        HTML;
+    }
         $html = <<<HTML
     <div class="bg-gray-300 p-4 rounded-lg shadow opacity-95 shadow-sm hover:shadow-md transition duration-300">
         <div class="flex items-center mb-2">
@@ -2496,13 +2566,14 @@ class PostController {
                 <i class="fas fa-comment"></i>
                 <span>{$comments} comments</span>
             </button>
+            $delete_button
         </div>
         <div class="comments-section mt-4 hidden" id="comments-section-{$id}">
                 <h4 class="text-lg font-semibold mb-2">Comments</h4>
                 <div class="space-y-2 mb-4" id="comments-{$id}">
                     {$comments_html}
                 </div>
-                <form action="/add_comment" method="post" class="flex">
+                <form action="/add_comment" method="post" class="flex" data-username="{$_SESSION['username']}">
                     <input type="hidden" name="post_id" value="{$id}">
                     <input type="text" name="content" class="flex-grow p-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Add a comment...">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-200">
@@ -2510,6 +2581,8 @@ class PostController {
                     </button>
                 </form>
             </div>
+
+            
         
     </div>
     HTML;
@@ -2542,12 +2615,25 @@ class PostController {
 
         $comments_html = '';
         foreach ($comments as $comment) {
+            $delete_button = '';
+
+            if ($comment['user_id'] == $_SESSION['user_id']) {
+                $delete_button = <<<HTML
+                <button class="delete-comment text-red-500 justify-self-end self-end hover:text-red-700" data-comment-id="{$comment['id']}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                HTML;
+            }
             $comment_time = Helper::time_ago($comment['created_at']);
             $comments_html .= <<<HTML
-            <div class="bg-gray-100 p-3 rounded-md">
+            <div class="bg-gray-100 p-3  w-full rounded-md flex flex-col">
+
                 <p class="font-semibold text-sm">{$comment['username']}</p>
+                
                 <p class="text-gray-700">{$comment['content']}</p>
                 <p class="text-xs text-gray-500 mt-1">{$comment_time}</p>
+                {$delete_button}
+                
             </div>
             HTML;
         }
@@ -2640,11 +2726,28 @@ public function add_comment() {
 
         if ($this->postModel->add_comment($user_id, $post_id, $content)) {
             // Comment added successfully
-            header("Location: /?post_id=" . $post_id);
+            // header("Location: /?post_id=" . $post_id);
             exit;
         } else {
             $error[] = "Error adding comment";
+            http_response_code(500);
         }
+    }
+}
+public function delete_comment() {
+    Helper::validate_user();
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $comment_id = $_POST['comment_id'];
+        $user_id = $_SESSION['user_id'];
+
+        if ($this->postModel->delete_comment($comment_id, $user_id)) {
+            // Comment deleted successfully
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Error deleting comment']);
+        }
+        exit;
     }
 }
 
@@ -2887,6 +2990,34 @@ public function search_users() {
 echo json_encode($formatted_results);
 }
 
+
+public function follow() {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = json_decode(file_get_contents('php://input'), true);
+      $followerId = $_SESSION['user_id'];
+      $followedId = $input['user_id'];
+      
+      if ($this->userModel->follow($followerId, $followedId)) {
+          echo json_encode(['success' => true]);
+          exit;
+      }
+  }
+  echo json_encode(['success' => false]);
+}
+
+public function unfollow() {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = json_decode(file_get_contents('php://input'), true);
+      $followerId = $_SESSION['user_id'];
+      $followedId = $input['user_id'];
+      
+      if ($this->userModel->unfollow($followerId, $followedId)) {
+          echo json_encode(['success' => true]);
+          exit;
+      }
+  }
+  echo json_encode(['success' => false]);
+}
   
 
 
@@ -3167,6 +3298,39 @@ public function get_user_following($username){
 		return Array();
 	}
 }
+
+
+public function isFollowing($followerId, $followedId) {
+    $stmt = $this->db->prepare("SELECT * FROM follows WHERE follower_id = ? AND followed_id = ?");
+    $stmt->bind_param("ii", $followerId, $followedId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->num_rows > 0;
+}
+
+
+public function follow($followerId, $followedId) {
+    $stmt = $this->db->prepare("INSERT INTO follows (follower_id, followed_id) VALUES (?, ?)");
+    $stmt->bind_param("ii", $followerId, $followedId);
+    return $stmt->execute();
+}
+
+public function unfollow($followerId, $followedId) {
+    $stmt = $this->db->prepare("DELETE FROM follows WHERE follower_id = ? AND followed_id = ?");
+    $stmt->bind_param("ii", $followerId, $followedId);
+    return $stmt->execute();
+}
+
+public function getUsernameById($userId) {
+    $stmt = $this->db->prepare("SELECT username FROM users WHERE id = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    return $user ? $user['username'] : null;
+}
+
+
 private function handle_profile_picture($files, $action) {
 	$userId = $_SESSION['user_id'];
 	
@@ -3329,6 +3493,11 @@ class PostModel{
         return $stmt->execute();
 
     }
+    public function delete_post($post_id, $user_id) {
+        $stmt = $this->db->prepare("DELETE FROM posts WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $post_id, $user_id);
+        return $stmt->execute();
+    }
 
     public function view_posts(): array{
         $stmt = $this->db->prepare("Select * from posts");
@@ -3353,7 +3522,8 @@ class PostModel{
                 p.id, 
                 p.content, 
                 p.created_at,
-                u.username, 
+                u.username,
+                u.id as user_id, 
                 u.profile_picture,
                 COUNT(l.post_id) AS upvotes,
                 COUNT(DISTINCT c.id) AS comment_count
@@ -3381,6 +3551,7 @@ class PostModel{
             p.content, 
             p.created_at,
             u.username, 
+            u.id as user_id,
             u.profile_picture,
             COUNT(l.post_id) AS upvotes,
             COUNT(DISTINCT c.id) AS comment_count
@@ -3409,6 +3580,7 @@ class PostModel{
             p.content, 
             p.created_at,
             u.username, 
+            u.id as user_id,
             u.profile_picture,
             COUNT(l.post_id) AS upvotes,
             COUNT(DISTINCT c.id) AS comment_count
@@ -3508,24 +3680,20 @@ class PostModel{
     }
 
 
-    public function add_comment() {
-        Helper::validate_user();
+    public function add_comment($user_id, $post_id, $content) {
 
-        if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            $user_id = $_SESSION['user_id'];
-            $post_id = $_POST['post_id'];
-            $content = $_POST['content'];
+        $stmt = $this->db->prepare("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)");
+        $stmt->bind_param("iis", $user_id, $post_id, $content);
+        return $stmt->execute();
+        
 
-            if ($this->postModel->add_comment($user_id, $post_id, $content)) {
-                // Comment added successfully
-                header("Location: /#post-" . $post_id);
-                exit;
-            } else {
-                $_SESSION['error'] = "Error adding comment";
-                header("Location: /#post-" . $post_id);
-                exit;
-            }
-        }
+        
+    }
+
+    public function delete_comment($comment_id, $user_id) {
+        $stmt = $this->db->prepare("DELETE FROM comments WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $comment_id, $user_id);
+        return $stmt->execute();
     }
 
     public function get_comments($post_id) {
@@ -3753,7 +3921,7 @@ class PostModel{
                             <?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?>
                         </p>
                     </div>
-                    
+
                     <button onclick="toggleEdit()"
                         class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                         <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3766,15 +3934,21 @@ class PostModel{
                 <div class="border-t border-b border-gray-200 mt-4 py-3">
                     <div class="flex justify-around items-center gap-3">
                         <div class="text-center">
-                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['posts']); ?></span>
+                            <span class="block text-2xl font-semibold text-gray-900">
+                                <?php echo count($data['posts']); ?>
+                            </span>
                             <span class="text-sm text-gray-500">Posts</span>
                         </div>
                         <div class="text-center">
-                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['followers']); ?></span>
+                            <span class="block text-2xl font-semibold text-gray-900">
+                                <?php echo count($data['followers']); ?>
+                            </span>
                             <span class="text-sm text-gray-500">Followers</span>
                         </div>
                         <div class="text-center">
-                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['following']); ?></span>
+                            <span class="block text-2xl font-semibold text-gray-900">
+                                <?php echo count($data['following']); ?>
+                            </span>
                             <span class="text-sm text-gray-500">Following</span>
                         </div>
                     </div>
@@ -3815,8 +3989,8 @@ class PostModel{
                                     </svg>
                                     <input type="file" name="profile_picture" id="profile-picture-input"
                                         accept="image/*" class="hidden" onchange="previewImage(this)">
-                                    <input type="text" name="profile_picture_state" id="profile-picture-state" 
-                                    class="hidden" value="update">
+                                    <input type="text" name="profile_picture_state" id="profile-picture-state"
+                                        class="hidden" value="update">
                                 </label>
                                 <!-- Delete button -->
                                 <button type="button" id="delete-image-btn" onclick="deleteProfilePicture()"
@@ -3923,7 +4097,7 @@ class PostModel{
                 </form>
             </div>
             <div class="flex flex-col space-y-4 overflow-y-auto">
-            <?php
+                <?php
             $this->postController->render_tweets( $_SESSION["user_id"], $self=true);
 
             ?>
@@ -4056,7 +4230,7 @@ class PostModel{
 
             // Reset the file input
             fileInput.value = '';
-            profileState.value="delete";
+            profileState.value = "delete";
 
             // Show default image
             preview.classList.add('hidden');
@@ -4107,6 +4281,7 @@ class PostModel{
                         method: 'POST',
                         body: formData
                     });
+                    const username = form.dataset.username;
         
                     if (response.ok) {
                         const postId = formData.get('post_id');
@@ -4115,7 +4290,7 @@ class PostModel{
                         const newComment = document.createElement('div');
                         newComment.className = 'bg-gray-100 p-3 rounded-md';
                         newComment.innerHTML = 
-                        '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                        '<p class="font-semibold text-sm">' + username + '</p>' +
                         '<p class="text-gray-700">' + content + '</p>' +
                         '<p class="text-xs text-gray-500 mt-1">Just now</p>';
                         commentsContainer.prepend(newComment);
@@ -4131,6 +4306,86 @@ class PostModel{
             });
         });
         </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.delete-tweet').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const postId = button.getAttribute('data-post-id');
+                    if (confirm('Are you sure you want to delete this tweet?')) {
+                        try {
+                            const response = await fetch('/delete_post', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ post_id: postId })
+                            });
+
+                            const data = await response.json();
+
+                            if (data.status === 'success') {
+                                // Remove the tweet from the DOM
+                                const tweetElement = button.closest('.bg-gray-300');
+                                tweetElement.remove();
+                            } else {
+                                alert('Failed to delete tweet: ' + data.message);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Failed to delete tweet. Please try again.');
+                        }
+                    }
+                });
+            });
+        });
+
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Existing event listeners
+        
+            // Add event listener for delete comment buttons
+            document.body.addEventListener('click', async function(e) {
+                if (e.target.closest('.delete-comment')) {
+                    e.preventDefault();
+                    const button = e.target.closest('.delete-comment');
+                    if (confirm('Are you sure you want to delete this comment?')) {
+                        const commentId = button.getAttribute('data-comment-id');
+                        const response = await fetch('/delete_comment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `comment_id=${commentId}`
+                        });
+        
+                        const result = await response.json();
+        
+                        if (result.status === 'success') {
+                            // Remove the comment from the DOM
+                            const commentElement = button.closest('.bg-gray-100');
+                            const commentsContainer = commentElement.closest('.space-y-2');
+                            commentElement.remove();
+        
+                            // Update comment count
+                            const postId = commentsContainer.id.split('-')[1];
+                            const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                            const countSpan = commentToggle.querySelector('span');
+                            const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                            countSpan.textContent = `${currentCount - 1} comments`;
+                        } else {
+                            alert('Failed to delete comment. Please try again.');
+                        }
+                    }
+                }
+            });
+        });
+        </script>
+
+        
 </body>
 
 </html>
@@ -4321,7 +4576,7 @@ class PostModel{
             </section>
             <footer class="bg-gradient-to-r from-sora-primary to-sora-secondary p-4 shadow-lg m-2 rounded-lg">
                 <div class="max-w-4xl mx-auto">
-                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center gap-3">
+                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center gap-3" id="post-tweet">
                         <div class="relative flex-grow">
                             <textarea name="content" id="tweet" rows="3" class="w-full p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500" placeholder="What's on your mind?"></textarea>
                             <div class="absolute bottom-3 right-3 flex space-x-2">
@@ -4366,6 +4621,47 @@ class PostModel{
                 transition: stroke 0.2s ease-in-out;
             }
         </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+    const tweetTextarea = document.getElementById('tweet');
+    const tweetForm = tweetTextarea.closest('form');
+
+    tweetTextarea.addEventListener('keydown', async function(e) {
+        // Check if Enter was pressed without Shift (Shift+Enter allows multiline)
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevent default newline
+            
+            // Get the form data
+            const formData = new FormData(tweetForm);
+            
+            // Only submit if there's content
+            const content = formData.get('content').trim();
+            if (content) {
+                try {
+                    const response = await fetch('/create', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        // Clear the textarea
+                        tweetForm.reset();
+                        
+                        // Optionally reload the page to show the new tweet
+                        // or you could insert the new tweet dynamically
+                        window.location.reload();
+                    } else {
+                        console.error('Failed to post tweet');
+                    }
+                } catch (error) {
+                    console.error('Error posting tweet:', error);
+                }
+            }
+        }
+    });
+});
+        </script>
 
 <script>
    document.addEventListener('DOMContentLoaded', function() {
@@ -4436,6 +4732,7 @@ class PostModel{
                     method: 'POST',
                     body: formData
                 });
+                const username = form.dataset.username;
     
                 if (response.ok) {
                     const postId = formData.get('post_id');
@@ -4444,7 +4741,7 @@ class PostModel{
                     const newComment = document.createElement('div');
                     newComment.className = 'bg-gray-100 p-3 rounded-md';
                     newComment.innerHTML = 
-                    '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                    '<p class="font-semibold text-sm">' + username + '</p>' +
                     '<p class="text-gray-700">' + content + '</p>' +
                     '<p class="text-xs text-gray-500 mt-1">Just now</p>';
                     commentsContainer.prepend(newComment);
@@ -4475,7 +4772,7 @@ class PostModel{
                     <div class="relative">
                         <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
                     </div>
-                    <span class="font-medium">${user.username}</span>
+                    <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
                 `;
                 usersList.appendChild(li);
             });
@@ -4520,6 +4817,84 @@ class PostModel{
             };
         }
 });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Existing event listeners
+    
+        // Add event listener for delete comment buttons
+        document.body.addEventListener('click', async function(e) {
+            if (e.target.closest('.delete-comment')) {
+                e.preventDefault();
+                const button = e.target.closest('.delete-comment');
+                if (confirm('Are you sure you want to delete this comment?')) {
+                    const commentId = button.getAttribute('data-comment-id');
+                    const response = await fetch('/delete_comment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `comment_id=${commentId}`
+                    });
+    
+                    const result = await response.json();
+    
+                    if (result.status === 'success') {
+                        // Remove the comment from the DOM
+                        const commentElement = button.closest('.bg-gray-100');
+                        const commentsContainer = commentElement.closest('.space-y-2');
+                        commentElement.remove();
+    
+                        // Update comment count
+                        const postId = commentsContainer.id.split('-')[1];
+                        const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                        const countSpan = commentToggle.querySelector('span');
+                        const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                        countSpan.textContent = `${currentCount - 1} comments`;
+                    } else {
+                        alert('Failed to delete comment. Please try again.');
+                    }
+                }
+            }
+        });
+    });
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.delete-tweet').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const postId = button.getAttribute('data-post-id');
+                if (confirm('Are you sure you want to delete this tweet?')) {
+                    try {
+                        const response = await fetch('/delete_post', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ post_id: postId })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            // Remove the tweet from the DOM
+                            const tweetElement = button.closest('.bg-gray-300');
+                            tweetElement.remove();
+                        } else {
+                            alert('Failed to delete tweet: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to delete tweet. Please try again.');
+                    }
+                }
+            });
+        });
+    });
+
 </script>
 
     </main>
@@ -4570,11 +4945,19 @@ require __DIR__ . "/../Views/navbar.html";
                         </p> -->
                     </div>
                 </div>
+                
                 <div class="space-x-3">
-                    <button
-                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Follow
-                    </button>
+                    <?php if ($user['id'] !== $_SESSION['user_id']|| 1 ): ?>
+                        <button id="followButton" 
+                                data-user-id="<?= $user['id'] ?>" 
+                                data-following="<?= $this->userModel->isFollowing($_SESSION['user_id'], $user['id']) ? 'true' : 'false' ?>"
+                                class="inline-flex bg-blue-500 items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200">
+                            <span id="followButtonText">
+                                <?= $this->userModel->isFollowing($_SESSION['user_id'], $user['id']) ? 'Unfollow' : 'Follow' ?>
+                            
+                            </span>
+                        </button>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -4665,6 +5048,54 @@ require __DIR__ . "/../Views/navbar.html";
         }
     </style>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const followButton = document.getElementById('followButton');
+        if (followButton) {
+            followButton.addEventListener('click', async function() {
+                const userId = this.dataset.userId;
+                const isFollowing = this.dataset.following === 'true';
+                const action = isFollowing ? 'unfollow' : 'follow';
+    
+                try {
+                    const response = await fetch(`/${action}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ user_id: userId })
+                    });
+    
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success) {
+                            // Toggle button state
+                            this.dataset.following = isFollowing ? 'false' : 'true';
+                            document.getElementById('followButtonText').textContent = isFollowing ? 'Follow' : 'Unfollow';
+                            
+                            // Update follower count
+                            const followerCountElement = document.querySelector('.follower-count');
+                            if (followerCountElement) {
+                                let count = parseInt(followerCountElement.textContent);
+                                followerCountElement.textContent = isFollowing ? count - 1 : count + 1;
+                            }
+    
+                            // Toggle button color
+                            this.classList.toggle('bg-blue-600');
+                            this.classList.toggle('hover:bg-blue-700');
+                            this.classList.toggle('bg-gray-600');
+                            this.classList.toggle('hover:bg-gray-700');
+                        }
+                    } else {
+                        console.error('Failed to update follow status');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Add click event listener to all upvote buttons
@@ -4734,6 +5165,7 @@ require __DIR__ . "/../Views/navbar.html";
                     method: 'POST',
                     body: formData
                 });
+                const username = form.dataset.username;
     
                 if (response.ok) {
                     const postId = formData.get('post_id');
@@ -4742,7 +5174,7 @@ require __DIR__ . "/../Views/navbar.html";
                     const newComment = document.createElement('div');
                     newComment.className = 'bg-gray-100 p-3 rounded-md';
                     newComment.innerHTML = 
-                    '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                    '<p class="font-semibold text-sm">' + username + '</p>' +
                     '<p class="text-gray-700">' + content + '</p>' +
                     '<p class="text-xs text-gray-500 mt-1">Just now</p>';
                     commentsContainer.prepend(newComment);
@@ -4757,6 +5189,84 @@ require __DIR__ . "/../Views/navbar.html";
             });
         });
     });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Existing event listeners
+    
+        // Add event listener for delete comment buttons
+        document.body.addEventListener('click', async function(e) {
+            if (e.target.closest('.delete-comment')) {
+                e.preventDefault();
+                const button = e.target.closest('.delete-comment');
+                if (confirm('Are you sure you want to delete this comment?')) {
+                    const commentId = button.getAttribute('data-comment-id');
+                    const response = await fetch('/delete_comment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `comment_id=${commentId}`
+                    });
+    
+                    const result = await response.json();
+    
+                    if (result.status === 'success') {
+                        // Remove the comment from the DOM
+                        const commentElement = button.closest('.bg-gray-100');
+                        const commentsContainer = commentElement.closest('.space-y-2');
+                        commentElement.remove();
+    
+                        // Update comment count
+                        const postId = commentsContainer.id.split('-')[1];
+                        const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                        const countSpan = commentToggle.querySelector('span');
+                        const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                        countSpan.textContent = `${currentCount - 1} comments`;
+                    } else {
+                        alert('Failed to delete comment. Please try again.');
+                    }
+                }
+            }
+        });
+    });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.delete-tweet').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const postId = button.getAttribute('data-post-id');
+                    if (confirm('Are you sure you want to delete this tweet?')) {
+                        try {
+                            const response = await fetch('/delete_post', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ post_id: postId })
+                            });
+
+                            const data = await response.json();
+
+                            if (data.status === 'success') {
+                                // Remove the tweet from the DOM
+                                const tweetElement = button.closest('.bg-gray-300');
+                                tweetElement.remove();
+                            } else {
+                                alert('Failed to delete tweet: ' + data.message);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Failed to delete tweet. Please try again.');
+                        }
+                    }
+                });
+            });
+        });
+
     </script>
 </main>
 

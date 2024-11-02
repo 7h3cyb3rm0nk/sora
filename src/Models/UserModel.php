@@ -275,7 +275,7 @@ public function isFollowing($followerId, $followedId) {
     $stmt->bind_param("ii", $followerId, $followedId);
     $stmt->execute();
     $result = $stmt->get_result();
-    return $result->num_rows > 0;
+    return $result->num_rows > 0 ;
 }
 
 
@@ -417,10 +417,10 @@ public function search_users($query) {
     $stmt = $this->db->prepare("
         SELECT id, username, profile_picture
         FROM users
-        WHERE username LIKE ?
+        WHERE username LIKE ? AND username != ?
         LIMIT 10
     ");
-    $stmt->bind_param("s", $query);
+    $stmt->bind_param("ss", $query, $_SESSION["username"]);
     $stmt->execute();
     $result = $stmt->get_result();
     return $result->fetch_all(MYSQLI_ASSOC);

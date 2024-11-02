@@ -213,11 +213,16 @@ public function get_followed_users() {
 public function search_users() {
   $query = $_GET['query'] ?? '';
   $results = $this->userModel->search_users($query);
+  
   $formatted_results = array_map(function($user) {
+
+    $isFollowing = $this->userModel->isFollowing($_SESSION["user_id"], $user["id"]);
+    $user["isFollowing"] = $isFollowing;
     return [
         'id' => $user['id'],
         'username' => $user['username'],
-        'profile_picture' => $user['profile_picture'] ?? '/images/icons/user-avatar.png'
+        'profile_picture' => $user['profile_picture'] ?? '/images/icons/user-avatar.png',
+        'isFollowing'    => $user["isFollowing"] 
     ];
 }, $results);
 
