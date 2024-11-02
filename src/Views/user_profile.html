@@ -190,6 +190,7 @@ require __DIR__ . "/../Views/navbar.html";
                     method: 'POST',
                     body: formData
                 });
+                const username = form.dataset.username;
     
                 if (response.ok) {
                     const postId = formData.get('post_id');
@@ -198,7 +199,7 @@ require __DIR__ . "/../Views/navbar.html";
                     const newComment = document.createElement('div');
                     newComment.className = 'bg-gray-100 p-3 rounded-md';
                     newComment.innerHTML = 
-                    '<p class="font-semibold text-sm">' + <?php echo json_encode($_SESSION['username']); ?> + '</p>' +
+                    '<p class="font-semibold text-sm">' + username + '</p>' +
                     '<p class="text-gray-700">' + content + '</p>' +
                     '<p class="text-xs text-gray-500 mt-1">Just now</p>';
                     commentsContainer.prepend(newComment);
@@ -213,6 +214,84 @@ require __DIR__ . "/../Views/navbar.html";
             });
         });
     });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Existing event listeners
+    
+        // Add event listener for delete comment buttons
+        document.body.addEventListener('click', async function(e) {
+            if (e.target.closest('.delete-comment')) {
+                e.preventDefault();
+                const button = e.target.closest('.delete-comment');
+                if (confirm('Are you sure you want to delete this comment?')) {
+                    const commentId = button.getAttribute('data-comment-id');
+                    const response = await fetch('/delete_comment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `comment_id=${commentId}`
+                    });
+    
+                    const result = await response.json();
+    
+                    if (result.status === 'success') {
+                        // Remove the comment from the DOM
+                        const commentElement = button.closest('.bg-gray-100');
+                        const commentsContainer = commentElement.closest('.space-y-2');
+                        commentElement.remove();
+    
+                        // Update comment count
+                        const postId = commentsContainer.id.split('-')[1];
+                        const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                        const countSpan = commentToggle.querySelector('span');
+                        const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                        countSpan.textContent = `${currentCount - 1} comments`;
+                    } else {
+                        alert('Failed to delete comment. Please try again.');
+                    }
+                }
+            }
+        });
+    });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.delete-tweet').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const postId = button.getAttribute('data-post-id');
+                    if (confirm('Are you sure you want to delete this tweet?')) {
+                        try {
+                            const response = await fetch('/delete_post', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ post_id: postId })
+                            });
+
+                            const data = await response.json();
+
+                            if (data.status === 'success') {
+                                // Remove the tweet from the DOM
+                                const tweetElement = button.closest('.bg-gray-300');
+                                tweetElement.remove();
+                            } else {
+                                alert('Failed to delete tweet: ' + data.message);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Failed to delete tweet. Please try again.');
+                        }
+                    }
+                });
+            });
+        });
+
     </script>
 </main>
 

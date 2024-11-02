@@ -465,6 +465,50 @@
         });
 
     </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Existing event listeners
+        
+            // Add event listener for delete comment buttons
+            document.body.addEventListener('click', async function(e) {
+                if (e.target.closest('.delete-comment')) {
+                    e.preventDefault();
+                    const button = e.target.closest('.delete-comment');
+                    if (confirm('Are you sure you want to delete this comment?')) {
+                        const commentId = button.getAttribute('data-comment-id');
+                        const response = await fetch('/delete_comment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `comment_id=${commentId}`
+                        });
+        
+                        const result = await response.json();
+        
+                        if (result.status === 'success') {
+                            // Remove the comment from the DOM
+                            const commentElement = button.closest('.bg-gray-100');
+                            const commentsContainer = commentElement.closest('.space-y-2');
+                            commentElement.remove();
+        
+                            // Update comment count
+                            const postId = commentsContainer.id.split('-')[1];
+                            const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                            const countSpan = commentToggle.querySelector('span');
+                            const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                            countSpan.textContent = `${currentCount - 1} comments`;
+                        } else {
+                            alert('Failed to delete comment. Please try again.');
+                        }
+                    }
+                }
+            });
+        });
+        </script>
+
+        
 </body>
 
 </html>

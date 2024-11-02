@@ -214,6 +214,12 @@ class PostModel{
         
     }
 
+    public function delete_comment($comment_id, $user_id) {
+        $stmt = $this->db->prepare("DELETE FROM comments WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $comment_id, $user_id);
+        return $stmt->execute();
+    }
+
     public function get_comments($post_id) {
         $stmt = $this->db->prepare("SELECT c.*, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC");
         $stmt->bind_param("i", $post_id);

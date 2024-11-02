@@ -175,12 +175,25 @@ class PostController {
 
         $comments_html = '';
         foreach ($comments as $comment) {
+            $delete_button = '';
+
+            if ($comment['user_id'] == $_SESSION['user_id']) {
+                $delete_button = <<<HTML
+                <button class="delete-comment text-red-500 justify-self-end self-end hover:text-red-700" data-comment-id="{$comment['id']}">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                HTML;
+            }
             $comment_time = Helper::time_ago($comment['created_at']);
             $comments_html .= <<<HTML
-            <div class="bg-gray-100 p-3 rounded-md">
+            <div class="bg-gray-100 p-3  w-full rounded-md flex flex-col">
+
                 <p class="font-semibold text-sm">{$comment['username']}</p>
+                
                 <p class="text-gray-700">{$comment['content']}</p>
                 <p class="text-xs text-gray-500 mt-1">{$comment_time}</p>
+                {$delete_button}
+                
             </div>
             HTML;
         }
@@ -279,6 +292,22 @@ public function add_comment() {
             $error[] = "Error adding comment";
             http_response_code(500);
         }
+    }
+}
+public function delete_comment() {
+    Helper::validate_user();
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $comment_id = $_POST['comment_id'];
+        $user_id = $_SESSION['user_id'];
+
+        if ($this->postModel->delete_comment($comment_id, $user_id)) {
+            // Comment deleted successfully
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Error deleting comment']);
+        }
+        exit;
     }
 }
 
