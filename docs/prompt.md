@@ -818,6 +818,10 @@ video {
   margin-top: 0.5rem;
 }
 
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
 }
@@ -870,10 +874,6 @@ video {
   height: 6rem;
 }
 
-.h-3 {
-  height: 0.75rem;
-}
-
 .h-4 {
   height: 1rem;
 }
@@ -896,10 +896,6 @@ video {
 
 .w-24 {
   width: 6rem;
-}
-
-.w-3 {
-  width: 0.75rem;
 }
 
 .w-4 {
@@ -1105,10 +1101,6 @@ video {
   border-width: 1px;
 }
 
-.border-2 {
-  border-width: 2px;
-}
-
 .border-b {
   border-bottom-width: 1px;
 }
@@ -1134,11 +1126,6 @@ video {
 .border-violet-600 {
   --tw-border-opacity: 1;
   border-color: rgb(124 58 237 / var(--tw-border-opacity));
-}
-
-.border-white {
-  --tw-border-opacity: 1;
-  border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
 .bg-black {
@@ -1169,16 +1156,6 @@ video {
 .bg-gray-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
-}
-
-.bg-gray-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
-}
-
-.bg-green-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(74 222 128 / var(--tw-bg-opacity));
 }
 
 .bg-indigo-600 {
@@ -1857,6 +1834,8 @@ $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']
 $app->router->post('/add_likes', [PostController::class, 'add_likes']);
 $app->router->post('/remove_likes', [PostController::class, 'remove_likes']);
 $app->router->post('/add_comment', [PostController::class, 'add_comment']);
+$app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
+$app->router->get('/search_users', [UserController::class, 'search_users']);
 $app->run();
 
 
@@ -2774,16 +2753,25 @@ class UserController {
 
   public function profile($username=NULL) {
     if($username == NULL){
-
-    
       if($_SERVER['REQUEST_METHOD'] == "GET"){
         $username = $_SESSION['username'];
+        $user = $this->get_user_details($username);
+        unset($data);
+        $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+        $data["following"] = $this->userModel->get_user_following($user["username"]);
+        $data["posts"] = $this->userModel->get_user_posts($user["username"]);
         include __DIR__ ."/../Views/profile.html";
       
       }
     }
     else{
       if($username == $_SESSION["username"]){
+        $username = $_SESSION['username'];
+        $user = $this->get_user_details($username);
+        unset($data);
+        $data["followers"] = $this->userModel->get_user_followers($user["username"]);
+        $data["following"] = $this->userModel->get_user_following($user["username"]);
+        $data["posts"] = $this->userModel->get_user_posts($user["username"]);
         header("Location: /profile");
         exit;
       }
@@ -2877,6 +2865,27 @@ public function render_user_tweets($data){
     }
   }
   
+
+
+public function get_followed_users() {
+  $user_id = $_SESSION['user_id'];
+  $followed_users = $this->userModel->get_followed_users($user_id);
+  echo json_encode($followed_users);
+}
+
+public function search_users() {
+  $query = $_GET['query'] ?? '';
+  $results = $this->userModel->search_users($query);
+  $formatted_results = array_map(function($user) {
+    return [
+        'id' => $user['id'],
+        'username' => $user['username'],
+        'profile_picture' => $user['profile_picture'] ?? '/images/icons/user-avatar.png'
+    ];
+}, $results);
+
+echo json_encode($formatted_results);
+}
 
   
 
@@ -3252,6 +3261,35 @@ function update($username, $data){
 		return false;
 	}
 	
+}
+
+
+
+public function get_followed_users($user_id) {
+    $stmt = $this->db->prepare("
+        SELECT u.id, u.username, u.profile_picture
+        FROM users u
+        JOIN follows f ON u.id = f.followed_id
+        WHERE f.follower_id = ?
+    ");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+public function search_users($query) {
+    $query = "%$query%";
+    $stmt = $this->db->prepare("
+        SELECT id, username, profile_picture
+        FROM users
+        WHERE username LIKE ?
+        LIMIT 10
+    ");
+    $stmt->bind_param("s", $query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
 }
 
 }                   
@@ -3715,6 +3753,7 @@ class PostModel{
                             <?php echo htmlspecialchars($user['bio'] ?? 'No bio added yet'); ?>
                         </p>
                     </div>
+                    
                     <button onclick="toggleEdit()"
                         class="inline-flex items-center px-4 py-2 border border-violet-600 rounded-md shadow-sm text-sm font-medium text-violet-600 bg-white hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
                         <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3723,6 +3762,22 @@ class PostModel{
                         </svg>
                         Edit Profile
                     </button>
+                </div>
+                <div class="border-t border-b border-gray-200 mt-4 py-3">
+                    <div class="flex justify-around items-center gap-3">
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['posts']); ?></span>
+                            <span class="text-sm text-gray-500">Posts</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['followers']); ?></span>
+                            <span class="text-sm text-gray-500">Followers</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-2xl font-semibold text-gray-900"><?php echo count($data['following']); ?></span>
+                            <span class="text-sm text-gray-500">Following</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -4236,34 +4291,16 @@ class PostModel{
                 <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
                 <div class="space-y-4">
                     <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
-                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Online</h3>
-                        <ul class="space-y-3">
-                            <li class="flex items-center space-x-3">
-                                <div class="relative">
-                                    <img src="/api/placeholder/40/40" alt="Alice" class="w-10 h-10 rounded-full">
-                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
-                                </div>
-                                <span class="font-medium">Alice Johnson</span>
-                            </li>
-                            <li class="flex items-center space-x-3">
-                                <div class="relative">
-                                    <img src="/api/placeholder/40/40" alt="Bob" class="w-10 h-10 rounded-full">
-                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></span>
-                                </div>
-                                <span class="font-medium">Bob Smith</span>
-                            </li>
+                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Followed Users</h3>
+                        <ul class="space-y-3" id="followed-users-list">
+                            <!-- Followed users will be populated here -->
                         </ul>
                     </div>
                     <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
-                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Offline</h3>
-                        <ul class="space-y-3">
-                            <li class="flex items-center space-x-3">
-                                <div class="relative">
-                                    <img src="/api/placeholder/40/40" alt="Charlie" class="w-10 h-10 rounded-full">
-                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-gray-400 border-2 border-white rounded-full"></span>
-                                </div>
-                                <span class="font-medium text-gray-500">Charlie Brown</span>
-                            </li>
+                        <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Search Users</h3>
+                        <input type="text" id="user-search" class="w-full p-2 rounded-md" placeholder="Search users...">
+                        <ul class="space-y-3 mt-3" id="search-results">
+                            <!-- Search results will be populated here -->
                         </ul>
                     </div>
                 </div>
@@ -4423,6 +4460,68 @@ class PostModel{
         });
     });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded' , function() {
+    // Load followed users
+    fetch('/get_followed_users')
+        .then(response => response.json())
+        .then(users => {
+            const usersList = document.getElementById('followed-users-list');
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center space-x-3';
+                li.innerHTML = `
+                    <div class="relative">
+                        <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
+                    </div>
+                    <span class="font-medium">${user.username}</span>
+                `;
+                usersList.appendChild(li);
+            });
+        });
+
+    // Handle user search
+    const searchInput = document.getElementById('user-search');
+    const searchResults = document.getElementById('search-results');
+
+    searchInput.addEventListener('input', debounce(function() {
+        console.log("in here");
+        const query = this.value;
+        if (query.length < 1) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        fetch(`/search_users?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(users => {
+                searchResults.innerHTML = '';
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center space-x-3';
+                    li.innerHTML = `
+                        <div class="relative">
+                            <img src="${user.profile_picture || '/images/icons/user-avatar.png'}" alt="${user.username}" class="w-10 h-10 rounded-full">
+                        </div>
+                        <a href="/profile/${user.username}" class="font-medium">${user.username}</a>
+                    `;
+                    searchResults.appendChild(li);
+                });
+            });
+    }, 100));
+
+    // Debounce function to limit API calls
+    function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+});
+</script>
+
     </main>
 </body>
 </html>

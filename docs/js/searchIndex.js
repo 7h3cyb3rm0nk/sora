@@ -151,6 +151,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_edit_user_details"
         },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Aget_followed_users\u0028\u0029",
+            "name": "get_followed_users",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_get_followed_users"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Asearch_users\u0028\u0029",
+            "name": "search_users",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_search_users"
+        },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003A\u0024userModel",
             "name": "userModel",
             "summary": "",
@@ -370,6 +380,16 @@ Search.appendIndex(
             "name": "update",
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_update"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_followed_users\u0028\u0029",
+            "name": "get_followed_users",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_get_followed_users"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Asearch_users\u0028\u0029",
+            "name": "search_users",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_search_users"
         },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003A\u0024db",
             "name": "db",

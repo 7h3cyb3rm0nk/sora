@@ -42,6 +42,35 @@ class PostController {
         }
     }
 
+    public function delete_post() {
+        Helper::validate_user();
+    
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+    
+        if (isset($data['post_id'])) {
+            $post_id = $data['post_id'];
+            $user_id = $_SESSION['user_id'];
+    
+            if ($this->postModel->delete_post($post_id, $user_id)) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Post deleted successfully'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Failed to delete post'
+                ]);
+            }
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'post_id not found in request'
+            ]);
+        }
+    }
+
     public  function render_tweet($tweet){
         $is_liked = $this->postModel->check_user_likes($tweet["id"]);
         $like_class = $is_liked == 1 ? "liked" : "";
@@ -64,6 +93,15 @@ class PostController {
             <img src="images/icons/user-avatar.png" alt="" class="w-10 h-10 rounded-full mr-3">
             HTML;
         }
+        $delete_button = '';
+    if ($tweet['user_id'] == $_SESSION['user_id']) {
+        $delete_button = <<<HTML
+        <button class="delete-tweet flex items-center space-x-1 hover:text-red-500 transition duration-300" data-post-id="$id">
+            <i class="fas fa-trash"></i>
+            <span>Delete</span>
+        </button>
+        HTML;
+    }
         $html = <<<HTML
     <div class="bg-gray-300 p-4 rounded-lg shadow opacity-95 shadow-sm hover:shadow-md transition duration-300">
         <div class="flex items-center mb-2">
@@ -88,6 +126,7 @@ class PostController {
                 <i class="fas fa-comment"></i>
                 <span>{$comments} comments</span>
             </button>
+            $delete_button
         </div>
         <div class="comments-section mt-4 hidden" id="comments-section-{$id}">
                 <h4 class="text-lg font-semibold mb-2">Comments</h4>
@@ -102,6 +141,8 @@ class PostController {
                     </button>
                 </form>
             </div>
+
+            
         
     </div>
     HTML;
@@ -232,10 +273,11 @@ public function add_comment() {
 
         if ($this->postModel->add_comment($user_id, $post_id, $content)) {
             // Comment added successfully
-            header("Location: /?post_id=" . $post_id);
+            // header("Location: /?post_id=" . $post_id);
             exit;
         } else {
             $error[] = "Error adding comment";
+            http_response_code(500);
         }
     }
 }

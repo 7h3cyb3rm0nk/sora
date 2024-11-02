@@ -17,6 +17,11 @@ class PostModel{
         return $stmt->execute();
 
     }
+    public function delete_post($post_id, $user_id) {
+        $stmt = $this->db->prepare("DELETE FROM posts WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $post_id, $user_id);
+        return $stmt->execute();
+    }
 
     public function view_posts(): array{
         $stmt = $this->db->prepare("Select * from posts");
@@ -41,7 +46,8 @@ class PostModel{
                 p.id, 
                 p.content, 
                 p.created_at,
-                u.username, 
+                u.username,
+                u.id as user_id, 
                 u.profile_picture,
                 COUNT(l.post_id) AS upvotes,
                 COUNT(DISTINCT c.id) AS comment_count
@@ -69,6 +75,7 @@ class PostModel{
             p.content, 
             p.created_at,
             u.username, 
+            u.id as user_id,
             u.profile_picture,
             COUNT(l.post_id) AS upvotes,
             COUNT(DISTINCT c.id) AS comment_count
@@ -97,6 +104,7 @@ class PostModel{
             p.content, 
             p.created_at,
             u.username, 
+            u.id as user_id,
             u.profile_picture,
             COUNT(l.post_id) AS upvotes,
             COUNT(DISTINCT c.id) AS comment_count
@@ -196,24 +204,14 @@ class PostModel{
     }
 
 
-    public function add_comment() {
-        Helper::validate_user();
+    public function add_comment($user_id, $post_id, $content) {
 
-        if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            $user_id = $_SESSION['user_id'];
-            $post_id = $_POST['post_id'];
-            $content = $_POST['content'];
+        $stmt = $this->db->prepare("INSERT INTO comments(user_id, post_id, content) VALUES(?,?,?)");
+        $stmt->bind_param("iis", $user_id, $post_id, $content);
+        return $stmt->execute();
+        
 
-            if ($this->postModel->add_comment($user_id, $post_id, $content)) {
-                // Comment added successfully
-                header("Location: /#post-" . $post_id);
-                exit;
-            } else {
-                $_SESSION['error'] = "Error adding comment";
-                header("Location: /#post-" . $post_id);
-                exit;
-            }
-        }
+        
     }
 
     public function get_comments($post_id) {
