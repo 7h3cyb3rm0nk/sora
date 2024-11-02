@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html class="h-full sm:overflow-y-auto md:overflow-hidden" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup/Login | SORA</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="h-full bg-gray-100 text-sora-text"> 
+    <header class="bg-gradient-to-r from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg"> 
+        <nav class="text-2xl sm:text-3xl md:text-4xl font-bold">SORA</nav>
+    </header>
+    <main class="h-full text-sora-text"> 
+
+        <div
+            class="flex flex-col sm:flex-row gap-7 sm:gap-15 md:gap-[7em] justify-center items-center p-4 sm:p-8 md:p-12 min-h-[calc(100vh-4rem)]">
+
+            <div class="signup-card  p-6 flex items-center justify-center rounded-md w-full sm:w-[90%] md:w-[80%] lg:w-[40%] xl:w-[30%] max-w-md  shadow-md">
+                <div class="signup w-full text-lg sm:text-xl">
+                    <form class="flex flex-col w-full justify-center gap-4" action="/register" method="POST">
+                        <h3 class="w-full font-bold text-2xl text-gray-900 mb-4 text-center">Signup</h3>
+                        <div class="form-group">
+                            <label class="block text-gray-700 font-bold mb-2" for="signup-email">Email</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="email" name="email" id="signup-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-gray-700 font-bold mb-2" for="signup-first-name">First Name</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="text" name="firstname" id="signup-first-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-gray-700 font-bold mb-2" for="signup-last-name">Last Name</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="text" name="lastname" id="signup-last-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-gray-700 font-bold mb-2" for="signup-username">Username</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="text" name="username" id="signup-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-gray-700 font-bold mb-2" for="signup-password">Password</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="password" name="password" id="signup-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-gray-700 font-bold mb-2" for="signup-retype-password">Retype
+                                Password</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="password" name="retype_password" id="signup-retype-password" required>
+                        </div>
+                        <button
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit" name="submit">Signup</button>
+                        <div class="error text-red-600 w-full text-center text-lg font-bold mt-2 hidden">
+                            <?php 
+                            if(isset($_SESSION['error'])){
+                            echo implode("<br>", $_SESSION['error']); 
+                            $_SESSION['error'] = null;
+                            unset($_SESSION['error']);
+                            }
+                             ?>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div
+                class="login-card  p-6 flex items-center justify-center rounded-md shadow-md w-full sm:w-[90%] md:w-[80%] lg:w-[40%] xl:w-[30%] max-w-md">
+                <div class="login w-full text-lg sm:text-xl">
+                    <form class="flex flex-col w-full justify-center gap-4" action="/login" method="POST">
+                        <h3 class="w-full font-bold text-2xl text-gray-900 mb-4 text-center">Login</h3>
+                        <div class="form-group">
+                            <label class="block text-gray-700 font-bold mb-2" for="username">Username</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="text" name="username" id="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-gray-700 font-bold mb-2" for="password">Password</label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="password" name="password" id="password" required>
+                        </div>
+                        <div class="error text-red-600 w-full text-center text-lg font-bold mt-2 hidden">
+                            <?php 
+                            if(isset($_SESSION['login_error'])){
+                            echo implode("<br>", $_SESSION['login_error']); 
+                            $_SESSION['login_error'] = null;
+                            unset($_SESSION['error']);
+                            }
+                             ?>
+                        </div>
+                        <button
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit" name="submit">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let login_card = document.querySelector(".login-card");
+        let signup_card = document.querySelector(".signup-card");
+
+        let styles_array = ["bg-gray-200", "shadow-md"];
+
+        login_card.addEventListener("mouseenter", () => {
+            login_card.classList.add(...styles_array);
+            signup_card.classList.remove(...styles_array);
+        });
+
+        signup_card.addEventListener("mouseenter", () => {
+            signup_card.classList.add(...styles_array);
+            login_card.classList.remove(...styles_array);
+        });
+
+        let error = document.querySelector(".error");
+        if (error.textContent.trim() !== "") {
+            error.classList.remove("hidden");
+            document.querySelector("html").classList.add("md:overflow-y-auto");
+        }
+    </script>
+</body>
+
+</html>

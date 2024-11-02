@@ -4,3 +4,4 @@ vendor/*
 docs/prompt.md
 docs/sample.md
 composer.lock
+docs/*

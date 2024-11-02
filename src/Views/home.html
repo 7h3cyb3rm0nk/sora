@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="h-full" lang="en">
+<!-- <?php $_SERVER["title"] = "SORA | HOME" ?> -->
+
+<?php include_once __DIR__."/html_head.html"?>
+<body class="h-full text-gray-900 flex flex-col w-full" style="background: url('/images/sora-bg.png')">
+       
+<?php include_once __DIR__."/navbar.html" ?>
+    
+        <main class="flex-grow flex overflow-hidden">
+            <aside class="w-72 bg-gray-100 opacity-95 shadow-lg overflow-y-auto hidden md:block">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold mb-6 text-sora-primary">Peeps</h2>
+                    <div class="space-y-4">
+                        <div class="bg-gray-300 rounded-lg p-4 transition overflow-auto duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Following</h3>
+                            <ul class="space-y-3" id="followed-users-list">
+                                <!-- Followed users will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 overflow-auto transition duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Followers</h3>
+                            <ul class="space-y-3" id="followers-users-list">
+                                <!-- Followers  will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 transition duration-300 overflow-auto hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Search Users</h3>
+                            <input type="text" id="user-search" class="w-full p-2 rounded-md" placeholder="Search users...">
+                            <ul class="space-y-3 mt-3" id="search-results">
+                                <!-- Search results will be populated here -->
+                            </ul>
+                        </div>
+                        <div class="bg-gray-300 rounded-lg p-4 transition duration-300 hover:shadow-md">
+                            <h3 class="text-lg font-semibold mb-3 text-sora-secondary">Your Status</h3>
+                            <p id="current-status" class="mb-2 text-gray-700 <?php echo empty($_SESSION['user_status']) ? 'text-gray-500' : ''; ?>">
+                                <?php echo htmlspecialchars($_SESSION['user_status'] ?? 'No status set'); ?>
+                            </p>
+                            <form id="status-form" class="mt-2">
+                                <input type="text" id="status-input" class="w-full p-2 rounded-md mb-2" placeholder="Update your status...">
+                                <div class="flex justify-between gap-3  ">
+                                <button type="submit" id="update-status-btn" class="bg-sora-primary text-white px-4 py-2 rounded-md hover:bg-sora-secondary transition-colors duration-300 text-sm">
+                                    Update Status
+                                </button>
+                                <button id="remove-status-btn" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-300 text-sm <?php echo empty($_SESSION['user_status']) ? 'hidden' : ''; ?>">
+                                    Remove Status
+                                </button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </aside> 
+
+        <div class="flex-grow flex flex-col w-24 overflow-hidden">
+            <section class="flex-grow p-4 overflow-y-auto">
+                <h1 class="text-2xl font-bold mb-4 text-sora-primary bg-gray-300 w-fit p-2 rounded-md shadow-md">Tweets</h1>
+                <div class="space-y-4">
+                    <?php
+                    use Sora\Controllers\PostController;
+                    
+                    $postController = new PostController();
+                    $postController->render_tweets();
+                    ?>
+                </div>
+            </section>
+            <footer class="bg-gradient-to-r from-sora-primary to-sora-secondary p-4 shadow-lg m-2 rounded-lg">
+                <div class="max-w-4xl mx-auto">
+                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center gap-3" id="post-tweet">
+                        <div class="relative flex-grow">
+                            <textarea name="content" id="tweet" rows="3" class="w-full p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500" placeholder="What's on your mind?"></textarea>
+                            <div class="absolute bottom-3 right-3 flex space-x-2">
+                            </div>
+                        </div>
+                        <?php 
+                        use Sora\Helpers\Helper;
+                        $_SESSION['csrf_token'] = Helper::generate_token()
+                        ?>
+                        <input type="hidden" name="csrf_token" value=<?=$_SESSION['csrf_token'] ?>>
+                        <button name="post-btn" class="bg-sora-bg text-sora-primary py-2 px-6 rounded-full hover:bg-white hover:text-sora-secondary transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sora-bg">
+                            <i class="fas fa-paper-plane mr-2"></i>Post
+                        </button>
+                    </form>
+                </div>
+            </footer>
+        </div>
+        </main> 
+
+        <style>
+            /* Upvote button styles */
+            .upvotes {
+                transition: color 0.2s ease-in-out;
+            }
+
+            .upvotes.liked {
+                color: #3b82f6; /* Tailwind blue-500 */
+            }
+
+            .upvotes.liked svg {
+                stroke: #3b82f6; /* Tailwind blue-500 */
+            }
+
+            .upvotes:hover {
+                color: #60a5fa; /* Tailwind blue-400 for hover */
+            }
+
+            .upvotes:hover svg {
+                stroke: #60a5fa; /* Tailwind blue-400 for hover */
+            }
+
+            .upvotes svg {
+                transition: stroke 0.2s ease-in-out;
+            }
+        </style>
+        <script src="/js/status.js"></script>
+        <script src="/js/follow.js"></script>
+    </body>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+    const tweetTextarea = document.getElementById('tweet');
+    const tweetForm = tweetTextarea.closest('form');
+
+    tweetTextarea.addEventListener('keydown', async function(e) {
+        // Check if Enter was pressed without Shift (Shift+Enter allows multiline)
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // Prevent default newline
+            
+            // Get the form data
+            const formData = new FormData(tweetForm);
+            
+            // Only submit if there's content
+            const content = formData.get('content').trim();
+            if (content) {
+                try {
+                    const response = await fetch('/create', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        // Clear the textarea
+                        tweetForm.reset();
+                        
+                        // Optionally reload the page to show the new tweet
+                        // or you could insert the new tweet dynamically
+                        window.location.reload();
+                    } else {
+                        console.error('Failed to post tweet');
+                    }
+                } catch (error) {
+                    console.error('Error posting tweet:', error);
+                }
+            }
+        }
+    });
+});
+        </script>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listener to all upvote buttons
+    document.querySelectorAll('.upvotes').forEach(button => {
+        button.addEventListener('click', handleLike);
+    });
+
+    async function handleLike(event) {
+        const button = event.currentTarget;
+        const postId = button.dataset.postId;
+        const isLiked = button.dataset.likedId === "1";
+        const upvoteSpan = button.querySelector('#upvotes');
+        const currentUpvotes = parseInt(upvoteSpan.textContent);
+
+        try {
+            const endpoint = isLiked ? '/remove_likes' : '/add_likes';
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ post_id: postId })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                // Toggle the liked state
+                button.dataset.likedId = isLiked ? "0" : "1";
+                button.classList.toggle('liked');
+                
+                // Update the upvote count
+                upvoteSpan.textContent = isLiked ? 
+                    (currentUpvotes - 1) : 
+                    (currentUpvotes + 1);
+            } else {
+                console.error('Error:', data.message);
+                // alert('Failed to update like. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // alert('Failed to update like. Please try again.');
+        }
+    }
+});
+    </script>   
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Comment toggle functionality
+        const commentToggles = document.querySelectorAll('.comment-toggle');
+        commentToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const postId = toggle.getAttribute('data-post-id');
+                const commentsSection = document.getElementById(`comments-section-${postId}`);
+                commentsSection.classList.toggle('hidden');
+            });
+        });
+    
+        // Comment submission
+        const commentForms = document.querySelectorAll('form[action="/add_comment"]');
+        commentForms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const response = await fetch('/add_comment', {
+                    method: 'POST',
+                    body: formData
+                });
+                const username = form.dataset.username;
+    
+                if (response.ok) {
+                    const postId = formData.get('post_id');
+                    const content = formData.get('content');
+                    const commentsContainer = document.getElementById(`comments-${postId}`);
+                    const newComment = document.createElement('div');
+                    newComment.className = 'bg-gray-100 p-3 rounded-md';
+                    newComment.innerHTML = 
+                    '<p class="font-semibold text-sm">' + username + '</p>' +
+                    '<p class="text-gray-700">' + content + '</p>' +
+                    '<p class="text-xs text-gray-500 mt-1">Just now</p>';
+                    commentsContainer.prepend(newComment);
+                    form.reset();
+    
+                    // Update comment count
+                    const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                    const countSpan = commentToggle.querySelector('span');
+                    const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                    countSpan.textContent = `${currentCount + 1} comments`;
+                    window.location.reload();
+                }
+            });
+        });
+    });
+    </script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Existing event listeners
+    
+        // Add event listener for delete comment buttons
+        document.body.addEventListener('click', async function(e) {
+            if (e.target.closest('.delete-comment')) {
+                e.preventDefault();
+                const button = e.target.closest('.delete-comment');
+                if (confirm('Are you sure you want to delete this comment?')) {
+                    const commentId = button.getAttribute('data-comment-id');
+                    const response = await fetch('/delete_comment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `comment_id=${commentId}`
+                    });
+    
+                    const result = await response.json();
+    
+                    if (result.status === 'success') {
+                        // Remove the comment from the DOM
+                        const commentElement = button.closest('.bg-gray-100');
+                        const commentsContainer = commentElement.closest('.space-y-2');
+                        commentElement.remove();
+    
+                        // Update comment count
+                        const postId = commentsContainer.id.split('-')[1];
+                        const commentToggle = document.querySelector(`.comment-toggle[data-post-id="${postId}"]`);
+                        const countSpan = commentToggle.querySelector('span');
+                        const currentCount = parseInt(countSpan.textContent.match(/\d+/)[0]);
+                        countSpan.textContent = `${currentCount - 1} comments`;
+                    } else {
+                        alert('Failed to delete comment. Please try again.');
+                    }
+                }
+            }
+        });
+    });
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.delete-tweet').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const postId = button.getAttribute('data-post-id');
+                if (confirm('Are you sure you want to delete this tweet?')) {
+                    try {
+                        const response = await fetch('/delete_post', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ post_id: postId })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            // Remove the tweet from the DOM
+                            const tweetElement = button.closest('.bg-gray-300');
+                            tweetElement.remove();
+                        } else {
+                            alert('Failed to delete tweet: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to delete tweet. Please try again.');
+                    }
+                }
+            });
+        });
+    });
+
+</script>
+
+    </main>
+</body>
+</html>
