@@ -53,7 +53,7 @@ class UserController {
     if($response['success'] === true) {
       $_SESSION['username'] = $_POST['username'];
       $_SESSION['user_id'] = $response['user']['id'];
-      $_SESSION['status'] = $response['user']['status'];
+      $_SESSION['user_status'] = $response['user']['status'];
       header('Location: /');
       exit;
     }
@@ -79,7 +79,7 @@ class UserController {
     session_regenerate_id(true);
     $_SESSION['username'] = $response['user']['username'];
     $_SESSION['user_id'] = $response['user']['id'];
-    
+    $_SESSION['user_status'] = $response['user']['status'];
     header('Location: /');
     exit;
     }

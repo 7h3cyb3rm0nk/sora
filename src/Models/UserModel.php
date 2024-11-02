@@ -92,7 +92,7 @@ class UserModel {
 		*                 'user'  (array) - user details.
 		*/                                                                                     
 	public function authenticate(string $username, string $password): ?array { 
-       $stmt = $this->db->prepare("SELECT id, username, password FROM users where username = ? or email = ?" );
+       $stmt = $this->db->prepare("SELECT id, username, status, password FROM users where username = ? or email = ?" );
        $stmt->bind_param("ss", $username,$username);     
  			 $stmt->execute();
  			 $result = $stmt->get_result();
