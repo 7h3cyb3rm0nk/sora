@@ -35,6 +35,8 @@ $app->router->post('/remove_likes', [PostController::class, 'remove_likes']);
 $app->router->post('/add_comment', [PostController::class, 'add_comment']);
 $app->router->post('/delete_post', [PostController::class, 'delete_post']);
 $app->router->post('/delete_comment', [PostController::class, 'delete_comment']);
+$app->router->post('/follow', [UserController::class, 'follow']);
+$app->router->post('/unfollow', [UserController::class, 'unfollow']);
 
 $app->run();
 

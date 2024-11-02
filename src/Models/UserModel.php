@@ -268,6 +268,39 @@ public function get_user_following($username){
 		return Array();
 	}
 }
+
+
+public function isFollowing($followerId, $followedId) {
+    $stmt = $this->db->prepare("SELECT * FROM follows WHERE follower_id = ? AND followed_id = ?");
+    $stmt->bind_param("ii", $followerId, $followedId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->num_rows > 0;
+}
+
+
+public function follow($followerId, $followedId) {
+    $stmt = $this->db->prepare("INSERT INTO follows (follower_id, followed_id) VALUES (?, ?)");
+    $stmt->bind_param("ii", $followerId, $followedId);
+    return $stmt->execute();
+}
+
+public function unfollow($followerId, $followedId) {
+    $stmt = $this->db->prepare("DELETE FROM follows WHERE follower_id = ? AND followed_id = ?");
+    $stmt->bind_param("ii", $followerId, $followedId);
+    return $stmt->execute();
+}
+
+public function getUsernameById($userId) {
+    $stmt = $this->db->prepare("SELECT username FROM users WHERE id = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    return $user ? $user['username'] : null;
+}
+
+
 private function handle_profile_picture($files, $action) {
 	$userId = $_SESSION['user_id'];
 	

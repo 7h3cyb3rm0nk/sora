@@ -224,6 +224,34 @@ public function search_users() {
 echo json_encode($formatted_results);
 }
 
+
+public function follow() {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = json_decode(file_get_contents('php://input'), true);
+      $followerId = $_SESSION['user_id'];
+      $followedId = $input['user_id'];
+      
+      if ($this->userModel->follow($followerId, $followedId)) {
+          echo json_encode(['success' => true]);
+          exit;
+      }
+  }
+  echo json_encode(['success' => false]);
+}
+
+public function unfollow() {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = json_decode(file_get_contents('php://input'), true);
+      $followerId = $_SESSION['user_id'];
+      $followedId = $input['user_id'];
+      
+      if ($this->userModel->unfollow($followerId, $followedId)) {
+          echo json_encode(['success' => true]);
+          exit;
+      }
+  }
+  echo json_encode(['success' => false]);
+}
   
 
 
