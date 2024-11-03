@@ -19,7 +19,7 @@
         const message = document.querySelector("#message");
         let text = message.textContent;
         let addon = "Hello Admin :)!"
-        let speed = 100;
+        let speed = 200;
         let cursor_visible = true
 
     
