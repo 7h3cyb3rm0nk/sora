@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once __DIR__."/html_head.html" ?>
+<body class="bg-gray-100">
+<?php include_once __DIR__ ."/navbar.html"?>
+
+<main class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold"><?= htmlspecialchars($space['name']) ?></h1>
+        <?php if (!$isAdmin): ?>
+            <button id="leave-space-btn" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors">Leave Space</button>
+        <?php endif; ?>
+    </div>
+    
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Space Tweets</h2>
+        <form id="space-tweet-form" class="mb-4">
+            <div class="flex">
+                <textarea name="content" id="tweet-content" class="flex-grow p-2 border rounded-l" placeholder="What's happening in this space?" rows="1"></textarea>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors">Post Tweet</button>
+            </div>
+            <input type="hidden" name="space_id" value="<?= $space['id'] ?>">
+        </form>
+        <div id="space-tweets">
+            <?php foreach ($tweets as $tweet): ?>
+                <div class="bg-white p-4 rounded shadow mb-4" id="tweet-<?= $tweet['id'] ?>">
+                    <div class="flex items-center mb-2">
+                        <img src="<?= htmlspecialchars($tweet['profile_picture']) ?>" alt="Profile" class="w-10 h-10 rounded-full mr-2">
+                        <span class="font-bold"><?= htmlspecialchars($tweet['username']) ?></span>
+                    </div>
+                    <p><?= htmlspecialchars($tweet['content']) ?></p>
+                    <span class="text-sm text-gray-500"><?= date('M d, Y H:i', strtotime($tweet['created_at'])) ?></span>
+                    <?php if ($tweet['user_id'] == $_SESSION['user_id'] || $isAdmin): ?>
+                        <button class="delete-tweet-btn ml-2 text-red-500 hover:text-red-700" data-tweet-id="<?= $tweet['id'] ?>">Delete</button>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <?php if ($isAdmin): ?>
+        <div class="mt-8">
+            <button id="delete-space-btn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">Delete Space</button>
+        </div>
+    <?php endif; ?>
+</main>
+
+<script>
+    const tweetForm = document.getElementById('space-tweet-form');
+    const tweetContent = document.getElementById('tweet-content');
+
+    function submitTweet(e) {
+        e.preventDefault();
+        const formData = new FormData(tweetForm);
+
+        fetch('/spaces/tweet', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                location.reload();
+            } else {
+                alert('Failed to post tweet: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    }
+
+    tweetForm.addEventListener('submit', submitTweet);
+
+    tweetContent.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submitTweet(e);
+        }
+    });
+
+    tweetContent.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+
+    document.querySelectorAll('.delete-tweet-btn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            const tweetId = e.target.dataset.tweetId;
+            if (confirm('Are you sure you want to delete this tweet?')) {
+                try {
+                    const response = await fetch('/spaces/tweet/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `tweet_id=${tweetId}&space_id=<?= $space['id'] ?>`
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success) {
+                            document.getElementById(`tweet-${tweetId}`).remove();
+                        } else {
+                            alert('Failed to delete tweet: ' + result.message);
+                        }
+                    } else {
+                        alert('Failed to delete tweet. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        });
+    });
+    </script>
+    <?php if (!$isAdmin): ?>
+    <script>
+    document.getElementById('leave-space-btn').addEventListener('click', async (e) => {
+        if (confirm('Are you sure you want to leave this space?')) {
+            try {
+                const response = await fetch('/spaces/leave', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `space_id=<?= $space['id'] ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('You have left the space successfully');
+                        window.location.href = '/spaces';
+                    } else {
+                        alert('Failed to leave space: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to leave space. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+    </script>
+    <?php endif; ?>
+
+    <?php if ($isAdmin): ?>
+    <script>
+    document.getElementById('delete-space-btn').addEventListener('click', async (e) => {
+        if (confirm('Are you sure you want to delete this space? This action cannot be undone.')) {
+            try {
+                const response = await fetch('/spaces/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `space_id=<?= $space['id'] ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Space deleted successfully');
+                        window.location.href = '/spaces';
+                    } else {
+                        alert('Failed to delete space: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to delete space. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+</script>
+    <?php endif; ?>
+</script>
+</body>
+</html>
