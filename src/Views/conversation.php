@@ -8,7 +8,7 @@
     <div class="bg-white shadow rounded-lg">
         <div class="flex justify-between items-center p-4 border-b border-gray-200">
             <h1 class="text-2xl font-bold" id="conversation-title">
-                <?= isset($messages[0]) ? htmlspecialchars($messages[0]['username']) : 'New Conversation' ?>
+                <?= htmlspecialchars($other_username) ?>
             </h1>
             <div>
                 <button id="new-conversation-btn" class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600 transition-colors">New Conversation</button>

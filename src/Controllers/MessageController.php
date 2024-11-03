@@ -42,6 +42,7 @@ class MessageController {
             $is_blocked = true;
             
         }
+        $other_username  = $this->userModel->getUserById($other_user_id)["username"];
 
         $messages = $this->messageModel->getMessages($user_id, $other_user_id);
         $this->messageModel->markMessagesAsRead($user_id, $other_user_id);

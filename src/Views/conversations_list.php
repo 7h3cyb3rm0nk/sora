@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     userSearch.addEventListener('input', async (e) => {
         const searchTerm = e.target.value;
-        if (searchTerm.length < 3) {
+        if (searchTerm.length < 1) {
             userSearchResults.innerHTML = '';
             selectedUserIndex = -1;
             return;
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 const users = await response.json();
                 userSearchResults.innerHTML = users.map((user, index) => `
-                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer ${index === 0 ? 'bg-gray-100' : ''}" data-user-id="${user.id}">
+                    <div class="user-result bg-gray-300 p-2 hover:bg-sora-secondary  cursor-pointer ${index === 0 ? 'bg-sora-secondary' : ''}" data-user-id="${user.id}">
                         ${user.username}
                     </div>
                 `).join('');
