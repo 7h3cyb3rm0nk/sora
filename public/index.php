@@ -16,7 +16,7 @@ use Sora\Controllers\PostController;
 use Sora\Helpers\Helper;
 use Sora\Controllers\SpaceController;
 use Sora\Controllers\MessageController;
-
+use Sora\Controllers\AdminController;
 $messageController = new MessageController();
 $unread_message_count = $messageController->getUnreadMessageCount();
 
@@ -72,7 +72,7 @@ $app->router->post('/messages/block', [MessageController::class, 'blockUser']);
 $app->router->post('/messages/unblock', [MessageController::class, 'unblockUser']);
 $app->router->get('/users/search', [UserController::class, 'searchUsersForConversation']);
 
-
+$app->router->get('/admin', [AdminController::class, 'admin']);
 
 $app->run();
 
