@@ -72,7 +72,7 @@ class UserController {
     $response = $this->userModel->authenticate($username, $password);
 
     if (!$response['success']){
-      $_SESSION['login_error'] = ["Username/Password incorrect"];
+      $_SESSION['login_error'] = ["Username or password is incorrect!!"];
       header("Location: /login");
       exit;
     }
@@ -122,6 +122,31 @@ class UserController {
       $this->render_profile($user);
     }
   } 
+
+
+  public function deleteProfile() {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $userId = $_SESSION['user_id'];
+        $result = $this->userModel->deleteUser($userId);
+
+        if ($result) {
+            session_destroy();
+            header('Location: /');
+            exit;
+        } else {
+            $_SESSION['error'] = "Failed to delete profile. Please try again.";
+            header('Location: /profile');
+            exit;
+        }
+    } else {
+        include __DIR__."/../Views/delete_profile.php";
+    }
+}
 
   protected function render_profile($user) {
     

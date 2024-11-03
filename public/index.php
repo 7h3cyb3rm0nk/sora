@@ -30,6 +30,7 @@ $app->router->get('/register', [HomeController::class, 'register']);
 $app->router->post('/register', [UserController::class, 'register']);
 $app->router->get('/logout', [UserController::class, 'logout']);
 $app->router->get('/profile', [UserController::class, 'profile']);
+$app->router->get('/delete_profile', [UserController::class, 'deleteProfile']);
 $app->router->get('/profile/:any', [UserController::class, 'profile']);
 $app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
 $app->router->get('/get_followers_users', [UserController::class, 'get_followers_users']);
@@ -48,6 +49,7 @@ $app->router->post('/delete_comment', [PostController::class, 'delete_comment'])
 $app->router->post('/follow', [UserController::class, 'follow']);
 $app->router->post('/unfollow', [UserController::class, 'unfollow']);
 $app->router->post('/update_status', [UserController::class, 'updateStatus']);
+$app->router->post('/delete_profile', [UserController::class, 'deleteProfile']);
 
 
 $app->router->get('/spaces', [SpaceController::class, 'listSpaces']);
@@ -69,6 +71,7 @@ $app->router->post('/messages/delete', [MessageController::class, 'deleteConvers
 $app->router->post('/messages/block', [MessageController::class, 'blockUser']);
 $app->router->post('/messages/unblock', [MessageController::class, 'unblockUser']);
 $app->router->get('/users/search', [UserController::class, 'searchUsersForConversation']);
+
 
 
 $app->run();
