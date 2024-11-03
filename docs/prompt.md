@@ -1017,10 +1017,6 @@ video {
   margin-right: 0.75rem;
 }
 
-.mr-4 {
-  margin-right: 1rem;
-}
-
 .mt-1 {
   margin-top: 0.25rem;
 }
@@ -1212,10 +1208,6 @@ video {
   align-items: center;
 }
 
-.items-baseline {
-  align-items: baseline;
-}
-
 .justify-center {
   justify-content: center;
 }
@@ -1394,6 +1386,11 @@ video {
   border-color: rgb(229 231 235 / var(--tw-border-opacity));
 }
 
+.border-red-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(248 113 113 / var(--tw-border-opacity));
+}
+
 .border-transparent {
   border-color: transparent;
 }
@@ -1433,6 +1430,11 @@ video {
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 
+.bg-gray-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
+}
+
 .bg-gray-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(107 114 128 / var(--tw-bg-opacity));
@@ -1451,6 +1453,11 @@ video {
 .bg-indigo-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(79 70 229 / var(--tw-bg-opacity));
+}
+
+.bg-red-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 226 226 / var(--tw-bg-opacity));
 }
 
 .bg-red-500 {
@@ -1704,6 +1711,11 @@ video {
   color: rgb(37 99 235 / var(--tw-text-opacity));
 }
 
+.text-gray-100 {
+  --tw-text-opacity: 1;
+  color: rgb(243 244 246 / var(--tw-text-opacity));
+}
+
 .text-gray-400 {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
@@ -1742,6 +1754,11 @@ video {
 .text-red-600 {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+.text-red-700 {
+  --tw-text-opacity: 1;
+  color: rgb(185 28 28 / var(--tw-text-opacity));
 }
 
 .text-slate-900 {
@@ -1859,6 +1876,12 @@ video {
   transition-duration: 150ms;
 }
 
+.transition-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .duration-200 {
   transition-duration: 200ms;
 }
@@ -1899,9 +1922,9 @@ video {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
-.hover\:bg-gray-50:hover {
+.hover\:bg-gray-400:hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-gray-600:hover {
@@ -2923,7 +2946,7 @@ class PostController {
 
     public  function render_tweet($tweet){
         $is_liked = $this->postModel->check_user_likes($tweet["id"]);
-        $like_class = $is_liked >= 1 ? "liked" : "";
+        $like_class = $is_liked == 1 ? "liked" : "";
         $id = $tweet["id"];
         $username = $tweet["username"];
         $content = $tweet['content'];
@@ -3212,12 +3235,13 @@ class MessageController {
     public function viewConversation($other_user_id) {
         Helper::validate_user();
         $user_id = $_SESSION['user_id'];
+        $is_blocked=false;
         
-        if ($this->messageModel->isBlocked($user_id, $other_user_id)) {
-            $_SESSION['error'] = "You cannot view this conversation.";
-            header("Location: /messages");
-            exit;
+        if ($this->messageModel->isBlocked( $user_id, $other_user_id)) {
+            $is_blocked = true;
+            
         }
+        $other_username  = $this->userModel->getUserById($other_user_id)["username"];
 
         $messages = $this->messageModel->getMessages($user_id, $other_user_id);
         $this->messageModel->markMessagesAsRead($user_id, $other_user_id);
@@ -3231,6 +3255,17 @@ class MessageController {
             $sender_id = $_SESSION['user_id'];
             $receiver_id = $_POST['receiver_id'];
             $content = $_POST['content'];
+
+            if($sender_id == $receiver_id) {
+                echo json_encode(['success' => false, 'message' => 'You cannot send messages to yourself.']);
+                http_response_code(400);
+                exit;
+            }
+
+            if($this->messageModel->isBlocked($receiver_id, $sender_id)){
+                echo json_encode(['success' => false, 'message' => 'You cannot send messages to this user.']);
+                return;
+            }
 
             if ($this->messageModel->isBlocked($sender_id, $receiver_id)) {
                 echo json_encode(['success' => false, 'message' => 'You cannot send messages to this user.']);
@@ -3288,15 +3323,20 @@ class MessageController {
         Helper::validate_user();
         
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            $blocker_id = $_SESSION['user_id'];
-            $blocked_id = $_POST['blocked_id'];
+            $data = json_decode(file_get_contents("php://input"), true);
+            $user_id = $_SESSION['user_id'];
+            $blocked_user_id = $data['user_id'];
 
-            if ($this->messageModel->unblockUser($blocker_id, $blocked_id)) {
-                echo json_encode(['success' => true]);
+            if ($this->messageModel->unblockUser($user_id, $blocked_user_id)) {
+                echo json_encode(['success' => true, 'message' => 'User unblocked successfully']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to unblock user']);
             }
         }
+    }
+
+    public function isBlocked($user_id, $other_user_id) {
+        return $this->messageModel->isBlocked($user_id, $other_user_id);
     }
 
     public function getUnreadMessageCount() {
@@ -4430,6 +4470,7 @@ class MessageModel {
     }
 
     public function sendMessage($sender_id, $receiver_id, $content) {
+        
         $stmt = $this->db->prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)");
         $stmt->bind_param("iis", $sender_id, $receiver_id, $content);
         return $stmt->execute();
@@ -4451,6 +4492,7 @@ class MessageModel {
             JOIN users u ON (CASE WHEN m.sender_id = ? THEN m.receiver_id ELSE m.sender_id END) = u.id
             LEFT JOIN conversation_deletions cd ON (cd.user_id = ? AND cd.other_user_id = u.id)
             WHERE (m.sender_id = ? OR m.receiver_id = ?) AND (cd.deleted_at IS NULL OR m.created_at > cd.deleted_at)
+            
             GROUP BY other_user_id
             ORDER BY last_message_time DESC
         ");
@@ -4499,8 +4541,8 @@ class MessageModel {
     }
 
     public function isBlocked($user_id, $other_user_id) {
-        $stmt = $this->db->prepare("SELECT * FROM blocks WHERE (blocker_id = ? AND blocked_id = ?) OR (blocker_id = ? AND blocked_id = ?)");
-        $stmt->bind_param("iiii", $user_id, $other_user_id, $other_user_id, $user_id);
+        $stmt = $this->db->prepare("SELECT * FROM blocks WHERE (blocker_id = ? AND blocked_id = ?) ");
+        $stmt->bind_param("ii", $user_id, $other_user_id);
         $stmt->execute();
         return $stmt->get_result()->num_rows > 0;
     }
@@ -5190,12 +5232,19 @@ $unread_message_count = $messageController->getUnreadMessageCount();
     <div class="bg-white shadow rounded-lg">
         <div class="flex justify-between items-center p-4 border-b border-gray-200">
             <h1 class="text-2xl font-bold" id="conversation-title">
-                <?= isset($messages[0]) ? htmlspecialchars($messages[0]['username']) : 'New Conversation' ?>
+                <?= htmlspecialchars($other_username) ?>
             </h1>
             <div>
                 <button id="new-conversation-btn" class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600 transition-colors">New Conversation</button>
                 <?php if (isset($other_user_id)): ?>
+                    <?php if (!$is_blocked): ?>
                     <button id="block-btn" class="bg-red-500 text-white px-4 py-2 rounded mr-2 hover:bg-red-600 transition-colors">Block</button>
+                    <?php else: ?>
+                        <button id="block-btn" class="bg-red-500 text-white hidden px-4 py-2 rounded mr-2 hover:bg-red-600 transition-colors">Block</button>
+                        <button id="unblock-user" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2">
+                       Unblock
+                     </button>
+                    <?php endif; ?> 
                     <button id="delete-conversation-btn" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors">Delete Conversation</button>
                 <?php endif; ?>
             </div>
@@ -5207,19 +5256,32 @@ $unread_message_count = $messageController->getUnreadMessageCount();
         </div>
 
         <div id="messages-container" class="h-96 overflow-y-auto p-4">
-            <?php if (isset($messages)): ?>
-                <?php foreach ($messages as $message): ?>
-                    <div class="mb-4 <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-right' : 'text-left' ?>">
-                        <div class="inline-block max-w-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'bg-blue-500 text-white' : 'bg-gray-300' ?> rounded-lg px-4 py-2">
-                            <p><?= htmlspecialchars($message['content']) ?></p>
-                            <span class="text-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-blue-200' : 'text-gray-500' ?>"><?= date('M d, Y H:i', strtotime($message['created_at'])) ?></span>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p class="text-center text-gray-500">Start a new conversation by searching for a user above.</p>
-            <?php endif; ?>
-        </div>
+    <?php if (isset($messages) && !empty($messages)): ?>
+        <?php 
+        $other_user = $this->userModel->getUserById($other_user_id);
+        $other_username = $other_user ? $other_user['username'] : 'Unknown User';
+        ?>
+        <h2 class="text-xl font-semibold mb-4">Conversation with <?= htmlspecialchars($other_username) ?></h2>
+        <?php if ($is_blocked ): ?>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">User is blocked.</strong>
+                <!-- <button id="unblock-user" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2">
+                    Unblock
+                </button> -->
+            </div>
+        <?php endif; ?>
+        <?php foreach ($messages as $message): ?>
+            <div class="mb-4 <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-right' : 'text-left' ?>">
+                <div class="inline-block max-w-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'bg-blue-500 text-white' : 'bg-gray-300' ?> rounded-lg px-4 py-2">
+                    <p><?= htmlspecialchars($message['content']) ?></p>
+                    <span class="text-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-blue-200' : 'text-gray-500' ?>"><?= date('M d, Y H:i', strtotime($message['created_at'])) ?></span>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p class="text-center text-gray-500">No messages yet. Start a conversation!</p>
+    <?php endif; ?>
+</div>
         
         <form id="message-form" class="p-4 border-t border-gray-200">
             <div class="flex">
@@ -5285,7 +5347,7 @@ $unread_message_count = $messageController->getUnreadMessageCount();
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            alert('You can not send messages at the moment');
         }
     });
 
@@ -5393,6 +5455,35 @@ $unread_message_count = $messageController->getUnreadMessageCount();
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 </script>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const unblockButton = document.getElementById('unblock-user');
+    if (unblockButton) {
+        unblockButton.addEventListener('click', async function() {
+            try {
+                const response = await fetch('/messages/unblock', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: <?= $other_user_id ?> }),
+                });
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to unblock user: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while trying to unblock the user.');
+            }
+        });
+    }
+});
+</script>
 
 
 <!-- <script>
@@ -6083,7 +6174,6 @@ $unread_message_count = $messageController->getUnreadMessageCount();
 
 ```````php
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <?php include_once __DIR__."/html_head.html" ?>
 <body class="bg-gray-100">
@@ -6097,23 +6187,27 @@ $unread_message_count = $messageController->getUnreadMessageCount();
         <div id="user-search-results" class="mt-2"></div>
     </div>
 
-    <div id="conversations-list" class="bg-white shadow rounded-lg">
+    <div id="conversations-list" class="space-y-4">
         <?php foreach ($conversations as $conversation): ?>
-            <a href="/messages/<?= $conversation['other_user_id'] ?>" class="block hover:bg-gray-50">
-                <div class="flex items-center p-4 border-b border-gray-200">
-                    <img src="<?= htmlspecialchars($conversation['profile_picture']) ?>" alt="Profile" class="w-12 h-12 rounded-full mr-4">
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-baseline">
-                            <h2 class="text-lg font-semibold"><?= htmlspecialchars($conversation['username']) ?></h2>
-                            <span class="text-sm text-gray-500"><?= isset($conversation['last_message_time']) ? date('M d, Y H:i', strtotime($conversation['last_message_time'])) : '' ?></span>
+            <div class="bg-white shadow rounded-lg hover:shadow-md transition-shadow duration-300">
+                <a href="/messages/<?= $conversation['other_user_id'] ?>" class="block p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <img src="<?= htmlspecialchars($conversation['profile_picture']) ?>" alt="Profile" class="w-12 h-12 rounded-full">
+                            <div>
+                                <h2 class="text-lg font-semibold"><?= htmlspecialchars($conversation['username']) ?></h2>
+                                <p class="text-gray-600 text-sm truncate"><?= htmlspecialchars($conversation['last_message'] ?? '') ?></p>
+                            </div>
                         </div>
-                        <p class="text-gray-600 truncate"><?= htmlspecialchars($conversation['last_message'] ?? '') ?></p>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500"><?= isset($conversation['last_message_time']) ? date('M d, Y H:i', strtotime($conversation['last_message_time'])) : '' ?></span>
+                            <?php if (isset($conversation['unread_count']) && $conversation['unread_count'] > 0): ?>
+                                <span class="bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-1"><?= $conversation['unread_count'] ?></span>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                    <?php if (isset($conversation['unread_count']) && $conversation['unread_count'] > 0): ?>
-                        <span class="bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-1 ml-2"><?= $conversation['unread_count'] ?></span>
-                    <?php endif; ?>
-                </div>
-            </a>
+                </a>
+            </div>
         <?php endforeach; ?>
     </div>
 </main>
@@ -6124,10 +6218,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const userSearchResults = document.getElementById('user-search-results');
     const conversationsList = document.getElementById('conversations-list');
 
+    let selectedUserIndex = -1;
+
     userSearch.addEventListener('input', async (e) => {
         const searchTerm = e.target.value;
-        if (searchTerm.length < 3) {
+        if (searchTerm.length < 1) {
             userSearchResults.innerHTML = '';
+            selectedUserIndex = -1;
             return;
         }
 
@@ -6135,41 +6232,79 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`/users/search?term=${encodeURIComponent(searchTerm)}`);
             if (response.ok) {
                 const users = await response.json();
-                userSearchResults.innerHTML = users.map(user => `
-                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer" data-user-id="${user.id}">
+                userSearchResults.innerHTML = users.map((user, index) => `
+                    <div class="user-result bg-gray-300 p-2 hover:bg-sora-secondary  cursor-pointer ${index === 0 ? 'bg-sora-secondary' : ''}" data-user-id="${user.id}">
                         ${user.username}
                     </div>
                 `).join('');
-
-                document.querySelectorAll('.user-result').forEach(result => {
-                    result.addEventListener('click', () => {
-                        const userId = result.dataset.userId;
-                        window.location.href = `/messages/${userId}`;
-                    });
-                });
-            } else {
-                userSearchResults.innerHTML = '<p class="text-red-500">Failed to search users. Please try again.</p>';
+                selectedUserIndex = 0;
+                highlightSelectedUser();
             }
         } catch (error) {
             console.error('Error:', error);
-            userSearchResults.innerHTML = '<p class="text-red-500">An error occurred. Please try again.</p>';
         }
     });
+
+    userSearch.addEventListener('keydown', (e) => {
+        const results = userSearchResults.querySelectorAll('.user-result');
+        if (results.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedUserIndex = (selectedUserIndex + 1) % results.length;
+            highlightSelectedUser();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedUserIndex = (selectedUserIndex - 1 + results.length) % results.length;
+            highlightSelectedUser();
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const selectedUser = results[selectedUserIndex];
+            if (selectedUser) {
+                selectUser(selectedUser.dataset.userId);
+            }
+        }
+    });
+
+    userSearchResults.addEventListener('click', (e) => {
+        const userResult = e.target.closest('.user-result');
+        if (userResult) {
+            selectUser(userResult.dataset.userId);
+        }
+    });
+
+    function highlightSelectedUser() {
+        const results = userSearchResults.querySelectorAll('.user-result');
+        results.forEach((result, index) => {
+            if (index === selectedUserIndex) {
+                result.classList.add('bg-sora-secondary');
+            } else {
+                result.classList.remove('bg-sora-secondary');
+            }
+        });
+    }
+
+    function selectUser(userId) {
+        window.location.href = `/messages/${userId}`;
+    }
+
 
     // Function to add a new conversation to the list
     function addNewConversation(conversation) {
         const newConversationHtml = `
-            <a href="/messages/${conversation.id}" class="block hover:bg-gray-50">
-                <div class="flex items-center p-4 border-b border-gray-200">
-                    <img src="${conversation.profile_picture}" alt="Profile" class="w-12 h-12 rounded-full mr-4">
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-baseline">
-                            <h2 class="text-lg font-semibold">${conversation.username}</h2>
+            <div class="bg-white shadow rounded-lg hover:shadow-md transition-shadow duration-300">
+                <a href="/messages/${conversation.id}" class="block p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <img src="${conversation.profile_picture}" alt="Profile" class="w-12 h-12 rounded-full">
+                            <div>
+                                <h2 class="text-lg font-semibold">${conversation.username}</h2>
+                                <p class="text-gray-600 text-sm truncate">New conversation</p>
+                            </div>
                         </div>
-                        <p class="text-gray-600 truncate">New conversation</p>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         `;
         conversationsList.insertAdjacentHTML('afterbegin', newConversationHtml);
     }
@@ -6178,6 +6313,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // For example, after sending the first message to a new user
 });
 </script>
+
+
 
 
 
