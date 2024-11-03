@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once __DIR__."/html_head.html" ?>
+<body class="bg-gray-100">
+    <?php include_once __DIR__ ."/navbar.html"?>
+    
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6">Spaces</h1>
+        
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Create a New Space</h2>
+            <a href="/spaces/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Create Space
+            </a>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Join a Space</h2>
+            <form id="join-space-form" class="mb-4">
+                <input type="text" name="space_code" placeholder="Enter space code" class="p-2 border rounded mr-2">
+                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Join Space
+                </button>
+            </form>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Your Spaces</h2>
+            <div id="user-spaces" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <?php foreach ($userSpaces as $space): ?>
+                    <div class="bg-white p-4 rounded shadow">
+                        <h3 class="text-xl font-bold mb-2"><?= htmlspecialchars($space['name']) ?></h3>
+                        <p class="text-gray-600 mb-2">Code: <?= htmlspecialchars($space['code']) ?></p>
+                        <a href="/spaces/<?= $space['id'] ?>" class="text-blue-500 hover:underline">View Space</a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('join-space-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/spaces/join', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Successfully joined the space!');
+                        location.reload();
+                    } else {
+                        alert('Failed to join space: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to join space. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

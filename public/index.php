@@ -31,9 +31,7 @@ $app->router->get('/get_followers_users', [UserController::class, 'get_followers
 $app->router->get('/search_users', [UserController::class, 'search_users']);
 $app->router->get('/get_user_status', [UserController::class, 'getUserStatus']);
 
-$app->router->get('/spaces/:num', [SpaceController::class, 'viewSpace']);
-$app->router->get('/spaces/search', [SpaceController::class, 'searchSpaces']);
-$app->router->get('/spaces/create', [SpaceController::class, 'createSpace']);
+
 
 $app->router->post('/create', [PostController::class, 'create']);
 $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
@@ -46,10 +44,18 @@ $app->router->post('/follow', [UserController::class, 'follow']);
 $app->router->post('/unfollow', [UserController::class, 'unfollow']);
 $app->router->post('/update_status', [UserController::class, 'updateStatus']);
 
+
+$app->router->get('/spaces', [SpaceController::class, 'listSpaces']);
+$app->router->get('/spaces/create', [SpaceController::class, 'createSpace']);
+$app->router->post('/spaces/create', [SpaceController::class, 'createSpace']);
+$app->router->get('/spaces/:num', [SpaceController::class, 'viewSpace']);
 $app->router->post('/spaces/join', [SpaceController::class, 'joinSpace']);
 $app->router->post('/spaces/leave', [SpaceController::class, 'leaveSpace']);
 $app->router->post('/spaces/tweet', [SpaceController::class, 'createSpaceTweet']);
-$app->router->post('/spaces/create', [SpaceController::class, 'createSpace']);
+$app->router->post('/spaces/tweet/delete', [SpaceController::class, 'deleteSpaceTweet']);
+$app->router->post('/spaces/delete', [SpaceController::class, 'deleteSpace']);
+
+
 
 $app->run();
 
