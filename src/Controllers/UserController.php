@@ -72,7 +72,7 @@ class UserController {
     $response = $this->userModel->authenticate($username, $password);
 
     if (!$response['success']){
-      $_SESSION['login_error'] = ["Username/Password incorrect"];
+      $_SESSION['login_error'] = ["Username or password is incorrect!!"];
       header("Location: /login");
       exit;
     }
@@ -123,10 +123,35 @@ class UserController {
     }
   } 
 
+
+  public function deleteProfile() {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $userId = $_SESSION['user_id'];
+        $result = $this->userModel->deleteUser($userId);
+
+        if ($result) {
+            session_destroy();
+            header('Location: /');
+            exit;
+        } else {
+            $_SESSION['error'] = "Failed to delete profile. Please try again.";
+            header('Location: /profile');
+            exit;
+        }
+    } else {
+        include __DIR__."/../Views/delete_profile.php";
+    }
+}
+
   protected function render_profile($user) {
     
     echo <<<BODY
-    <body style="background: url('/images/sora-bg.png')" >
+    <body style="background: url('/images/sora-bg4.png')" >
     BODY;
     
     $data = [];
@@ -295,6 +320,16 @@ public function getUserStatus() {
   $userId = $_SESSION['user_id'];
   $status = $this->userModel->getUserStatus($userId);
   echo json_encode(['status' => $status]);
+}
+
+public function searchUsersForConversation() {
+  \Sora\Helpers\Helper::validate_user();
+  
+  $searchTerm = $_GET['term'] ?? '';
+  $users = $this->userModel->searchUsersForConversation($searchTerm);
+  
+  header('Content-Type: application/json');
+  echo json_encode($users);
 }
 }
 

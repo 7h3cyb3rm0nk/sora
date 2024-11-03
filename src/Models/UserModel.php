@@ -157,20 +157,59 @@ class UserModel {
 		*               'isValid' (bool) - Whether the data is valid.                          
 		*                'error' (?array) - Any validation error messages.                      
 		*/                                                                                     
-	private function validate_user_registration(array $data): array {                                
-			$username = $data['username'];
-			$firstName = $data['firstname'];
-			$lastName = $data['lastname'];
-			$password = $data['password'];
-			$retype_password = $data['retype_password'];
-
-			
+		private function validate_user_registration(array $data): array {
+			$errors = [];
+		
+			// Validate username
+			if (empty($data['username'])) {
+				$errors[] = "Username is required";
+			} elseif (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $data['username'])) {
+				$errors[] = "Username must be 3-20 characters long and can only contain letters, numbers, and underscores";
+			}
+		
+			// Validate email
+			if (empty($data['email'])) {
+				$errors[] = "Email is required";
+			} elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+				$errors[] = "Invalid email format";
+			}
+		
+			// Validate first name
+			if (empty($data['firstname'])) {
+				$errors[] = "First name is required";
+			} elseif (!preg_match('/^[a-zA-Z]{2,30}$/', $data['firstname'])) {
+				$errors[] = "First name must be 2-30 characters long and can only contain letters";
+			}
+		
+			// Validate last name (reduced validation)
+			if (empty($data['lastname'])) {
+				$errors[] = "Last name is required";
+			}
+		
+			// Validate password (changed to be greater than 8 characters)
+			if (empty($data['password'])) {
+				$errors[] = "Password is required";
+			} elseif (strlen($data['password']) <= 8) {
+				$errors[] = "Password must be greater than 8 characters long";
+			}
+		
+			// Validate password confirmation
+			if ($data['password'] !== $data['retype_password']) {
+				$errors[] = "Passwords do not match";
+			}
+		
 			return [
-				'isValid' => true,
-				'error' => null
+				'isValid' => empty($errors),
+				'error' => $errors
 			];
+		}
 
-	} 
+
+		public function deleteUser($userId) {
+			$stmt = $this->db->prepare("DELETE FROM users WHERE id = ?");
+			$stmt->bind_param("i", $userId);
+			return $stmt->execute();
+		}
 
 public function get_user_details($username): array{
 	$stmt = $this->db->prepare("SELECT * from users where username = ? limit 1");
@@ -454,6 +493,27 @@ public function getUserStatus($userId) {
 	$result = $stmt->get_result();
 	$row = $result->fetch_assoc();
 	return $row ? $row['status'] : null;
+}
+
+public function getUserById($userId) {
+	$stmt = $this->db->prepare("SELECT id, username, profile_picture, status FROM users WHERE id = ? LIMIT 1");
+	$stmt->bind_param("i", $userId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	if ($result->num_rows > 0) {
+		return $result->fetch_assoc();
+	}
+	
+	return null;
+}
+
+public function searchUsersForConversation($searchTerm) {
+	$searchTerm = "%$searchTerm%";
+	$stmt = $this->db->prepare("SELECT id, username FROM users WHERE username LIKE ? LIMIT 10");
+	$stmt->bind_param("s", $searchTerm);
+	$stmt->execute();
+	return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 }                   
