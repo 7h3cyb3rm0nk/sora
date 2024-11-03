@@ -151,7 +151,7 @@ class UserController {
   protected function render_profile($user) {
     
     echo <<<BODY
-    <body style="background: url('/images/sora-bg.png')" >
+    <body style="background: url('/images/sora-bg4.png')" >
     BODY;
     
     $data = [];
