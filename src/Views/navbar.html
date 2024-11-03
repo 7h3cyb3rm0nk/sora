@@ -1,5 +1,5 @@
-<header class="bg-gradient-to-r flex  from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg w-full">
-    <nav class=" md:mx-0 mx-auto flex-grow flex justify-between items-center w-full">
+<header class="bg-gradient-to-r flex from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg w-full">
+    <nav class="md:mx-0 mx-auto flex-grow flex justify-between items-center w-full">
         <span class="text-2xl sm:text-3xl md:text-4xl font-bold"><a href="/"> SORA</a></span>
          
         <div class="sm:flex hidden md:flex items-center md:space-x-8 md:mr-12"> 
@@ -8,6 +8,14 @@
             </a>
             <a href="/spaces" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
                 <i class="fas fa-globe mr-2"></i>Spaces
+            </a>
+            <a href="/messages" class="text-white text-lg hover:text-sora-bg transition-colors duration-300 relative">
+                <i class="fas fa-envelope mr-2"></i>Messages
+                <?php if (isset($GLOBALS['unread_message_count']) && $GLOBALS['unread_message_count'] > 0): ?>
+                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        <?= $GLOBALS['unread_message_count'] ?>
+                    </span>
+                <?php endif; ?>
             </a>
             <a href="/logout" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
                 <i class="fas fa-sign-out-alt mr-2"></i>Logout

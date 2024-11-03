@@ -296,6 +296,16 @@ public function getUserStatus() {
   $status = $this->userModel->getUserStatus($userId);
   echo json_encode(['status' => $status]);
 }
+
+public function searchUsersForConversation() {
+  \Sora\Helpers\Helper::validate_user();
+  
+  $searchTerm = $_GET['term'] ?? '';
+  $users = $this->userModel->searchUsersForConversation($searchTerm);
+  
+  header('Content-Type: application/json');
+  echo json_encode($users);
+}
 }
 
 

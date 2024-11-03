@@ -57,15 +57,25 @@ sora
 │   ├── Controllers
 │   │   ├── HomeController.php
 │   │   ├── PostController.php
-│   │   └── UserController.php
+│   │   ├── MessageController.php
+│   │   ├── UserController.php
+│   │   └── SpaceController.php
 │   ├── Models
 │   │   ├── UserModel.php
+│   │   ├── SpaceModel.php
+│   │   ├── MessageModel.php
 │   │   └── PostModel.php
 │   └── Views
+│       ├── view_space.html
+│       ├── conversation.html
+│       ├── conversations_list.html
+│       ├── create_space.html
 │       ├── navbar.html
 │       ├── login.html
+│       ├── layout.php
 │       ├── profile.html
 │       ├── signup.html
+│       ├── spaces_list.html
 │       ├── home.html
 │       ├── html_head.html
 │       └── user_profile.html
@@ -991,6 +1001,10 @@ video {
   margin-bottom: 2rem;
 }
 
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
 .mr-1 {
   margin-right: 0.25rem;
 }
@@ -1017,6 +1031,10 @@ video {
 
 .mt-4 {
   margin-top: 1rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .block {
@@ -1296,9 +1314,19 @@ video {
   border-radius: 0.75rem;
 }
 
+.rounded-l {
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
 .rounded-l-md {
   border-top-left-radius: 0.375rem;
   border-bottom-left-radius: 0.375rem;
+}
+
+.rounded-r {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }
 
 .rounded-r-md {
@@ -1376,6 +1404,11 @@ video {
   background-color: rgb(75 85 99 / var(--tw-bg-opacity));
 }
 
+.bg-green-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(34 197 94 / var(--tw-bg-opacity));
+}
+
 .bg-indigo-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(79 70 229 / var(--tw-bg-opacity));
@@ -1404,6 +1437,11 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-yellow-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(234 179 8 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-90 {
@@ -1482,6 +1520,11 @@ video {
   padding-right: 1.5rem;
 }
 
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -1516,12 +1559,20 @@ video {
   padding-bottom: 1rem;
 }
 
+.pb-8 {
+  padding-bottom: 2rem;
+}
+
 .pr-12 {
   padding-right: 3rem;
 }
 
 .pt-3 {
   padding-top: 0.75rem;
+}
+
+.pt-6 {
+  padding-top: 1.5rem;
 }
 
 .text-center {
@@ -1593,6 +1644,11 @@ video {
 
 .leading-tight {
   line-height: 1.25;
+}
+
+.text-blue-500 {
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity));
 }
 
 .text-blue-600 {
@@ -1795,6 +1851,11 @@ video {
   background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-green-700:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(21 128 61 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-indigo-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(67 56 202 / var(--tw-bg-opacity));
@@ -1803,6 +1864,11 @@ video {
 .hover\:bg-red-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(220 38 38 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-red-700:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(185 28 28 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-sora-secondary:hover {
@@ -1823,6 +1889,11 @@ video {
 .hover\:bg-white:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-yellow-600:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(202 138 4 / var(--tw-bg-opacity));
 }
 
 .hover\:text-blue-500:hover {
@@ -1858,6 +1929,10 @@ video {
 .hover\:text-sora-secondary:hover {
   --tw-text-opacity: 1;
   color: rgb(129 140 248 / var(--tw-text-opacity));
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
 }
 
 .hover\:shadow-md:hover {
@@ -2001,6 +2076,10 @@ video {
     width: 80%;
   }
 
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .md\:gap-\[7em\] {
     gap: 7em;
   }
@@ -2038,6 +2117,10 @@ video {
     width: 40%;
   }
 
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;
@@ -2070,6 +2153,12 @@ use Sora\Controllers\UserController;
 use Sora\Controllers\HomeController;
 use Sora\Controllers\PostController;
 use Sora\Helpers\Helper;
+use Sora\Controllers\SpaceController;
+use Sora\Controllers\MessageController;
+
+$messageController = new MessageController();
+$unread_message_count = $messageController->getUnreadMessageCount();
+
 $router = new Router();
 $app = new Application($router);
 
@@ -2087,6 +2176,7 @@ $app->router->get('/search_users', [UserController::class, 'search_users']);
 $app->router->get('/get_user_status', [UserController::class, 'getUserStatus']);
 
 
+
 $app->router->post('/create', [PostController::class, 'create']);
 $app->router->post('/edit_profile', [UserController::class, 'edit_user_details']);
 $app->router->post('/add_likes', [PostController::class, 'add_likes']);
@@ -2097,6 +2187,28 @@ $app->router->post('/delete_comment', [PostController::class, 'delete_comment'])
 $app->router->post('/follow', [UserController::class, 'follow']);
 $app->router->post('/unfollow', [UserController::class, 'unfollow']);
 $app->router->post('/update_status', [UserController::class, 'updateStatus']);
+
+
+$app->router->get('/spaces', [SpaceController::class, 'listSpaces']);
+$app->router->get('/spaces/create', [SpaceController::class, 'createSpace']);
+$app->router->post('/spaces/create', [SpaceController::class, 'createSpace']);
+$app->router->get('/spaces/:num', [SpaceController::class, 'viewSpace']);
+$app->router->post('/spaces/join', [SpaceController::class, 'joinSpace']);
+$app->router->post('/spaces/leave', [SpaceController::class, 'leaveSpace']);
+$app->router->post('/spaces/tweet', [SpaceController::class, 'createSpaceTweet']);
+$app->router->post('/spaces/tweet/delete', [SpaceController::class, 'deleteSpaceTweet']);
+$app->router->post('/spaces/delete', [SpaceController::class, 'deleteSpace']);
+
+
+
+$app->router->get('/messages', [MessageController::class, 'listConversations']);
+$app->router->get('/messages/:num', [MessageController::class, 'viewConversation']);
+$app->router->post('/messages/send', [MessageController::class, 'sendMessage']);
+$app->router->post('/messages/delete', [MessageController::class, 'deleteConversation']);
+$app->router->post('/messages/block', [MessageController::class, 'blockUser']);
+$app->router->post('/messages/unblock', [MessageController::class, 'unblockUser']);
+$app->router->get('/users/search', [UserController::class, 'searchUsersForConversation']);
+
 
 $app->run();
 
@@ -2991,6 +3103,122 @@ public function get_comments($post_id) {
 ?>
 ```````
 
+`/home/ramees/progs/php/sora/src/Controllers/MessageController.php`:
+
+```````php
+<?php
+namespace Sora\Controllers;
+
+use Sora\Models\MessageModel;
+use Sora\Config\Database;
+use Sora\Helpers\Helper;
+
+class MessageController {
+    private $messageModel;
+
+    public function __construct() {
+        $db = Database::get_connection();
+        $this->messageModel = new MessageModel($db);
+    }
+
+    public function listConversations() {
+        Helper::validate_user();
+        $user_id = $_SESSION['user_id'];
+        $conversations = $this->messageModel->getConversations($user_id);
+        require __DIR__."/../Views/conversations_list.html";
+    }
+
+    public function viewConversation($other_user_id) {
+        Helper::validate_user();
+        $user_id = $_SESSION['user_id'];
+        
+        if ($this->messageModel->isBlocked($user_id, $other_user_id)) {
+            $_SESSION['error'] = "You cannot view this conversation.";
+            header("Location: /messages");
+            exit;
+        }
+
+        $messages = $this->messageModel->getMessages($user_id, $other_user_id);
+        $this->messageModel->markMessagesAsRead($user_id, $other_user_id);
+        require __DIR__."/../Views/conversation.html";
+    }
+
+    public function sendMessage() {
+        Helper::validate_user();
+        
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $sender_id = $_SESSION['user_id'];
+            $receiver_id = $_POST['receiver_id'];
+            $content = $_POST['content'];
+
+            if ($this->messageModel->isBlocked($sender_id, $receiver_id)) {
+                echo json_encode(['success' => false, 'message' => 'You cannot send messages to this user.']);
+                return;
+            }
+
+            if ($this->messageModel->sendMessage($sender_id, $receiver_id, $content)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to send message']);
+            }
+        }
+    }
+
+    public function deleteConversation() {
+        Helper::validate_user();
+        
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $user_id = $_SESSION['user_id'];
+            $other_user_id = $_POST['other_user_id'];
+
+            if ($this->messageModel->deleteConversation($user_id, $other_user_id)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to delete conversation']);
+            }
+        }
+    }
+
+    public function blockUser() {
+        Helper::validate_user();
+        
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $blocker_id = $_SESSION['user_id'];
+            $blocked_id = $_POST['blocked_id'];
+
+            if ($this->messageModel->blockUser($blocker_id, $blocked_id)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to block user']);
+            }
+        }
+    }
+
+    public function unblockUser() {
+        Helper::validate_user();
+        
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $blocker_id = $_SESSION['user_id'];
+            $blocked_id = $_POST['blocked_id'];
+
+            if ($this->messageModel->unblockUser($blocker_id, $blocked_id)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to unblock user']);
+            }
+        }
+    }
+
+    public function getUnreadMessageCount() {
+        if (isset($_SESSION['user_id'])) {
+            return $this->messageModel->getUnreadMessageCount($_SESSION['user_id']);
+        }
+        return 0;
+    }
+    
+}
+```````
+
 `/home/ramees/progs/php/sora/src/Controllers/UserController.php`:
 
 ```````php
@@ -3292,11 +3520,181 @@ public function getUserStatus() {
   $status = $this->userModel->getUserStatus($userId);
   echo json_encode(['status' => $status]);
 }
+
+public function searchUsersForConversation() {
+  \Sora\Helpers\Helper::validate_user();
+  
+  $searchTerm = $_GET['term'] ?? '';
+  $users = $this->userModel->searchUsersForConversation($searchTerm);
+  
+  header('Content-Type: application/json');
+  echo json_encode($users);
+}
 }
 
 
 
 
+```````
+
+`/home/ramees/progs/php/sora/src/Controllers/SpaceController.php`:
+
+```````php
+<?php
+namespace Sora\Controllers;
+
+use Sora\Models\SpaceModel;
+use Sora\Config\Database;
+use Sora\Helpers\Helper;
+
+class SpaceController {
+    private $spaceModel;
+
+    public function __construct() {
+        $db = Database::get_connection();
+        $this->spaceModel = new SpaceModel($db);
+    }
+
+    public function listSpaces() {
+        Helper::validate_user();
+        $user_id = $_SESSION['user_id'];
+        $userSpaces = $this->spaceModel->getUserSpaces($user_id);
+        require __DIR__."/../Views/spaces_list.html";
+    }
+
+    public function createSpace() {
+        Helper::validate_user();
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $name = $_POST['name'];
+            $admin_id = $_SESSION['user_id'];
+
+            $space_id = $this->spaceModel->createSpace($name, $admin_id);
+            if ($space_id) {
+                header("Location: /spaces/$space_id");
+                exit;
+            } else {
+                $_SESSION['error'] = "Error creating space";
+                header("Location: /spaces/create");
+                exit;
+            }
+        }
+
+        require __DIR__."/../Views/create_space.html";
+    }
+
+    public function viewSpace($space_id) {
+        Helper::validate_user();
+        $user_id = $_SESSION['user_id'];
+
+        $space = $this->spaceModel->getSpace($space_id);
+        if (!$space) {
+            header("Location: /spaces");
+            exit;
+        }
+
+        if (!$this->spaceModel->isSpaceMember($user_id, $space_id)) {
+            $_SESSION['error'] = "You are not a member of this space";
+            header("Location: /spaces");
+            exit;
+        }
+
+        $tweets = $this->spaceModel->getSpaceTweets($space_id);
+        $isAdmin = $this->spaceModel->isSpaceAdmin($user_id, $space_id);
+        require __DIR__."/../Views/view_space.html";
+    }
+
+    public function joinSpace() {
+        Helper::validate_user();
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $space_code = $_POST['space_code'];
+            $user_id = $_SESSION['user_id'];
+
+            $space = $this->spaceModel->searchSpaceByCode($space_code);
+            if ($space) {
+                if ($this->spaceModel->joinSpace($user_id, $space['id'])) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to join space']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid space code']);
+            }
+        }
+    }
+
+    public function leaveSpace() {
+        Helper::validate_user();
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $space_id = $_POST['space_id'];
+            $user_id = $_SESSION['user_id'];
+
+            if ($this->spaceModel->leaveSpace($user_id, $space_id)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to leave space']);
+            }
+        }
+    }
+
+    public function createSpaceTweet() {
+        Helper::validate_user();
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $space_id = $_POST['space_id'];
+            $content = $_POST['content'];
+            $user_id = $_SESSION['user_id'];
+
+            if (!$this->spaceModel->isSpaceMember($user_id, $space_id)) {
+                echo json_encode(['success' => false, 'message' => 'You are not a member of this space']);
+                return;
+            }
+
+            if ($this->spaceModel->createSpaceTweet($user_id, $space_id, $content)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to create tweet']);
+            }
+        }
+    }
+
+    public function deleteSpaceTweet() {
+        Helper::validate_user();
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $tweet_id = $_POST['tweet_id'];
+            $space_id = $_POST['space_id'];
+            $user_id = $_SESSION['user_id'];
+
+            if ($this->spaceModel->deleteSpaceTweet($tweet_id, $user_id, $space_id)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to delete tweet']);
+            }
+        }
+    }
+
+    public function deleteSpace() {
+        Helper::validate_user();
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $space_id = $_POST['space_id'];
+            $user_id = $_SESSION['user_id'];
+
+            if ($this->spaceModel->isSpaceAdmin($user_id, $space_id)) {
+                if ($this->spaceModel->deleteSpace($space_id, $user_id)) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to delete space']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'You are not the admin of this space']);
+            }
+        }
+    }
+}
 ```````
 
 `/home/ramees/progs/php/sora/src/Models/UserModel.php`:
@@ -3760,6 +4158,14 @@ public function getUserStatus($userId) {
 	return $row ? $row['status'] : null;
 }
 
+public function searchUsersForConversation($searchTerm) {
+	$searchTerm = "%$searchTerm%";
+	$stmt = $this->db->prepare("SELECT id, username FROM users WHERE username LIKE ? LIMIT 10");
+	$stmt->bind_param("s", $searchTerm);
+	$stmt->execute();
+	return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 }                   
 
 function test_input(string $data): string{
@@ -3773,6 +4179,243 @@ function test_input(string $data): string{
                                                                                       
 ?>
 
+```````
+
+`/home/ramees/progs/php/sora/src/Models/SpaceModel.php`:
+
+```````php
+<?php
+namespace Sora\Models;
+
+class SpaceModel {
+    private \mysqli $db;
+
+    public function __construct(\mysqli $db) {
+        $this->db = $db;
+    }
+
+    public function createSpace($name, $admin_id) {
+        $code = $this->generateUniqueCode();
+        $stmt = $this->db->prepare("INSERT INTO spaces (name, admin_id, code) VALUES (?, ?, ?)");
+        $stmt->bind_param("sis", $name, $admin_id, $code);
+        if ($stmt->execute()) {
+            $space_id = $stmt->insert_id;
+            $this->joinSpace($admin_id, $space_id);
+            return $space_id;
+        }
+        return false;
+    }
+
+    private function generateUniqueCode() {
+        do {
+            $code = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 8);
+            $stmt = $this->db->prepare("SELECT id FROM spaces WHERE code = ?");
+            $stmt->bind_param("s", $code);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        } while ($result->num_rows > 0);
+        return $code;
+    }
+
+    public function getSpace($space_id) {
+        $stmt = $this->db->prepare("SELECT * FROM spaces WHERE id = ?");
+        $stmt->bind_param("i", $space_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function searchSpaceByCode($code) {
+        $stmt = $this->db->prepare("SELECT * FROM spaces WHERE code = ?");
+        $stmt->bind_param("s", $code);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function getUserSpaces($user_id) {
+        $stmt = $this->db->prepare("
+            SELECT s.* 
+            FROM spaces s
+            JOIN space_members sm ON s.id = sm.space_id
+            WHERE sm.user_id = ?
+        ");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function joinSpace($user_id, $space_id) {
+        $stmt = $this->db->prepare("INSERT IGNORE INTO space_members (user_id, space_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $user_id, $space_id);
+        return $stmt->execute();
+    }
+
+    public function leaveSpace($user_id, $space_id) {
+        $stmt = $this->db->prepare("DELETE FROM space_members WHERE user_id = ? AND space_id = ?");
+        $stmt->bind_param("ii", $user_id, $space_id);
+        return $stmt->execute();
+    }
+
+    public function isSpaceMember($user_id, $space_id) {
+        $stmt = $this->db->prepare("SELECT * FROM space_members WHERE user_id = ? AND space_id = ?");
+        $stmt->bind_param("ii", $user_id, $space_id);
+        $stmt->execute();
+        return $stmt->get_result()->num_rows > 0;
+    }
+
+    public function isSpaceAdmin($user_id, $space_id) {
+        $stmt = $this->db->prepare("SELECT * FROM spaces WHERE id = ? AND admin_id = ?");
+        $stmt->bind_param("ii", $space_id, $user_id);
+        $stmt->execute();
+        return $stmt->get_result()->num_rows > 0;
+    }
+
+    public function createSpaceTweet($user_id, $space_id, $content) {
+        $stmt = $this->db->prepare("INSERT INTO space_tweets (user_id, space_id, content) VALUES (?, ?, ?)");
+        $stmt->bind_param("iis", $user_id, $space_id, $content);
+        return $stmt->execute();
+    }
+
+    public function getSpaceTweets($space_id) {
+        $stmt = $this->db->prepare("
+            SELECT st.*, u.username, u.profile_picture
+            FROM space_tweets st
+            JOIN users u ON st.user_id = u.id
+            WHERE st.space_id = ?
+            ORDER BY st.created_at DESC
+        ");
+        $stmt->bind_param("i", $space_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function deleteSpaceTweet($tweet_id, $user_id, $space_id) {
+        $stmt = $this->db->prepare("DELETE FROM space_tweets WHERE id = ? AND (user_id = ? OR EXISTS (SELECT 1 FROM spaces WHERE id = ? AND admin_id = ?))");
+        $stmt->bind_param("iiii", $tweet_id, $user_id, $space_id, $user_id);
+        return $stmt->execute();
+    }
+
+    public function deleteSpace($space_id, $admin_id) {
+        // First, delete all tweets in the space
+        $stmt = $this->db->prepare("DELETE FROM space_tweets WHERE space_id = ?");
+        $stmt->bind_param("i", $space_id);
+        $stmt->execute();
+
+        // Then, delete all space members
+        $stmt = $this->db->prepare("DELETE FROM space_members WHERE space_id = ?");
+        $stmt->bind_param("i", $space_id);
+        $stmt->execute();
+
+        // Finally, delete the space itself
+        $stmt = $this->db->prepare("DELETE FROM spaces WHERE id = ? AND admin_id = ?");
+        $stmt->bind_param("ii", $space_id, $admin_id);
+        return $stmt->execute();
+    }
+}
+```````
+
+`/home/ramees/progs/php/sora/src/Models/MessageModel.php`:
+
+```````php
+<?php
+namespace Sora\Models;
+
+class MessageModel {
+    private \mysqli $db;
+
+    public function __construct(\mysqli $db) {
+        $this->db = $db;
+    }
+
+    public function sendMessage($sender_id, $receiver_id, $content) {
+        $stmt = $this->db->prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)");
+        $stmt->bind_param("iis", $sender_id, $receiver_id, $content);
+        return $stmt->execute();
+    }
+
+    public function getConversations($user_id) {
+        $stmt = $this->db->prepare("
+            SELECT 
+                CASE 
+                    WHEN m.sender_id = ? THEN m.receiver_id 
+                    ELSE m.sender_id 
+                END AS other_user_id,
+                u.username,
+                u.profile_picture,
+                m.content AS last_message,
+                m.created_at AS last_message_time,
+                COUNT(CASE WHEN m.is_read = 0 AND m.receiver_id = ? THEN 1 END) AS unread_count
+            FROM messages m
+            JOIN users u ON (CASE WHEN m.sender_id = ? THEN m.receiver_id ELSE m.sender_id END) = u.id
+            LEFT JOIN conversation_deletions cd ON (cd.user_id = ? AND cd.other_user_id = u.id)
+            WHERE (m.sender_id = ? OR m.receiver_id = ?) AND (cd.deleted_at IS NULL OR m.created_at > cd.deleted_at)
+            GROUP BY other_user_id
+            ORDER BY last_message_time DESC
+        ");
+        $stmt->bind_param("iiiiii", $user_id, $user_id, $user_id, $user_id, $user_id, $user_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getMessages($user_id, $other_user_id) {
+        $stmt = $this->db->prepare("
+            SELECT m.*, u.username, u.profile_picture
+            FROM messages m
+            JOIN users u ON m.sender_id = u.id
+            LEFT JOIN conversation_deletions cd ON (cd.user_id = ? AND cd.other_user_id = ?)
+            WHERE ((m.sender_id = ? AND m.receiver_id = ?) OR (m.sender_id = ? AND m.receiver_id = ?))
+                AND (cd.deleted_at IS NULL OR m.created_at > cd.deleted_at)
+            ORDER BY m.created_at ASC
+        ");
+        $stmt->bind_param("iiiiii", $user_id, $other_user_id, $user_id, $other_user_id, $other_user_id, $user_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function markMessagesAsRead($user_id, $other_user_id) {
+        $stmt = $this->db->prepare("UPDATE messages SET is_read = TRUE WHERE sender_id = ? AND receiver_id = ? AND is_read = FALSE");
+        $stmt->bind_param("ii", $other_user_id, $user_id);
+        return $stmt->execute();
+    }
+
+    public function deleteConversation($user_id, $other_user_id) {
+        $stmt = $this->db->prepare("INSERT INTO conversation_deletions (user_id, other_user_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE deleted_at = CURRENT_TIMESTAMP");
+        $stmt->bind_param("ii", $user_id, $other_user_id);
+        return $stmt->execute();
+    }
+
+    public function blockUser($blocker_id, $blocked_id) {
+        $stmt = $this->db->prepare("INSERT IGNORE INTO blocks (blocker_id, blocked_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $blocker_id, $blocked_id);
+        return $stmt->execute();
+    }
+
+    public function unblockUser($blocker_id, $blocked_id) {
+        $stmt = $this->db->prepare("DELETE FROM blocks WHERE blocker_id = ? AND blocked_id = ?");
+        $stmt->bind_param("ii", $blocker_id, $blocked_id);
+        return $stmt->execute();
+    }
+
+    public function isBlocked($user_id, $other_user_id) {
+        $stmt = $this->db->prepare("SELECT * FROM blocks WHERE (blocker_id = ? AND blocked_id = ?) OR (blocker_id = ? AND blocked_id = ?)");
+        $stmt->bind_param("iiii", $user_id, $other_user_id, $other_user_id, $user_id);
+        $stmt->execute();
+        return $stmt->get_result()->num_rows > 0;
+    }
+
+    public function getUnreadMessageCount($user_id) {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) as unread_count
+            FROM messages m
+            LEFT JOIN conversation_deletions cd ON (cd.user_id = ? AND cd.other_user_id = m.sender_id)
+            WHERE m.receiver_id = ? AND m.is_read = FALSE
+            AND (cd.deleted_at IS NULL OR m.created_at > cd.deleted_at)
+        ");
+        $stmt->bind_param("ii", $user_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        return $result['unread_count'];
+    }
+}
 ```````
 
 `/home/ramees/progs/php/sora/src/Models/PostModel.php`:
@@ -4012,16 +4655,657 @@ class PostModel{
 }
 ```````
 
+`/home/ramees/progs/php/sora/src/Views/view_space.html`:
+
+```````html
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once __DIR__."/html_head.html" ?>
+<body class="bg-gray-100">
+<?php include_once __DIR__ ."/navbar.html"?>
+
+<main class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold"><?= htmlspecialchars($space['name']) ?></h1>
+        <?php if (!$isAdmin): ?>
+            <button id="leave-space-btn" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors">Leave Space</button>
+        <?php endif; ?>
+    </div>
+    
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Space Tweets</h2>
+        <form id="space-tweet-form" class="mb-4">
+            <div class="flex">
+                <textarea name="content" id="tweet-content" class="flex-grow p-2 border rounded-l" placeholder="What's happening in this space?" rows="1"></textarea>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors">Post Tweet</button>
+            </div>
+            <input type="hidden" name="space_id" value="<?= $space['id'] ?>">
+        </form>
+        <div id="space-tweets">
+            <?php foreach ($tweets as $tweet): ?>
+                <div class="bg-white p-4 rounded shadow mb-4" id="tweet-<?= $tweet['id'] ?>">
+                    <div class="flex items-center mb-2">
+                        <img src="<?= htmlspecialchars($tweet['profile_picture']) ?>" alt="Profile" class="w-10 h-10 rounded-full mr-2">
+                        <span class="font-bold"><?= htmlspecialchars($tweet['username']) ?></span>
+                    </div>
+                    <p><?= htmlspecialchars($tweet['content']) ?></p>
+                    <span class="text-sm text-gray-500"><?= date('M d, Y H:i', strtotime($tweet['created_at'])) ?></span>
+                    <?php if ($tweet['user_id'] == $_SESSION['user_id'] || $isAdmin): ?>
+                        <button class="delete-tweet-btn ml-2 text-red-500 hover:text-red-700" data-tweet-id="<?= $tweet['id'] ?>">Delete</button>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <?php if ($isAdmin): ?>
+        <div class="mt-8">
+            <button id="delete-space-btn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">Delete Space</button>
+        </div>
+    <?php endif; ?>
+</main>
+
+<script>
+    const tweetForm = document.getElementById('space-tweet-form');
+    const tweetContent = document.getElementById('tweet-content');
+
+    function submitTweet(e) {
+        e.preventDefault();
+        const formData = new FormData(tweetForm);
+
+        fetch('/spaces/tweet', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                location.reload();
+            } else {
+                alert('Failed to post tweet: ' + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    }
+
+    tweetForm.addEventListener('submit', submitTweet);
+
+    tweetContent.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submitTweet(e);
+        }
+    });
+
+    tweetContent.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+
+    document.querySelectorAll('.delete-tweet-btn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            const tweetId = e.target.dataset.tweetId;
+            if (confirm('Are you sure you want to delete this tweet?')) {
+                try {
+                    const response = await fetch('/spaces/tweet/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `tweet_id=${tweetId}&space_id=<?= $space['id'] ?>`
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success) {
+                            document.getElementById(`tweet-${tweetId}`).remove();
+                        } else {
+                            alert('Failed to delete tweet: ' + result.message);
+                        }
+                    } else {
+                        alert('Failed to delete tweet. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        });
+    });
+    </script>
+    <?php if (!$isAdmin): ?>
+    <script>
+    document.getElementById('leave-space-btn').addEventListener('click', async (e) => {
+        if (confirm('Are you sure you want to leave this space?')) {
+            try {
+                const response = await fetch('/spaces/leave', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `space_id=<?= $space['id'] ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('You have left the space successfully');
+                        window.location.href = '/spaces';
+                    } else {
+                        alert('Failed to leave space: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to leave space. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+    </script>
+    <?php endif; ?>
+
+    <?php if ($isAdmin): ?>
+    <script>
+    document.getElementById('delete-space-btn').addEventListener('click', async (e) => {
+        if (confirm('Are you sure you want to delete this space? This action cannot be undone.')) {
+            try {
+                const response = await fetch('/spaces/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `space_id=<?= $space['id'] ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Space deleted successfully');
+                        window.location.href = '/spaces';
+                    } else {
+                        alert('Failed to delete space: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to delete space. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+</script>
+    <?php endif; ?>
+</script>
+</body>
+</html>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/conversation.html`:
+
+```````html
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once __DIR__."/html_head.html" ?>
+<body class="bg-gray-100">
+<?php include_once __DIR__ ."/navbar.html"?>
+
+<main class="container mx-auto px-4 py-8">
+    <div class="bg-white shadow rounded-lg">
+        <div class="flex justify-between items-center p-4 border-b border-gray-200">
+            <h1 class="text-2xl font-bold">
+                <?= isset($messages[0]) ? htmlspecialchars($messages[0]['username']) : 'New Conversation' ?>
+            </h1>
+            <div>
+                <button id="new-conversation-btn" class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600 transition-colors">New Conversation</button>
+                <?php if (isset($other_user_id)): ?>
+                    <button id="block-btn" class="bg-red-500 text-white px-4 py-2 rounded mr-2 hover:bg-red-600 transition-colors">Block</button>
+                    <button id="delete-conversation-btn" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors">Delete Conversation</button>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <div id="user-search" class="p-4 border-b border-gray-200 hidden">
+            <input type="text" id="user-search-input" class="w-full p-2 border rounded" placeholder="Search for a user...">
+            <div id="user-search-results" class="mt-2"></div>
+        </div>
+
+        <div id="messages-container" class="h-96 overflow-y-auto p-4">
+            <?php if (isset($messages)): ?>
+                <?php foreach ($messages as $message): ?>
+                    <div class="mb-4 <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-right' : 'text-left' ?>">
+                        <div class="inline-block max-w-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'bg-blue-500 text-white' : 'bg-gray-300' ?> rounded-lg px-4 py-2">
+                            <p><?= htmlspecialchars($message['content']) ?></p>
+                            <span class="text-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-blue-200' : 'text-gray-500' ?>"><?= date('M d, Y H:i', strtotime($message['created_at'])) ?></span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-center text-gray-500">Start a new conversation by searching for a user above.</p>
+            <?php endif; ?>
+        </div>
+        
+        <form id="message-form" class="p-4 border-t border-gray-200">
+            <div class="flex">
+                <input type="text" id="message-input" name="content" class="flex-grow p-2 border rounded-l" placeholder="Type your message..." required>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors">Send</button>
+            </div>
+            <input type="hidden" name="receiver_id" id="receiver-id" value="<?= $other_user_id ?? '' ?>">
+        </form>
+    </div>
+</main>
+
+<script>
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+    const messagesContainer = document.getElementById('messages-container');
+    const newConversationBtn = document.getElementById('new-conversation-btn');
+    const userSearch = document.getElementById('user-search');
+    const userSearchInput = document.getElementById('user-search-input');
+    const userSearchResults = document.getElementById('user-search-results');
+    const receiverId = document.getElementById('receiver-id');
+
+    <?php if (isset($other_user_id)): ?>
+    const blockBtn = document.getElementById('block-btn');
+    const deleteConversationBtn = document.getElementById('delete-conversation-btn');
+    <?php endif; ?>
+
+    messageForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(messageForm);
+
+        try {
+            const response = await fetch('/messages/send', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    messageInput.value = '';
+                    // You might want to add the new message to the messages container here
+                    // or reload the conversation
+                    location.reload();
+                } else {
+                    alert('Failed to send message: ' + result.message);
+                }
+            } else {
+                alert('Failed to send message. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+
+    newConversationBtn.addEventListener('click', () => {
+        userSearch.classList.toggle('hidden');
+    });
+
+    userSearchInput.addEventListener('input', async (e) => {
+        const searchTerm = e.target.value;
+        if (searchTerm.length < 3) {
+            userSearchResults.innerHTML = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/users/search?term=${encodeURIComponent(searchTerm)}`);
+            if (response.ok) {
+                const users = await response.json();
+                userSearchResults.innerHTML = users.map(user => `
+                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer" data-user-id="${user.id}">
+                        ${user.username}
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.user-result').forEach(result => {
+                    result.addEventListener('click', () => {
+                        const userId = result.dataset.userId;
+                        receiverId.value = userId;
+                        userSearch.classList.add('hidden');
+                        messagesContainer.innerHTML = '<p class="text-center text-gray-500">Start a new conversation by sending a message.</p>';
+                        document.querySelector('h1').textContent = 'New Conversation';
+                    });
+                });
+            } else {
+                userSearchResults.innerHTML = '<p class="text-red-500">Failed to search users. Please try again.</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            userSearchResults.innerHTML = '<p class="text-red-500">An error occurred. Please try again.</p>';
+        }
+    });
+
+    <?php if (isset($other_user_id)): ?>
+    blockBtn.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to block this user?')) {
+            try {
+                const response = await fetch('/messages/block', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `blocked_id=<?= $other_user_id ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('User blocked successfully');
+                        window.location.href = '/messages';
+                    } else {
+                        alert('Failed to block user: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to block user. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+
+    deleteConversationBtn.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to delete this conversation?')) {
+            try {
+                const response = await fetch('/messages/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `other_user_id=<?= $other_user_id ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Conversation deleted successfully');
+                        window.location.href = '/messages';
+                    } else {
+                        alert('Failed to delete conversation: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to delete conversation. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+    <?php endif; ?>
+
+    // Scroll to the bottom of the messages container
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+</script>
+
+</body>
+</html>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/conversations_list.html`:
+
+```````html
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once __DIR__."/html_head.html" ?>
+<body class="bg-gray-100">
+<?php include_once __DIR__ ."/navbar.html"?>
+
+<main class="container mx-auto px-4 py-8">
+    <div class="bg-white shadow rounded-lg">
+        <div class="flex justify-between items-center p-4 border-b border-gray-200">
+            <h1 class="text-2xl font-bold">
+                <?= isset($messages[0]) ? htmlspecialchars($messages[0]['username']) : 'New Conversation' ?>
+            </h1>
+            <div>
+                <button id="new-conversation-btn" class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600 transition-colors">New Conversation</button>
+                <?php if (isset($other_user_id)): ?>
+                    <button id="block-btn" class="bg-red-500 text-white px-4 py-2 rounded mr-2 hover:bg-red-600 transition-colors">Block</button>
+                    <button id="delete-conversation-btn" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors">Delete Conversation</button>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <div id="user-search" class="p-4 border-b border-gray-200 hidden">
+            <input type="text" id="user-search-input" class="w-full p-2 border rounded" placeholder="Search for a user...">
+            <div id="user-search-results" class="mt-2"></div>
+        </div>
+
+        <div id="messages-container" class="h-96 overflow-y-auto p-4">
+            <?php if (isset($messages)): ?>
+                <?php foreach ($messages as $message): ?>
+                    <div class="mb-4 <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-right' : 'text-left' ?>">
+                        <div class="inline-block max-w-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'bg-blue-500 text-white' : 'bg-gray-300' ?> rounded-lg px-4 py-2">
+                            <p><?= htmlspecialchars($message['content']) ?></p>
+                            <span class="text-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-blue-200' : 'text-gray-500' ?>"><?= date('M d, Y H:i', strtotime($message['created_at'])) ?></span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-center text-gray-500">Start a new conversation by searching for a user above.</p>
+            <?php endif; ?>
+        </div>
+        
+        <form id="message-form" class="p-4 border-t border-gray-200">
+            <div class="flex">
+                <input type="text" id="message-input" name="content" class="flex-grow p-2 border rounded-l" placeholder="Type your message..." required>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors">Send</button>
+            </div>
+            <input type="hidden" name="receiver_id" id="receiver-id" value="<?= $other_user_id ?? '' ?>">
+        </form>
+    </div>
+</main>
+
+<script>
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+    const messagesContainer = document.getElementById('messages-container');
+    const newConversationBtn = document.getElementById('new-conversation-btn');
+    const userSearch = document.getElementById('user-search');
+    const userSearchInput = document.getElementById('user-search-input');
+    const userSearchResults = document.getElementById('user-search-results');
+    const receiverId = document.getElementById('receiver-id');
+
+    <?php if (isset($other_user_id)): ?>
+    const blockBtn = document.getElementById('block-btn');
+    const deleteConversationBtn = document.getElementById('delete-conversation-btn');
+    <?php endif; ?>
+
+    messageForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(messageForm);
+
+        try {
+            const response = await fetch('/messages/send', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    messageInput.value = '';
+                    // You might want to add the new message to the messages container here
+                    // or reload the conversation
+                    location.reload();
+                } else {
+                    alert('Failed to send message: ' + result.message);
+                }
+            } else {
+                alert('Failed to send message. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+
+    newConversationBtn.addEventListener('click', () => {
+        userSearch.classList.toggle('hidden');
+    });
+
+    userSearchInput.addEventListener('input', async (e) => {
+        const searchTerm = e.target.value;
+        if (searchTerm.length < 3) {
+            userSearchResults.innerHTML = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/users/search?term=${encodeURIComponent(searchTerm)}`);
+            if (response.ok) {
+                const users = await response.json();
+                userSearchResults.innerHTML = users.map(user => `
+                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer" data-user-id="${user.id}">
+                        ${user.username}
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.user-result').forEach(result => {
+                    result.addEventListener('click', () => {
+                        const userId = result.dataset.userId;
+                        receiverId.value = userId;
+                        userSearch.classList.add('hidden');
+                        messagesContainer.innerHTML = '<p class="text-center text-gray-500">Start a new conversation by sending a message.</p>';
+                        document.querySelector('h1').textContent = 'New Conversation';
+                    });
+                });
+            } else {
+                userSearchResults.innerHTML = '<p class="text-red-500">Failed to search users. Please try again.</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            userSearchResults.innerHTML = '<p class="text-red-500">An error occurred. Please try again.</p>';
+        }
+    });
+
+    <?php if (isset($other_user_id)): ?>
+    blockBtn.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to block this user?')) {
+            try {
+                const response = await fetch('/messages/block', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `blocked_id=<?= $other_user_id ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('User blocked successfully');
+                        window.location.href = '/messages';
+                    } else {
+                        alert('Failed to block user: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to block user. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+
+    deleteConversationBtn.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to delete this conversation?')) {
+            try {
+                const response = await fetch('/messages/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `other_user_id=<?= $other_user_id ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Conversation deleted successfully');
+                        window.location.href = '/messages';
+                    } else {
+                        alert('Failed to delete conversation: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to delete conversation. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+    <?php endif; ?>
+
+    // Scroll to the bottom of the messages container
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+</script>
+
+</body>
+</html>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/create_space.html`:
+
+```````html
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once __DIR__."/html_head.html" ?>
+<body class="bg-gray-100">
+    <?php include_once __DIR__ ."/navbar.html"?>
+    
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6">Create a New Space</h1>
+        <form action="/spaces/create" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="space-name">
+                    Space Name
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="space-name" type="text" name="name" placeholder="Enter space name" required>
+            </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    Create Space
+                </button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
+```````
+
 `/home/ramees/progs/php/sora/src/Views/navbar.html`:
 
 ```````html
-<header class="bg-gradient-to-r flex  from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg w-full">
-    <nav class=" md:mx-0 mx-auto flex-grow flex justify-between items-center w-full">
+<header class="bg-gradient-to-r flex from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg w-full">
+    <nav class="md:mx-0 mx-auto flex-grow flex justify-between items-center w-full">
         <span class="text-2xl sm:text-3xl md:text-4xl font-bold"><a href="/"> SORA</a></span>
          
         <div class="sm:flex hidden md:flex items-center md:space-x-8 md:mr-12"> 
             <a href="/profile" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
                 <i class="fas fa-user mr-2"></i><?=$_SESSION['username']??'Profile'?>
+            </a>
+            <a href="/spaces" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
+                <i class="fas fa-globe mr-2"></i>Spaces
+            </a>
+            <a href="/messages" class="text-white text-lg hover:text-sora-bg transition-colors duration-300 relative">
+                <i class="fas fa-envelope mr-2"></i>Messages
+                <?php if (isset($GLOBALS['unread_message_count']) && $GLOBALS['unread_message_count'] > 0): ?>
+                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        <?= $GLOBALS['unread_message_count'] ?>
+                    </span>
+                <?php endif; ?>
             </a>
             <a href="/logout" class="text-white text-lg hover:text-sora-bg transition-colors duration-300">
                 <i class="fas fa-sign-out-alt mr-2"></i>Logout
@@ -4173,6 +5457,30 @@ class PostModel{
     </script>
 </body>
 
+</html>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/layout.php`:
+
+```````php
+<?php
+use Sora\Controllers\MessageController;
+
+$messageController = new MessageController();
+$unread_message_count = $messageController->getUnreadMessageCount();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once __DIR__."/html_head.html" ?>
+<body class="bg-gray-100">
+<?php include_once __DIR__ ."/navbar.html"?>
+
+<main class="container mx-auto px-4 py-8">
+    <?php echo $content; ?>
+    
+</main>
+
+</body>
 </html>
 ```````
 
@@ -4846,6 +6154,82 @@ class PostModel{
     </script>
 </body>
 
+</html>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/spaces_list.html`:
+
+```````html
+<!DOCTYPE html>
+<html lang="en">
+<?php include_once __DIR__."/html_head.html" ?>
+<body class="bg-gray-100">
+    <?php include_once __DIR__ ."/navbar.html"?>
+    
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6">Spaces</h1>
+        
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Create a New Space</h2>
+            <a href="/spaces/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Create Space
+            </a>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Join a Space</h2>
+            <form id="join-space-form" class="mb-4">
+                <input type="text" name="space_code" placeholder="Enter space code" class="p-2 border rounded mr-2">
+                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Join Space
+                </button>
+            </form>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Your Spaces</h2>
+            <div id="user-spaces" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <?php foreach ($userSpaces as $space): ?>
+                    <div class="bg-white p-4 rounded shadow">
+                        <h3 class="text-xl font-bold mb-2"><?= htmlspecialchars($space['name']) ?></h3>
+                        <p class="text-gray-600 mb-2">Code: <?= htmlspecialchars($space['code']) ?></p>
+                        <a href="/spaces/<?= $space['id'] ?>" class="text-blue-500 hover:underline">View Space</a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('join-space-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/spaces/join', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Successfully joined the space!');
+                        location.reload();
+                    } else {
+                        alert('Failed to join space: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to join space. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+</body>
 </html>
 ```````
 

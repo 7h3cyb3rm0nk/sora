@@ -456,6 +456,14 @@ public function getUserStatus($userId) {
 	return $row ? $row['status'] : null;
 }
 
+public function searchUsersForConversation($searchTerm) {
+	$searchTerm = "%$searchTerm%";
+	$stmt = $this->db->prepare("SELECT id, username FROM users WHERE username LIKE ? LIMIT 10");
+	$stmt->bind_param("s", $searchTerm);
+	$stmt->execute();
+	return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 }                   
 
 function test_input(string $data): string{

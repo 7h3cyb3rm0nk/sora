@@ -41,6 +41,56 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-HomeController.html#method_register"
         },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController",
+            "name": "MessageController",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#method___construct"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003AlistConversations\u0028\u0029",
+            "name": "listConversations",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#method_listConversations"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003AviewConversation\u0028\u0029",
+            "name": "viewConversation",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#method_viewConversation"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003AsendMessage\u0028\u0029",
+            "name": "sendMessage",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#method_sendMessage"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003AdeleteConversation\u0028\u0029",
+            "name": "deleteConversation",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#method_deleteConversation"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003AblockUser\u0028\u0029",
+            "name": "blockUser",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#method_blockUser"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003AunblockUser\u0028\u0029",
+            "name": "unblockUser",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#method_unblockUser"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003AgetUnreadMessageCount\u0028\u0029",
+            "name": "getUnreadMessageCount",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#method_getUnreadMessageCount"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003A\u0024messageModel",
+            "name": "messageModel",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#property_messageModel"
+        },                {
             "fqsen": "\\Sora\\Controllers\\PostController",
             "name": "PostController",
             "summary": "",
@@ -105,6 +155,61 @@ Search.appendIndex(
             "name": "postModel",
             "summary": "",
             "url": "classes/Sora-Controllers-PostController.html#property_postModel"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController",
+            "name": "SpaceController",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method___construct"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003AlistSpaces\u0028\u0029",
+            "name": "listSpaces",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method_listSpaces"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003AcreateSpace\u0028\u0029",
+            "name": "createSpace",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method_createSpace"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003AviewSpace\u0028\u0029",
+            "name": "viewSpace",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method_viewSpace"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003AjoinSpace\u0028\u0029",
+            "name": "joinSpace",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method_joinSpace"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003AleaveSpace\u0028\u0029",
+            "name": "leaveSpace",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method_leaveSpace"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003AcreateSpaceTweet\u0028\u0029",
+            "name": "createSpaceTweet",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method_createSpaceTweet"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003AdeleteSpaceTweet\u0028\u0029",
+            "name": "deleteSpaceTweet",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method_deleteSpaceTweet"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003AdeleteSpace\u0028\u0029",
+            "name": "deleteSpace",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#method_deleteSpace"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\SpaceController\u003A\u003A\u0024spaceModel",
+            "name": "spaceModel",
+            "summary": "",
+            "url": "classes/Sora-Controllers-SpaceController.html#property_spaceModel"
         },                {
             "fqsen": "\\Sora\\Controllers\\UserController",
             "name": "UserController",
@@ -196,6 +301,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_getUserStatus"
         },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003AsearchUsersForConversation\u0028\u0029",
+            "name": "searchUsersForConversation",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_searchUsersForConversation"
+        },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003A\u0024userModel",
             "name": "userModel",
             "summary": "",
@@ -281,6 +391,66 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Helpers-Helper.html#method_time_ago"
         },                {
+            "fqsen": "\\Sora\\Models\\MessageModel",
+            "name": "MessageModel",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method___construct"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AsendMessage\u0028\u0029",
+            "name": "sendMessage",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_sendMessage"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AgetConversations\u0028\u0029",
+            "name": "getConversations",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_getConversations"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AgetMessages\u0028\u0029",
+            "name": "getMessages",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_getMessages"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AmarkMessagesAsRead\u0028\u0029",
+            "name": "markMessagesAsRead",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_markMessagesAsRead"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AdeleteConversation\u0028\u0029",
+            "name": "deleteConversation",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_deleteConversation"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AblockUser\u0028\u0029",
+            "name": "blockUser",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_blockUser"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AunblockUser\u0028\u0029",
+            "name": "unblockUser",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_unblockUser"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AisBlocked\u0028\u0029",
+            "name": "isBlocked",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_isBlocked"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003AgetUnreadMessageCount\u0028\u0029",
+            "name": "getUnreadMessageCount",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#method_getUnreadMessageCount"
+        },                {
+            "fqsen": "\\Sora\\Models\\MessageModel\u003A\u003A\u0024db",
+            "name": "db",
+            "summary": "",
+            "url": "classes/Sora-Models-MessageModel.html#property_db"
+        },                {
             "fqsen": "\\Sora\\Models\\PostModel",
             "name": "PostModel",
             "summary": "",
@@ -345,6 +515,86 @@ Search.appendIndex(
             "name": "db",
             "summary": "",
             "url": "classes/Sora-Models-PostModel.html#property_db"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel",
+            "name": "SpaceModel",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method___construct"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AcreateSpace\u0028\u0029",
+            "name": "createSpace",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_createSpace"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AgenerateUniqueCode\u0028\u0029",
+            "name": "generateUniqueCode",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_generateUniqueCode"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AgetSpace\u0028\u0029",
+            "name": "getSpace",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_getSpace"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AsearchSpaceByCode\u0028\u0029",
+            "name": "searchSpaceByCode",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_searchSpaceByCode"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AgetUserSpaces\u0028\u0029",
+            "name": "getUserSpaces",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_getUserSpaces"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AjoinSpace\u0028\u0029",
+            "name": "joinSpace",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_joinSpace"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AleaveSpace\u0028\u0029",
+            "name": "leaveSpace",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_leaveSpace"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AisSpaceMember\u0028\u0029",
+            "name": "isSpaceMember",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_isSpaceMember"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AisSpaceAdmin\u0028\u0029",
+            "name": "isSpaceAdmin",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_isSpaceAdmin"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AcreateSpaceTweet\u0028\u0029",
+            "name": "createSpaceTweet",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_createSpaceTweet"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AgetSpaceTweets\u0028\u0029",
+            "name": "getSpaceTweets",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_getSpaceTweets"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AdeleteSpaceTweet\u0028\u0029",
+            "name": "deleteSpaceTweet",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_deleteSpaceTweet"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003AdeleteSpace\u0028\u0029",
+            "name": "deleteSpace",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#method_deleteSpace"
+        },                {
+            "fqsen": "\\Sora\\Models\\SpaceModel\u003A\u003A\u0024db",
+            "name": "db",
+            "summary": "",
+            "url": "classes/Sora-Models-SpaceModel.html#property_db"
         },                {
             "fqsen": "\\Sora\\Models\\test_input\u0028\u0029",
             "name": "test_input",
@@ -470,6 +720,11 @@ Search.appendIndex(
             "name": "getUserStatus",
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_getUserStatus"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AsearchUsersForConversation\u0028\u0029",
+            "name": "searchUsersForConversation",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_searchUsersForConversation"
         },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003A\u0024db",
             "name": "db",

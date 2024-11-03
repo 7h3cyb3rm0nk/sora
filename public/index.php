@@ -15,6 +15,11 @@ use Sora\Controllers\HomeController;
 use Sora\Controllers\PostController;
 use Sora\Helpers\Helper;
 use Sora\Controllers\SpaceController;
+use Sora\Controllers\MessageController;
+
+$messageController = new MessageController();
+$unread_message_count = $messageController->getUnreadMessageCount();
+
 $router = new Router();
 $app = new Application($router);
 
@@ -55,6 +60,15 @@ $app->router->post('/spaces/tweet', [SpaceController::class, 'createSpaceTweet']
 $app->router->post('/spaces/tweet/delete', [SpaceController::class, 'deleteSpaceTweet']);
 $app->router->post('/spaces/delete', [SpaceController::class, 'deleteSpace']);
 
+
+
+$app->router->get('/messages', [MessageController::class, 'listConversations']);
+$app->router->get('/messages/:num', [MessageController::class, 'viewConversation']);
+$app->router->post('/messages/send', [MessageController::class, 'sendMessage']);
+$app->router->post('/messages/delete', [MessageController::class, 'deleteConversation']);
+$app->router->post('/messages/block', [MessageController::class, 'blockUser']);
+$app->router->post('/messages/unblock', [MessageController::class, 'unblockUser']);
+$app->router->get('/users/search', [UserController::class, 'searchUsersForConversation']);
 
 
 $app->run();
