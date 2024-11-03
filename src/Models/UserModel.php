@@ -456,6 +456,19 @@ public function getUserStatus($userId) {
 	return $row ? $row['status'] : null;
 }
 
+public function getUserById($userId) {
+	$stmt = $this->db->prepare("SELECT id, username, profile_picture, status FROM users WHERE id = ? LIMIT 1");
+	$stmt->bind_param("i", $userId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	if ($result->num_rows > 0) {
+		return $result->fetch_assoc();
+	}
+	
+	return null;
+}
+
 public function searchUsersForConversation($searchTerm) {
 	$searchTerm = "%$searchTerm%";
 	$stmt = $this->db->prepare("SELECT id, username FROM users WHERE username LIKE ? LIMIT 10");

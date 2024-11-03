@@ -4,19 +4,32 @@ namespace Sora\Controllers;
 use Sora\Models\MessageModel;
 use Sora\Config\Database;
 use Sora\Helpers\Helper;
+use Sora\Models\UserModel;
 
 class MessageController {
     private $messageModel;
+    private $userModel;
 
     public function __construct() {
         $db = Database::get_connection();
         $this->messageModel = new MessageModel($db);
+        $this->userModel = new UserModel($db);
     }
 
     public function listConversations() {
         Helper::validate_user();
         $user_id = $_SESSION['user_id'];
         $conversations = $this->messageModel->getConversations($user_id);
+
+        // Fetch user details for conversations with no messages
+        foreach ($conversations as &$conversation) {
+            if (empty($conversation['username'])) {
+                $user = $this->userModel->getUserById($conversation['other_user_id']);
+                $conversation['username'] = $user['username'];
+                $conversation['profile_picture'] = $user['profile_picture'];
+            }
+        }
+
         require __DIR__."/../Views/conversations_list.php";
     }
 
@@ -49,7 +62,16 @@ class MessageController {
             }
 
             if ($this->messageModel->sendMessage($sender_id, $receiver_id, $content)) {
-                echo json_encode(['success' => true]);
+                $receiver = $this->userModel->getUserById($receiver_id);
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Message sent successfully',
+                    'receiver' => [
+                        'id' => $receiver['id'],
+                        'username' => $receiver['username'],
+                        'profile_picture' => $receiver['profile_picture']
+                    ]
+                ]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to send message']);
             }

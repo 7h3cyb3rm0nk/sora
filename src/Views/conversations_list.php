@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <?php include_once __DIR__."/html_head.html" ?>
 <body class="bg-gray-100">
@@ -7,7 +8,12 @@
 <main class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-6">Messages</h1>
 
-    <div class="bg-white shadow rounded-lg">
+    <div class="mb-4">
+        <input type="text" id="user-search" class="w-full p-2 border rounded" placeholder="Search for a user...">
+        <div id="user-search-results" class="mt-2"></div>
+    </div>
+
+    <div id="conversations-list" class="bg-white shadow rounded-lg">
         <?php foreach ($conversations as $conversation): ?>
             <a href="/messages/<?= $conversation['other_user_id'] ?>" class="block hover:bg-gray-50">
                 <div class="flex items-center p-4 border-b border-gray-200">
@@ -15,11 +21,11 @@
                     <div class="flex-grow">
                         <div class="flex justify-between items-baseline">
                             <h2 class="text-lg font-semibold"><?= htmlspecialchars($conversation['username']) ?></h2>
-                            <span class="text-sm text-gray-500"><?= date('M d, Y H:i', strtotime($conversation['last_message_time'])) ?></span>
+                            <span class="text-sm text-gray-500"><?= isset($conversation['last_message_time']) ? date('M d, Y H:i', strtotime($conversation['last_message_time'])) : '' ?></span>
                         </div>
-                        <p class="text-gray-600 truncate"><?= htmlspecialchars($conversation['last_message']) ?></p>
+                        <p class="text-gray-600 truncate"><?= htmlspecialchars($conversation['last_message'] ?? '') ?></p>
                     </div>
-                    <?php if ($conversation['unread_count'] > 0): ?>
+                    <?php if (isset($conversation['unread_count']) && $conversation['unread_count'] > 0): ?>
                         <span class="bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-1 ml-2"><?= $conversation['unread_count'] ?></span>
                     <?php endif; ?>
                 </div>
@@ -28,8 +34,70 @@
     </div>
 </main>
 
-
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userSearch = document.getElementById('user-search');
+    const userSearchResults = document.getElementById('user-search-results');
+    const conversationsList = document.getElementById('conversations-list');
+
+    userSearch.addEventListener('input', async (e) => {
+        const searchTerm = e.target.value;
+        if (searchTerm.length < 3) {
+            userSearchResults.innerHTML = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/users/search?term=${encodeURIComponent(searchTerm)}`);
+            if (response.ok) {
+                const users = await response.json();
+                userSearchResults.innerHTML = users.map(user => `
+                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer" data-user-id="${user.id}">
+                        ${user.username}
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.user-result').forEach(result => {
+                    result.addEventListener('click', () => {
+                        const userId = result.dataset.userId;
+                        window.location.href = `/messages/${userId}`;
+                    });
+                });
+            } else {
+                userSearchResults.innerHTML = '<p class="text-red-500">Failed to search users. Please try again.</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            userSearchResults.innerHTML = '<p class="text-red-500">An error occurred. Please try again.</p>';
+        }
+    });
+
+    // Function to add a new conversation to the list
+    function addNewConversation(conversation) {
+        const newConversationHtml = `
+            <a href="/messages/${conversation.id}" class="block hover:bg-gray-50">
+                <div class="flex items-center p-4 border-b border-gray-200">
+                    <img src="${conversation.profile_picture}" alt="Profile" class="w-12 h-12 rounded-full mr-4">
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-baseline">
+                            <h2 class="text-lg font-semibold">${conversation.username}</h2>
+                        </div>
+                        <p class="text-gray-600 truncate">New conversation</p>
+                    </div>
+                </div>
+            </a>
+        `;
+        conversationsList.insertAdjacentHTML('afterbegin', newConversationHtml);
+    }
+
+    // You can call addNewConversation when a new conversation is started
+    // For example, after sending the first message to a new user
+});
+</script>
+
+
+
+<!-- <script>
     const messageForm = document.getElementById('message-form');
     const messageInput = document.getElementById('message-input');
     const messagesContainer = document.getElementById('messages-container');
@@ -174,7 +242,7 @@
 
     // Scroll to the bottom of the messages container
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-</script>
+</script> -->
 
 </body>
 </html>
