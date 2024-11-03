@@ -102,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const results = userSearchResults.querySelectorAll('.user-result');
         results.forEach((result, index) => {
             if (index === selectedUserIndex) {
-                result.classList.add('bg-gray-100');
+                result.classList.add('bg-sora-secondary');
             } else {
-                result.classList.remove('bg-gray-100');
+                result.classList.remove('bg-sora-secondary');
             }
         });
     }
