@@ -3180,19 +3180,32 @@ namespace Sora\Controllers;
 use Sora\Models\MessageModel;
 use Sora\Config\Database;
 use Sora\Helpers\Helper;
+use Sora\Models\UserModel;
 
 class MessageController {
     private $messageModel;
+    private $userModel;
 
     public function __construct() {
         $db = Database::get_connection();
         $this->messageModel = new MessageModel($db);
+        $this->userModel = new UserModel($db);
     }
 
     public function listConversations() {
         Helper::validate_user();
         $user_id = $_SESSION['user_id'];
         $conversations = $this->messageModel->getConversations($user_id);
+
+        // Fetch user details for conversations with no messages
+        foreach ($conversations as &$conversation) {
+            if (empty($conversation['username'])) {
+                $user = $this->userModel->getUserById($conversation['other_user_id']);
+                $conversation['username'] = $user['username'];
+                $conversation['profile_picture'] = $user['profile_picture'];
+            }
+        }
+
         require __DIR__."/../Views/conversations_list.php";
     }
 
@@ -3225,7 +3238,16 @@ class MessageController {
             }
 
             if ($this->messageModel->sendMessage($sender_id, $receiver_id, $content)) {
-                echo json_encode(['success' => true]);
+                $receiver = $this->userModel->getUserById($receiver_id);
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Message sent successfully',
+                    'receiver' => [
+                        'id' => $receiver['id'],
+                        'username' => $receiver['username'],
+                        'profile_picture' => $receiver['profile_picture']
+                    ]
+                ]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to send message']);
             }
@@ -4226,6 +4248,19 @@ public function getUserStatus($userId) {
 	return $row ? $row['status'] : null;
 }
 
+public function getUserById($userId) {
+	$stmt = $this->db->prepare("SELECT id, username, profile_picture, status FROM users WHERE id = ? LIMIT 1");
+	$stmt->bind_param("i", $userId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	if ($result->num_rows > 0) {
+		return $result->fetch_assoc();
+	}
+	
+	return null;
+}
+
 public function searchUsersForConversation($searchTerm) {
 	$searchTerm = "%$searchTerm%";
 	$stmt = $this->db->prepare("SELECT id, username FROM users WHERE username LIKE ? LIMIT 10");
@@ -5154,7 +5189,7 @@ $unread_message_count = $messageController->getUnreadMessageCount();
 <main class="container mx-auto px-4 py-8">
     <div class="bg-white shadow rounded-lg">
         <div class="flex justify-between items-center p-4 border-b border-gray-200">
-            <h1 class="text-2xl font-bold">
+            <h1 class="text-2xl font-bold" id="conversation-title">
                 <?= isset($messages[0]) ? htmlspecialchars($messages[0]['username']) : 'New Conversation' ?>
             </h1>
             <div>
@@ -5197,6 +5232,170 @@ $unread_message_count = $messageController->getUnreadMessageCount();
 </main>
 
 <script>
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+    const messagesContainer = document.getElementById('messages-container');
+    const newConversationBtn = document.getElementById('new-conversation-btn');
+    const userSearch = document.getElementById('user-search');
+    const userSearchInput = document.getElementById('user-search-input');
+    const userSearchResults = document.getElementById('user-search-results');
+    const receiverId = document.getElementById('receiver-id');
+    const conversationTitle = document.getElementById('conversation-title');
+
+    <?php if (isset($other_user_id)): ?>
+    const blockBtn = document.getElementById('block-btn');
+    const deleteConversationBtn = document.getElementById('delete-conversation-btn');
+    <?php endif; ?>
+
+    messageForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(messageForm);
+
+        try {
+            const response = await  fetch('/messages/send', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    messageInput.value = '';
+                    // Add the new message to the messages container
+                    const newMessage = document.createElement('div');
+                    newMessage.className = 'mb-4 text-right';
+                    newMessage.innerHTML = `
+                        <div class="inline-block max-w-xs bg-blue-500 text-white rounded-lg px-4 py-2">
+                            <p>${formData.get('content')}</p>
+                            <span class="text-xs text-blue-200">${new Date().toLocaleString()}</span>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(newMessage);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                    // Update the conversation title if it's a new conversation
+                    if (conversationTitle.textContent === 'New Conversation') {
+                        conversationTitle.textContent = result.receiver.username;
+                    }
+                } else {
+                    alert('Failed to send message: ' + result.message);
+                }
+            } else {
+                alert('Failed to send message. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+
+    newConversationBtn.addEventListener('click', () => {
+        userSearch.classList.toggle('hidden');
+    });
+
+    userSearchInput.addEventListener('input', async (e) => {
+        const searchTerm = e.target.value;
+        if (searchTerm.length < 3) {
+            userSearchResults.innerHTML = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/users/search?term=${encodeURIComponent(searchTerm)}`);
+            if (response.ok) {
+                const users = await response.json();
+                userSearchResults.innerHTML = users.map(user => `
+                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer" data-user-id="${user.id}" data-username="${user.username}">
+                        ${user.username}
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.user-result').forEach(result => {
+                    result.addEventListener('click', () => {
+                        const userId = result.dataset.userId;
+                        const username = result.dataset.username;
+                        receiverId.value = userId;
+                        userSearch.classList.add('hidden');
+                        messagesContainer.innerHTML = '<p class="text-center text-gray-500">Start a new conversation by sending a message.</p>';
+                        conversationTitle.textContent = username;
+                    });
+                });
+            } else {
+                userSearchResults.innerHTML = '<p class="text-red-500">Failed to search users. Please try again.</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            userSearchResults.innerHTML = '<p class="text-red-500">An error occurred. Please try again.</p>';
+        }
+    });
+
+    <?php if (isset($other_user_id)): ?>
+    blockBtn.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to block this user?')) {
+            try {
+                const response = await fetch('/messages/block', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `blocked_id=<?= $other_user_id ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('User blocked successfully');
+                        window.location.href = '/messages';
+                    } else {
+                        alert('Failed to block user: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to block user. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+
+    deleteConversationBtn.addEventListener('click', async () => {
+        if (confirm('Are you sure you want to delete this conversation?')) {
+            try {
+                const response = await fetch('/messages/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `other_user_id=<?= $other_user_id ?>`
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Conversation deleted successfully');
+                        window.location.href = '/messages';
+                    } else {
+                        alert('Failed to delete conversation: ' + result.message);
+                    }
+                } else {
+                    alert('Failed to delete conversation. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    });
+    <?php endif; ?>
+
+    // Scroll to the bottom of the messages container
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+</script>
+
+
+
+<!-- <script>
     const messageForm = document.getElementById('message-form');
     const messageInput = document.getElementById('message-input');
     const messagesContainer = document.getElementById('messages-container');
@@ -5341,7 +5540,7 @@ $unread_message_count = $messageController->getUnreadMessageCount();
 
     // Scroll to the bottom of the messages container
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-</script>
+</script> -->
 
 </body>
 </html>
@@ -5884,6 +6083,7 @@ $unread_message_count = $messageController->getUnreadMessageCount();
 
 ```````php
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <?php include_once __DIR__."/html_head.html" ?>
 <body class="bg-gray-100">
@@ -5892,7 +6092,12 @@ $unread_message_count = $messageController->getUnreadMessageCount();
 <main class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-6">Messages</h1>
 
-    <div class="bg-white shadow rounded-lg">
+    <div class="mb-4">
+        <input type="text" id="user-search" class="w-full p-2 border rounded" placeholder="Search for a user...">
+        <div id="user-search-results" class="mt-2"></div>
+    </div>
+
+    <div id="conversations-list" class="bg-white shadow rounded-lg">
         <?php foreach ($conversations as $conversation): ?>
             <a href="/messages/<?= $conversation['other_user_id'] ?>" class="block hover:bg-gray-50">
                 <div class="flex items-center p-4 border-b border-gray-200">
@@ -5900,11 +6105,11 @@ $unread_message_count = $messageController->getUnreadMessageCount();
                     <div class="flex-grow">
                         <div class="flex justify-between items-baseline">
                             <h2 class="text-lg font-semibold"><?= htmlspecialchars($conversation['username']) ?></h2>
-                            <span class="text-sm text-gray-500"><?= date('M d, Y H:i', strtotime($conversation['last_message_time'])) ?></span>
+                            <span class="text-sm text-gray-500"><?= isset($conversation['last_message_time']) ? date('M d, Y H:i', strtotime($conversation['last_message_time'])) : '' ?></span>
                         </div>
-                        <p class="text-gray-600 truncate"><?= htmlspecialchars($conversation['last_message']) ?></p>
+                        <p class="text-gray-600 truncate"><?= htmlspecialchars($conversation['last_message'] ?? '') ?></p>
                     </div>
-                    <?php if ($conversation['unread_count'] > 0): ?>
+                    <?php if (isset($conversation['unread_count']) && $conversation['unread_count'] > 0): ?>
                         <span class="bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-1 ml-2"><?= $conversation['unread_count'] ?></span>
                     <?php endif; ?>
                 </div>
@@ -5913,8 +6118,70 @@ $unread_message_count = $messageController->getUnreadMessageCount();
     </div>
 </main>
 
-
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userSearch = document.getElementById('user-search');
+    const userSearchResults = document.getElementById('user-search-results');
+    const conversationsList = document.getElementById('conversations-list');
+
+    userSearch.addEventListener('input', async (e) => {
+        const searchTerm = e.target.value;
+        if (searchTerm.length < 3) {
+            userSearchResults.innerHTML = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/users/search?term=${encodeURIComponent(searchTerm)}`);
+            if (response.ok) {
+                const users = await response.json();
+                userSearchResults.innerHTML = users.map(user => `
+                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer" data-user-id="${user.id}">
+                        ${user.username}
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.user-result').forEach(result => {
+                    result.addEventListener('click', () => {
+                        const userId = result.dataset.userId;
+                        window.location.href = `/messages/${userId}`;
+                    });
+                });
+            } else {
+                userSearchResults.innerHTML = '<p class="text-red-500">Failed to search users. Please try again.</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            userSearchResults.innerHTML = '<p class="text-red-500">An error occurred. Please try again.</p>';
+        }
+    });
+
+    // Function to add a new conversation to the list
+    function addNewConversation(conversation) {
+        const newConversationHtml = `
+            <a href="/messages/${conversation.id}" class="block hover:bg-gray-50">
+                <div class="flex items-center p-4 border-b border-gray-200">
+                    <img src="${conversation.profile_picture}" alt="Profile" class="w-12 h-12 rounded-full mr-4">
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-baseline">
+                            <h2 class="text-lg font-semibold">${conversation.username}</h2>
+                        </div>
+                        <p class="text-gray-600 truncate">New conversation</p>
+                    </div>
+                </div>
+            </a>
+        `;
+        conversationsList.insertAdjacentHTML('afterbegin', newConversationHtml);
+    }
+
+    // You can call addNewConversation when a new conversation is started
+    // For example, after sending the first message to a new user
+});
+</script>
+
+
+
+<!-- <script>
     const messageForm = document.getElementById('message-form');
     const messageInput = document.getElementById('message-input');
     const messagesContainer = document.getElementById('messages-container');
@@ -6059,7 +6326,7 @@ $unread_message_count = $messageController->getUnreadMessageCount();
 
     // Scroll to the bottom of the messages container
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-</script>
+</script> -->
 
 </body>
 </html>

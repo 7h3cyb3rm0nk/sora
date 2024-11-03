@@ -91,6 +91,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-MessageController.html#property_messageModel"
         },                {
+            "fqsen": "\\Sora\\Controllers\\MessageController\u003A\u003A\u0024userModel",
+            "name": "userModel",
+            "summary": "",
+            "url": "classes/Sora-Controllers-MessageController.html#property_userModel"
+        },                {
             "fqsen": "\\Sora\\Controllers\\PostController",
             "name": "PostController",
             "summary": "",
@@ -720,6 +725,11 @@ Search.appendIndex(
             "name": "getUserStatus",
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_getUserStatus"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AgetUserById\u0028\u0029",
+            "name": "getUserById",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_getUserById"
         },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AsearchUsersForConversation\u0028\u0029",
             "name": "searchUsersForConversation",

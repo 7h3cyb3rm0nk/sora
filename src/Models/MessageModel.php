@@ -9,6 +9,7 @@ class MessageModel {
     }
 
     public function sendMessage($sender_id, $receiver_id, $content) {
+        
         $stmt = $this->db->prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)");
         $stmt->bind_param("iis", $sender_id, $receiver_id, $content);
         return $stmt->execute();
@@ -30,6 +31,7 @@ class MessageModel {
             JOIN users u ON (CASE WHEN m.sender_id = ? THEN m.receiver_id ELSE m.sender_id END) = u.id
             LEFT JOIN conversation_deletions cd ON (cd.user_id = ? AND cd.other_user_id = u.id)
             WHERE (m.sender_id = ? OR m.receiver_id = ?) AND (cd.deleted_at IS NULL OR m.created_at > cd.deleted_at)
+            
             GROUP BY other_user_id
             ORDER BY last_message_time DESC
         ");
@@ -78,8 +80,8 @@ class MessageModel {
     }
 
     public function isBlocked($user_id, $other_user_id) {
-        $stmt = $this->db->prepare("SELECT * FROM blocks WHERE (blocker_id = ? AND blocked_id = ?) OR (blocker_id = ? AND blocked_id = ?)");
-        $stmt->bind_param("iiii", $user_id, $other_user_id, $other_user_id, $user_id);
+        $stmt = $this->db->prepare("SELECT * FROM blocks WHERE (blocker_id = ? AND blocked_id = ?) ");
+        $stmt->bind_param("ii", $user_id, $other_user_id);
         $stmt->execute();
         return $stmt->get_result()->num_rows > 0;
     }

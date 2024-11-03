@@ -13,7 +13,14 @@
             <div>
                 <button id="new-conversation-btn" class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600 transition-colors">New Conversation</button>
                 <?php if (isset($other_user_id)): ?>
+                    <?php if (!$is_blocked): ?>
                     <button id="block-btn" class="bg-red-500 text-white px-4 py-2 rounded mr-2 hover:bg-red-600 transition-colors">Block</button>
+                    <?php else: ?>
+                        <button id="block-btn" class="bg-red-500 text-white hidden px-4 py-2 rounded mr-2 hover:bg-red-600 transition-colors">Block</button>
+                        <button id="unblock-user" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2">
+                       Unblock
+                     </button>
+                    <?php endif; ?> 
                     <button id="delete-conversation-btn" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors">Delete Conversation</button>
                 <?php endif; ?>
             </div>
@@ -25,19 +32,32 @@
         </div>
 
         <div id="messages-container" class="h-96 overflow-y-auto p-4">
-            <?php if (isset($messages)): ?>
-                <?php foreach ($messages as $message): ?>
-                    <div class="mb-4 <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-right' : 'text-left' ?>">
-                        <div class="inline-block max-w-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'bg-blue-500 text-white' : 'bg-gray-300' ?> rounded-lg px-4 py-2">
-                            <p><?= htmlspecialchars($message['content']) ?></p>
-                            <span class="text-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-blue-200' : 'text-gray-500' ?>"><?= date('M d, Y H:i', strtotime($message['created_at'])) ?></span>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p class="text-center text-gray-500">Start a new conversation by searching for a user above.</p>
-            <?php endif; ?>
-        </div>
+    <?php if (isset($messages) && !empty($messages)): ?>
+        <?php 
+        $other_user = $this->userModel->getUserById($other_user_id);
+        $other_username = $other_user ? $other_user['username'] : 'Unknown User';
+        ?>
+        <h2 class="text-xl font-semibold mb-4">Conversation with <?= htmlspecialchars($other_username) ?></h2>
+        <?php if ($is_blocked ): ?>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">User is blocked.</strong>
+                <!-- <button id="unblock-user" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2">
+                    Unblock
+                </button> -->
+            </div>
+        <?php endif; ?>
+        <?php foreach ($messages as $message): ?>
+            <div class="mb-4 <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-right' : 'text-left' ?>">
+                <div class="inline-block max-w-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'bg-blue-500 text-white' : 'bg-gray-300' ?> rounded-lg px-4 py-2">
+                    <p><?= htmlspecialchars($message['content']) ?></p>
+                    <span class="text-xs <?= $message['sender_id'] == $_SESSION['user_id'] ? 'text-blue-200' : 'text-gray-500' ?>"><?= date('M d, Y H:i', strtotime($message['created_at'])) ?></span>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p class="text-center text-gray-500">No messages yet. Start a conversation!</p>
+    <?php endif; ?>
+</div>
         
         <form id="message-form" class="p-4 border-t border-gray-200">
             <div class="flex">
@@ -103,7 +123,7 @@
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            alert('You can not send messages at the moment');
         }
     });
 
@@ -211,6 +231,35 @@
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 </script>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const unblockButton = document.getElementById('unblock-user');
+    if (unblockButton) {
+        unblockButton.addEventListener('click', async function() {
+            try {
+                const response = await fetch('/messages/unblock', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: <?= $other_user_id ?> }),
+                });
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to unblock user: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while trying to unblock the user.');
+            }
+        });
+    }
+});
+</script>
 
 
 <!-- <script>

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <?php include_once __DIR__."/html_head.html" ?>
 <body class="bg-gray-100">
@@ -13,23 +12,27 @@
         <div id="user-search-results" class="mt-2"></div>
     </div>
 
-    <div id="conversations-list" class="bg-white shadow rounded-lg">
+    <div id="conversations-list" class="space-y-4">
         <?php foreach ($conversations as $conversation): ?>
-            <a href="/messages/<?= $conversation['other_user_id'] ?>" class="block hover:bg-gray-50">
-                <div class="flex items-center p-4 border-b border-gray-200">
-                    <img src="<?= htmlspecialchars($conversation['profile_picture']) ?>" alt="Profile" class="w-12 h-12 rounded-full mr-4">
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-baseline">
-                            <h2 class="text-lg font-semibold"><?= htmlspecialchars($conversation['username']) ?></h2>
-                            <span class="text-sm text-gray-500"><?= isset($conversation['last_message_time']) ? date('M d, Y H:i', strtotime($conversation['last_message_time'])) : '' ?></span>
+            <div class="bg-white shadow rounded-lg hover:shadow-md transition-shadow duration-300">
+                <a href="/messages/<?= $conversation['other_user_id'] ?>" class="block p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <img src="<?= htmlspecialchars($conversation['profile_picture']) ?>" alt="Profile" class="w-12 h-12 rounded-full">
+                            <div>
+                                <h2 class="text-lg font-semibold"><?= htmlspecialchars($conversation['username']) ?></h2>
+                                <p class="text-gray-600 text-sm truncate"><?= htmlspecialchars($conversation['last_message'] ?? '') ?></p>
+                            </div>
                         </div>
-                        <p class="text-gray-600 truncate"><?= htmlspecialchars($conversation['last_message'] ?? '') ?></p>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500"><?= isset($conversation['last_message_time']) ? date('M d, Y H:i', strtotime($conversation['last_message_time'])) : '' ?></span>
+                            <?php if (isset($conversation['unread_count']) && $conversation['unread_count'] > 0): ?>
+                                <span class="bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-1"><?= $conversation['unread_count'] ?></span>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                    <?php if (isset($conversation['unread_count']) && $conversation['unread_count'] > 0): ?>
-                        <span class="bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-1 ml-2"><?= $conversation['unread_count'] ?></span>
-                    <?php endif; ?>
-                </div>
-            </a>
+                </a>
+            </div>
         <?php endforeach; ?>
     </div>
 </main>
@@ -40,10 +43,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const userSearchResults = document.getElementById('user-search-results');
     const conversationsList = document.getElementById('conversations-list');
 
+    let selectedUserIndex = -1;
+
     userSearch.addEventListener('input', async (e) => {
         const searchTerm = e.target.value;
         if (searchTerm.length < 3) {
             userSearchResults.innerHTML = '';
+            selectedUserIndex = -1;
             return;
         }
 
@@ -51,41 +57,79 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`/users/search?term=${encodeURIComponent(searchTerm)}`);
             if (response.ok) {
                 const users = await response.json();
-                userSearchResults.innerHTML = users.map(user => `
-                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer" data-user-id="${user.id}">
+                userSearchResults.innerHTML = users.map((user, index) => `
+                    <div class="user-result p-2 hover:bg-gray-100 cursor-pointer ${index === 0 ? 'bg-gray-100' : ''}" data-user-id="${user.id}">
                         ${user.username}
                     </div>
                 `).join('');
-
-                document.querySelectorAll('.user-result').forEach(result => {
-                    result.addEventListener('click', () => {
-                        const userId = result.dataset.userId;
-                        window.location.href = `/messages/${userId}`;
-                    });
-                });
-            } else {
-                userSearchResults.innerHTML = '<p class="text-red-500">Failed to search users. Please try again.</p>';
+                selectedUserIndex = 0;
+                highlightSelectedUser();
             }
         } catch (error) {
             console.error('Error:', error);
-            userSearchResults.innerHTML = '<p class="text-red-500">An error occurred. Please try again.</p>';
         }
     });
+
+    userSearch.addEventListener('keydown', (e) => {
+        const results = userSearchResults.querySelectorAll('.user-result');
+        if (results.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectedUserIndex = (selectedUserIndex + 1) % results.length;
+            highlightSelectedUser();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectedUserIndex = (selectedUserIndex - 1 + results.length) % results.length;
+            highlightSelectedUser();
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const selectedUser = results[selectedUserIndex];
+            if (selectedUser) {
+                selectUser(selectedUser.dataset.userId);
+            }
+        }
+    });
+
+    userSearchResults.addEventListener('click', (e) => {
+        const userResult = e.target.closest('.user-result');
+        if (userResult) {
+            selectUser(userResult.dataset.userId);
+        }
+    });
+
+    function highlightSelectedUser() {
+        const results = userSearchResults.querySelectorAll('.user-result');
+        results.forEach((result, index) => {
+            if (index === selectedUserIndex) {
+                result.classList.add('bg-gray-100');
+            } else {
+                result.classList.remove('bg-gray-100');
+            }
+        });
+    }
+
+    function selectUser(userId) {
+        window.location.href = `/messages/${userId}`;
+    }
+
 
     // Function to add a new conversation to the list
     function addNewConversation(conversation) {
         const newConversationHtml = `
-            <a href="/messages/${conversation.id}" class="block hover:bg-gray-50">
-                <div class="flex items-center p-4 border-b border-gray-200">
-                    <img src="${conversation.profile_picture}" alt="Profile" class="w-12 h-12 rounded-full mr-4">
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-baseline">
-                            <h2 class="text-lg font-semibold">${conversation.username}</h2>
+            <div class="bg-white shadow rounded-lg hover:shadow-md transition-shadow duration-300">
+                <a href="/messages/${conversation.id}" class="block p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <img src="${conversation.profile_picture}" alt="Profile" class="w-12 h-12 rounded-full">
+                            <div>
+                                <h2 class="text-lg font-semibold">${conversation.username}</h2>
+                                <p class="text-gray-600 text-sm truncate">New conversation</p>
+                            </div>
                         </div>
-                        <p class="text-gray-600 truncate">New conversation</p>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         `;
         conversationsList.insertAdjacentHTML('afterbegin', newConversationHtml);
     }
@@ -94,6 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // For example, after sending the first message to a new user
 });
 </script>
+
+
 
 
 

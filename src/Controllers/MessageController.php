@@ -36,11 +36,11 @@ class MessageController {
     public function viewConversation($other_user_id) {
         Helper::validate_user();
         $user_id = $_SESSION['user_id'];
+        $is_blocked=false;
         
-        if ($this->messageModel->isBlocked($user_id, $other_user_id)) {
-            $_SESSION['error'] = "You cannot view this conversation.";
-            header("Location: /messages");
-            exit;
+        if ($this->messageModel->isBlocked( $user_id, $other_user_id)) {
+            $is_blocked = true;
+            
         }
 
         $messages = $this->messageModel->getMessages($user_id, $other_user_id);
@@ -55,6 +55,17 @@ class MessageController {
             $sender_id = $_SESSION['user_id'];
             $receiver_id = $_POST['receiver_id'];
             $content = $_POST['content'];
+
+            if($sender_id == $receiver_id) {
+                echo json_encode(['success' => false, 'message' => 'You cannot send messages to yourself.']);
+                http_response_code(400);
+                exit;
+            }
+
+            if($this->messageModel->isBlocked($receiver_id, $sender_id)){
+                echo json_encode(['success' => false, 'message' => 'You cannot send messages to this user.']);
+                return;
+            }
 
             if ($this->messageModel->isBlocked($sender_id, $receiver_id)) {
                 echo json_encode(['success' => false, 'message' => 'You cannot send messages to this user.']);
@@ -112,15 +123,20 @@ class MessageController {
         Helper::validate_user();
         
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            $blocker_id = $_SESSION['user_id'];
-            $blocked_id = $_POST['blocked_id'];
+            $data = json_decode(file_get_contents("php://input"), true);
+            $user_id = $_SESSION['user_id'];
+            $blocked_user_id = $data['user_id'];
 
-            if ($this->messageModel->unblockUser($blocker_id, $blocked_id)) {
-                echo json_encode(['success' => true]);
+            if ($this->messageModel->unblockUser($user_id, $blocked_user_id)) {
+                echo json_encode(['success' => true, 'message' => 'User unblocked successfully']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to unblock user']);
             }
         }
+    }
+
+    public function isBlocked($user_id, $other_user_id) {
+        return $this->messageModel->isBlocked($user_id, $other_user_id);
     }
 
     public function getUnreadMessageCount() {
