@@ -28,7 +28,7 @@
             setTimeout(()=>{
                 text += addon.charAt(i);
                 
-                message.textContent = text + (cursor_visible? "|" : "?");
+                message.textContent = text + (cursor_visible ? "|" : "");
             }, i*speed);
         }
         
