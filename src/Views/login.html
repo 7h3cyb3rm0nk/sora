@@ -1,136 +1,87 @@
 <!DOCTYPE html>
-<html class="h-full sm:overflow-y-auto md:overflow-hidden" lang="en">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup/Login | SORA</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>SORA - Login</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
-
-<body class="h-full bg-gray-100 text-sora-text"> 
-    <header class="bg-gradient-to-r from-sora-primary to-sora-secondary text-white py-4 px-6 shadow-lg"> 
-        <nav class="text-2xl sm:text-3xl md:text-4xl font-bold">SORA</nav>
-    </header>
-    <main class="h-full text-sora-text"> 
-
-        <div
-            class="flex flex-col sm:flex-row gap-7 sm:gap-15 md:gap-[7em] justify-center items-center p-4 sm:p-8 md:p-12 min-h-[calc(100vh-4rem)]">
-            <div
-                class="login-card  p-6 flex items-center justify-center rounded-md shadow-md w-full sm:w-[90%] md:w-[80%] lg:w-[40%] xl:w-[30%] max-w-md">
-                <div class="login w-full text-lg sm:text-xl">
-                    <form class="flex flex-col w-full justify-center gap-4" action="/login" method="POST">
-                        <h3 class="w-full font-bold text-2xl text-gray-900 mb-4 text-center">Login</h3>
-                        <div class="form-group">
-                            <label class="block text-gray-700 font-bold mb-2" for="username">Username</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="username" id="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="block text-gray-700 font-bold mb-2" for="password">Password</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="password" name="password" id="password" required>
-                        </div>
-                        <div class="error text-red-600 w-full text-center text-lg font-bold mt-2 hidden">
-                            <?php 
-                            if(isset($_SESSION['login_error'])){
-                            echo implode("<br>", $_SESSION['login_error']); 
-                            $_SESSION['login_error'] = null;
-                            unset($_SESSION['error']);
-                            }
-                             ?>
-                        </div>
-                        <button
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit" name="submit">Login</button>
-                    </form>
-                </div>
+<body class="bg-gray-100 min-h-[100vw]">
+    <nav class="bg-gradient-to-r w-full text-2xl font-bold from-sora-primary to-sora-secondary p-4">
+        <div class=" w-full mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-4xl font-bold">SORA</a>
+            <div>
+                <a href="/login" class="text-white hover:text-gray-200 px-3 py-2">Login</a>
+                <a href="/signup" class="text-white hover:text-gray-200 px-3 py-2">Sign Up</a>
             </div>
-
-            <div class="signup-card  p-6 flex items-center justify-center rounded-md w-full sm:w-[90%] md:w-[80%] lg:w-[40%] xl:w-[30%] max-w-md  shadow-md">
-                <div class="signup w-full text-lg sm:text-xl">
-                    <form class="flex flex-col w-full justify-center gap-4" action="/register" method="POST">
-                        <h3 class="w-full font-bold text-2xl text-gray-900 mb-4 text-center">Signup</h3>
-                        <div class="form-group">
-                            <label class="block text-gray-700 font-bold mb-2" for="signup-email">Email</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="email" name="email" id="signup-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="block text-gray-700 font-bold mb-2" for="signup-first-name">First Name</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="firstname" id="signup-first-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="block text-gray-700 font-bold mb-2" for="signup-last-name">Last Name</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="lastname" id="signup-last-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="block text-gray-700 font-bold mb-2" for="signup-username">Username</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="text" name="username" id="signup-username" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="block text-gray-700 font-bold mb-2" for="signup-password">Password</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="password" name="password" id="signup-password" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="block text-gray-700 font-bold mb-2" for="signup-retype-password">Retype
-                                Password</label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="password" name="retype_password" id="signup-retype-password" required>
-                        </div>
-                        <button
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit" name="submit">Signup</button>
-                        <div class="error text-red-600 w-full text-center text-lg font-bold mt-2 hidden">
-                            <?php 
-                            if(isset($_SESSION['error'])){
-                            echo implode("<br>", $_SESSION['error']); 
-                            $_SESSION['error'] = null;
-                            unset($_SESSION['error']);
-                            }
-                             ?>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
         </div>
-    </main>
+    </nav>
+
+    <div class=" mx-auto h-full flex-1 mt-40 px-4 ">
+        <div class="max-w-md mx-auto bg-white h-max rounded-lg overflow-hidden shadow-md hover:shadow-lg">
+            <div class="px-6 py-8">
+                <h2 class="text-2xl font-bold text-center text-gray-700 mb-8">Login to SORA</h2>
+                <form id="loginForm" action="/login" method="POST" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
+                        <input type="email" id="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sora-primary">
+                        <p id="emailError" class="text-red-500 text-xs mt-1 hidden"></p>
+                    </div>
+                    <div>
+                        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <input type="password" id="password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sora-primary">
+                        <p id="passwordError" class="text-red-500 text-xs mt-1 hidden"></p>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-sora-primary to-sora-secondary text-white font-bold py-2 px-4 rounded-md hover:opacity-90 transition duration-300">Login</button>
+                    </div>
+                </form>
+                <p class="mt-4 text-center text-sm text-gray-600">
+                    Don't have an account? <a href="/signup" class="text-sora-primary hover:underline">Sign up here</a>
+                </p>
+            </div>
+        </div>
+    </div>
 
     <script>
-        let login_card = document.querySelector(".login-card");
-        let signup_card = document.querySelector(".signup-card");
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let isValid = true;
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
 
-        let styles_array = ["bg-gray-200", "shadow-md"];
+            // Email validation
+            if (!email.value.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+                isValid = false;
+                email.classList.add('border-red-500');
+                email.classList.remove('border-gray-300');
+                emailError.textContent = 'Please enter a valid email address.';
+                emailError.classList.remove('hidden');
+            } else {
+                email.classList.remove('border-red-500');
+                email.classList.add('border-gray-300');
+                emailError.classList.add('hidden');
+            }
 
-        login_card.addEventListener("mouseenter", () => {
-            login_card.classList.add(...styles_array);
-            signup_card.classList.remove(...styles_array);
+            // Password validation (at least 8 characters, including uppercase, lowercase, number, and special character)
+            if (!password.value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+                isValid = false;
+                password.classList.add('border-red-500');
+                password.classList.remove('border-gray-300');
+                passwordError.textContent = 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.';
+                passwordError.classList.remove('hidden');
+            } else {
+                password.classList.remove('border-red-500');
+                password.classList.add('border-gray-300');
+                passwordError.classList.add('hidden');
+            }
+
+            if (isValid) {
+                this.submit();
+            }
         });
-
-        signup_card.addEventListener("mouseenter", () => {
-            signup_card.classList.add(...styles_array);
-            login_card.classList.remove(...styles_array);
-        });
-
-        let error = document.querySelector(".error");
-        if (error.textContent.trim() !== "") {
-            error.classList.remove("hidden");
-            document.querySelector("html").classList.add("md:overflow-y-auto");
-        }
     </script>
 </body>
-
 </html>
