@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php include_once __DIR__."/html_head.html" ?>
-<body class="bg-gray-100 h-screen overflow-hidden  ">
+<body class="bg-gray-100 h-screen overflow-hidden">
 <?php include_once __DIR__ ."/navbar.html"?>
 
-<main class="container mx-auto bg-gray-300 rounded-md opacity-85 mt-20  px-4 py-8">
+<main class="container mx-auto bg-gray-300 rounded-md opacity-85 mt-20 px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold"><?= htmlspecialchars($space['name']) ?></h1>
         <?php if (!$isAdmin): ?>
@@ -12,16 +12,18 @@
         <?php endif; ?>
     </div>
     
-    <div class="mb-8 flex flex-col max-h-[55vh] rounded-md ">
-        <h2 class="text-2xl font-bold  mb-4">Space Tweets</h2>
+    <div class="mb-8 flex flex-col max-h-[55vh] rounded-md">
+        <h2 class="text-2xl font-bold mb-4">Space Tweets</h2>
         <form id="space-tweet-form" class="mb-4">
-            <div class="flex">
-                <textarea name="content" id="tweet-content"  class="flex-grow p-2 border rounded-l" placeholder="What's happening in this space?" rows="1"></textarea>
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors">Post Tweet</button>
+            <div class="flex  gap-3">
+                <textarea name="content" id="tweet-content" class="flex-grow p-2 border rounded-t resize-none" placeholder="What's happening in this space?" rows="1"></textarea>
+                
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-b hover:bg-blue-600 transition-colors">Post Tweet</button>
             </div>
+            <div id="error-message" class="text-red-500 text-sm font-bold mt-1 hidden"></div>
             <input type="hidden" name="space_id" value="<?= $space['id'] ?>">
         </form>
-        <div id="space-tweets" class=" overflow-y-auto flex-1">
+        <div id="space-tweets" class="overflow-y-auto flex-1">
             <?php foreach ($tweets as $tweet): ?>
                 <div class="bg-white p-4 rounded shadow mb-4" id="tweet-<?= $tweet['id'] ?>">
                     <div class="flex items-center mb-2">
@@ -48,9 +50,18 @@
 <script>
     const tweetForm = document.getElementById('space-tweet-form');
     const tweetContent = document.getElementById('tweet-content');
+    const errorMessage = document.getElementById('error-message');
 
     function submitTweet(e) {
         e.preventDefault();
+        errorMessage.classList.add('hidden');
+        
+        if (!tweetContent.value.trim()) {
+            errorMessage.textContent = 'Tweet content cannot be empty';
+            errorMessage.classList.remove('hidden');
+            return;
+        }
+
         const formData = new FormData(tweetForm);
 
         fetch('/spaces/tweet', {
@@ -62,12 +73,14 @@
             if (result.success) {
                 location.reload();
             } else {
-                alert('Failed to post tweet: ' + result.message);
+                errorMessage.textContent = 'Failed to post tweet: ' + result.message;
+                errorMessage.classList.remove('hidden');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            errorMessage.textContent = 'An error occurred. Please try again.';
+            errorMessage.classList.remove('hidden');
         });
     }
 
@@ -84,6 +97,8 @@
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
     });
+
+
 
     document.querySelectorAll('.delete-tweet-btn').forEach(button => {
         button.addEventListener('click', async (e) => {
