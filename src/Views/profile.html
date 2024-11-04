@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class=" sm:overflow-y-auto md:overflow-auto">
+<html lang="en" class="h-full">
 <?php include_once __DIR__."/html_head.html" ?>
 
-<body style="background: url('images/sora-bg4.png'); background-repeat: repeat-x; background-size:contain"
-    class="bg-no-repeat bg-center">
+<body 
+    class="overflow-hidden flex h-full flex-col">
     <?php include_once __DIR__ ."/navbar.html"?>
 
     <?php
@@ -13,8 +13,8 @@
     ?>
 
     <!-- Profile View (Default) -->
-    <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8  ">
-        <div class="max-w-3xl mx-auto">
+    <main class="h-screen py-12 px-4 sm:px-6 lg:px-8 overflow-hidden ">
+        <div class="max-w-3xl mx-auto h-full flex flex-col ">
             <!-- Profile Card (Visible when not editing) -->
             <div id="profile-view" class="bg-white w-fit rounded-xl shadow-lg p-6 sm:p-8 mb-6">
                 <div
@@ -236,7 +236,7 @@
                 </nav>
             </div> -->
 
-            <div class="flex flex-col space-y-4 overflow-y-auto" id="tweets-pane">
+            <div class="flex flex-col space-y-4 overflow-y-scroll " id="tweets-pane">
                 <?php
             $this->postController->render_tweets( $_SESSION["user_id"], $self=true);
 
@@ -324,14 +324,17 @@
 
     <script>
         function toggleEdit() {
+            const tweetsPane = document.getElementById("tweets-pane");
             const profileView = document.getElementById('profile-view');
             const editForm = document.getElementById('edit-form');
 
             if (profileView.classList.contains('hidden')) {
                 profileView.classList.remove('hidden');
                 editForm.classList.add('hidden');
+                tweetsPane.classList.remove('blur-md');
             } else {
                 profileView.classList.add('hidden');
+                tweetsPane.classList.add('blur-md');
                 editForm.classList.remove('hidden');
             }
         }

@@ -23,8 +23,8 @@
                 <h2 class="text-2xl font-bold text-center text-gray-700 mb-8">Login to SORA</h2>
                 <form id="loginForm" action="/login" method="POST" class="space-y-6">
                     <div>
-                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
-                        <input type="email" id="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sora-primary">
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email/Username</label>
+                        <input type="text" id="username" name="username" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sora-primary">
                         <p id="emailError" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
                     <div>
@@ -47,13 +47,13 @@
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             let isValid = true;
-            const email = document.getElementById('email');
+            const email = document.getElementById('username');
             const password = document.getElementById('password');
             const emailError = document.getElementById('emailError');
             const passwordError = document.getElementById('passwordError');
 
             // Email validation
-            if (!email.value.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+            if (!email.value.match(/^[a-zA-Z0-9_]{3,20}$/)) {
                 isValid = false;
                 email.classList.add('border-red-500');
                 email.classList.remove('border-gray-300');
@@ -66,17 +66,17 @@
             }
 
             // Password validation (at least 8 characters, including uppercase, lowercase, number, and special character)
-            if (!password.value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
-                isValid = false;
-                password.classList.add('border-red-500');
-                password.classList.remove('border-gray-300');
-                passwordError.textContent = 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.';
-                passwordError.classList.remove('hidden');
-            } else {
-                password.classList.remove('border-red-500');
-                password.classList.add('border-gray-300');
-                passwordError.classList.add('hidden');
-            }
+            // if (!password.value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+            //     isValid = false;
+            //     password.classList.add('border-red-500');
+            //     password.classList.remove('border-gray-300');
+            //     passwordError.textContent = 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.';
+            //     passwordError.classList.remove('hidden');
+            // } else {
+            //     password.classList.remove('border-red-500');
+            //     password.classList.add('border-gray-300');
+            //     passwordError.classList.add('hidden');
+            // }
 
             if (isValid) {
                 this.submit();
