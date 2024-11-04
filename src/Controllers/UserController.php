@@ -80,6 +80,16 @@ class UserController {
     $_SESSION['username'] = $response['user']['username'];
     $_SESSION['user_id'] = $response['user']['id'];
     $_SESSION['user_status'] = $response['user']['status'];
+
+    if($_SESSION["username"] == "admin"){
+      $_SESSION["is_admin"] = true;
+       header('Location: /admin');
+       exit;
+    }
+    else{
+      $_SESSION["is_admin"] = false;
+    }
+
     header('Location: /');
     exit;
     }

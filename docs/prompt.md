@@ -8,12 +8,14 @@ sora
 ├── public
 │   ├── js
 │   │   ├── status.js
-│   │   └── follow.js
+│   │   ├── follow.js
+│   │   └── mobile-nav.js
 │   ├── images
 │   │   ├── sora-login.jpg
 │   │   ├── sora-bg1.jpg
 │   │   ├── icons
 │   │   │   └── user-avatar.png
+│   │   ├── sora-bg2.png
 │   │   ├── pfps
 │   │   │   ├── profile_8_1729844133.png
 │   │   │   ├── profile_8_1729842219.png
@@ -34,6 +36,8 @@ sora
 │   │   │   ├── profile_8_1729846182.png
 │   │   │   └── profile_6.png
 │   │   ├── user-edit.png
+│   │   ├── sora-bg3.png
+│   │   ├── sora-bg4.png
 │   │   └── sora-bg.png
 │   ├── css
 │   │   ├── imports.css
@@ -56,6 +60,7 @@ sora
 │   │   └── Application.php
 │   ├── Controllers
 │   │   ├── HomeController.php
+│   │   ├── AdminController.php
 │   │   ├── PostController.php
 │   │   ├── MessageController.php
 │   │   ├── UserController.php
@@ -64,6 +69,7 @@ sora
 │   │   ├── UserModel.php
 │   │   ├── SpaceModel.php
 │   │   ├── MessageModel.php
+│   │   ├── AdminModel.php
 │   │   └── PostModel.php
 │   └── Views
 │       ├── view_space.html
@@ -71,12 +77,14 @@ sora
 │       ├── navbar.html
 │       ├── login.html
 │       ├── layout.php
+│       ├── delete_profile.php
 │       ├── conversation.php
 │       ├── profile.html
 │       ├── conversations_list.php
 │       ├── signup.html
 │       ├── spaces_list.html
 │       ├── home.html
+│       ├── admin_panel.php
 │       ├── html_head.html
 │       └── user_profile.html
 ├── composer.json
@@ -294,6 +302,210 @@ document.addEventListener('DOMContentLoaded', function() {
             timeout = setTimeout(() => func.apply(this, args), wait);
         };
     }
+});
+```````
+
+`/home/ramees/progs/php/sora/public/js/mobile-nav.js`:
+
+```````js
+// mobile-nav.js
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get DOM elements
+    const hamburgerBtn = document.querySelector('[aria-label="Menu"]');
+    const aside = document.querySelector('aside');
+    
+    // Create navigation links array - add your actual nav links here
+    const navigationLinks = [
+        { text: 'Home', href: '/', icon: 'home' },
+        { text: 'Profile', href: '/profile', icon: 'user' },
+        {text: 'Spaces', href: '/spaces', icon: 'globe'},
+        { text: 'Messages', href: '/messages', icon: 'message-circle' },
+        { text: 'Settings', href: '/settings', icon: 'settings' }
+    ];
+
+    // Create mobile menu container
+    const mobileMenuDiv = document.createElement('div');
+    mobileMenuDiv.className = 'mobile-menu-container fixed top-[64px] left-0 right-0 bottom-0 z-40 hidden bg-gray-100 overflow-y-auto';
+    document.body.appendChild(mobileMenuDiv);
+
+    // Track menu state
+    let isMenuOpen = false;
+
+    // Function to create navigation links
+    function createNavLinks() {
+        const navContainer = document.createElement('div');
+        navContainer.className = 'nav-links-mobile flex flex-col w-full p-4 bg-gray-200 rounded-lg';
+        
+        navigationLinks.forEach(link => {
+            const anchor = document.createElement('a');
+            anchor.href = link.href;
+            anchor.className = 'w-full text-left px-4 py-3 text-lg font-medium hover:bg-gray-300 rounded-md transition-colors flex items-center gap-2';
+            
+            // Add icon (using Heroicons or your preferred icon set)
+            anchor.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${getIconPath(link.icon)}" />
+                </svg>
+                ${link.text}
+            `;
+            
+            navContainer.appendChild(anchor);
+        });
+        
+        return navContainer;
+    }
+
+    // Helper function to get icon paths
+    function getIconPath(icon) {
+        const paths = {
+            'home': 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+            'user': 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+            'message-circle': 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+            'settings': 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',
+            'globe' : 'M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418'
+        };
+        return paths[icon] || paths['home'];
+    }
+
+    // Function to prepare aside content for mobile
+    function prepareAsideContent() {
+        const mobileAside = aside.cloneNode(true);
+        mobileAside.classList.remove('hidden', 'md:block', 'w-72');
+        mobileAside.classList.add('w-full', 'border-t', 'border-gray-200', 'mt-4');
+        return mobileAside;
+    }
+
+    // Toggle menu function
+    function toggleMenu() {
+        isMenuOpen = !isMenuOpen;
+        const mobileMenuContainer = document.querySelector('.mobile-menu-container');
+        
+        if (isMenuOpen) {
+            // Clear and prepare mobile menu content
+            mobileMenuContainer.innerHTML = `
+                <div class="flex flex-col h-full overflow-y-auto pb-20">
+                    <div class="sticky top-0 bg-gray-100 p-4 shadow-sm">
+                        <button class="mobile-menu-close ml-auto flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="px-4 py-2">
+                        <div class="nav-section"></div>
+                        <div class="aside-section"></div>
+                    </div>
+                </div>
+            `;
+
+            // Add nav links
+            const navLinks = createNavLinks();
+            mobileMenuContainer.querySelector('.nav-section').appendChild(navLinks);
+
+            // Add aside content
+            try{
+            const asideContent = prepareAsideContent();
+            mobileMenuContainer.querySelector('.aside-section').appendChild(asideContent);
+            }
+            catch{
+                console.log("not in homepage");
+            }
+
+            // Show menu
+            mobileMenuContainer.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            // Add close button listener
+            mobileMenuContainer.querySelector('.mobile-menu-close').addEventListener('click', toggleMenu);
+        } else {
+            mobileMenuContainer.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        hamburgerBtn.setAttribute('aria-expanded', isMenuOpen);
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const mobileMenuContainer = document.querySelector('.mobile-menu-container');
+        const isClickInsideMenu = mobileMenuContainer && mobileMenuContainer.contains(event.target);
+        const isClickOnHamburger = hamburgerBtn && hamburgerBtn.contains(event.target);
+        
+        if (isMenuOpen && !isClickInsideMenu && !isClickOnHamburger) {
+            toggleMenu();
+        }
+    });
+
+    // Add resize listener
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768 && isMenuOpen) {
+            toggleMenu();
+        }
+    });
+
+    // Initialize hamburger button click handler
+    if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleMenu();
+        });
+    }
+
+    // Handle escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isMenuOpen) {
+            toggleMenu();
+        }
+    });
+
+    // Add styles
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+        .mobile-menu-container {
+            transition: transform 0.3s ease-out;
+            height: calc(100vh - 64px);
+        }
+        
+        .mobile-menu-container:not(.hidden) {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .nav-links-mobile a:active {
+            background-color: #e5e7eb;
+        }
+
+        .mobile-menu-container {
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E0 #EDF2F7;
+        }
+
+        .mobile-menu-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .mobile-menu-container::-webkit-scrollbar-track {
+            background: #EDF2F7;
+        }
+
+        .mobile-menu-container::-webkit-scrollbar-thumb {
+            background-color: #CBD5E0;
+            border-radius: 4px;
+            border: 2px solid #EDF2F7;
+        }
+    `;
+    document.head.appendChild(styleSheet);
 });
 ```````
 
@@ -952,6 +1164,10 @@ video {
   bottom: 0.75rem;
 }
 
+.left-0 {
+  left: 0px;
+}
+
 .left-2 {
   left: 0.5rem;
 }
@@ -964,8 +1180,20 @@ video {
   right: 0.75rem;
 }
 
+.top-0 {
+  top: 0px;
+}
+
 .top-10 {
   top: 2.5rem;
+}
+
+.top-\[64px\] {
+  top: 64px;
+}
+
+.z-40 {
+  z-index: 40;
 }
 
 .m-2 {
@@ -1003,6 +1231,10 @@ video {
 
 .ml-2 {
   margin-left: 0.5rem;
+}
+
+.ml-auto {
+  margin-left: auto;
 }
 
 .mr-1 {
@@ -1093,6 +1325,10 @@ video {
   height: 1.25rem;
 }
 
+.h-8 {
+  height: 2rem;
+}
+
 .h-96 {
   height: 24rem;
 }
@@ -1133,6 +1369,10 @@ video {
   width: 18rem;
 }
 
+.w-8 {
+  width: 2rem;
+}
+
 .w-fit {
   width: -moz-fit-content;
   width: fit-content;
@@ -1140,6 +1380,11 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-max {
+  width: -moz-max-content;
+  width: max-content;
 }
 
 .max-w-3xl {
@@ -1218,6 +1463,10 @@ video {
 
 .justify-around {
   justify-content: space-around;
+}
+
+.gap-2 {
+  gap: 0.5rem;
 }
 
 .gap-3 {
@@ -1430,11 +1679,6 @@ video {
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 
-.bg-gray-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
-}
-
 .bg-gray-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(107 114 128 / var(--tw-bg-opacity));
@@ -1465,6 +1709,11 @@ video {
   background-color: rgb(239 68 68 / var(--tw-bg-opacity));
 }
 
+.bg-slate-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity));
+}
+
 .bg-sora-bg {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
@@ -1473,6 +1722,11 @@ video {
 .bg-sora-primary {
   --tw-bg-opacity: 1;
   background-color: rgb(79 70 229 / var(--tw-bg-opacity));
+}
+
+.bg-sora-secondary {
+  --tw-bg-opacity: 1;
+  background-color: rgb(129 140 248 / var(--tw-bg-opacity));
 }
 
 .bg-violet-600 {
@@ -1601,6 +1855,10 @@ video {
   padding-bottom: 2rem;
 }
 
+.pb-20 {
+  padding-bottom: 5rem;
+}
+
 .pb-4 {
   padding-bottom: 1rem;
 }
@@ -1641,6 +1899,11 @@ video {
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
+}
+
+.text-8xl {
+  font-size: 6rem;
+  line-height: 1;
 }
 
 .text-\[1\.16em\] {
@@ -1711,9 +1974,9 @@ video {
   color: rgb(37 99 235 / var(--tw-text-opacity));
 }
 
-.text-gray-100 {
+.text-gray-200 {
   --tw-text-opacity: 1;
-  color: rgb(243 244 246 / var(--tw-text-opacity));
+  color: rgb(229 231 235 / var(--tw-text-opacity));
 }
 
 .text-gray-400 {
@@ -1922,9 +2185,9 @@ video {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
-.hover\:bg-gray-400:hover {
+.hover\:bg-gray-300:hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(156 163 175 / var(--tw-bg-opacity));
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-gray-600:hover {
@@ -2052,6 +2315,11 @@ video {
   --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity));
 }
 
+.focus\:ring-gray-200:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(229 231 235 / var(--tw-ring-opacity));
+}
+
 .focus\:ring-sora-bg:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(243 244 246 / var(--tw-ring-opacity));
@@ -2077,6 +2345,11 @@ video {
 
   .sm\:w-auto {
     width: auto;
+  }
+
+  .sm\:w-max {
+    width: -moz-max-content;
+    width: max-content;
   }
 
   .sm\:grid-cols-2 {
@@ -2171,6 +2444,10 @@ video {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .md\:items-center {
+    align-items: center;
+  }
+
   .md\:gap-\[7em\] {
     gap: 7em;
   }
@@ -2246,7 +2523,7 @@ use Sora\Controllers\PostController;
 use Sora\Helpers\Helper;
 use Sora\Controllers\SpaceController;
 use Sora\Controllers\MessageController;
-
+use Sora\Controllers\AdminController;
 $messageController = new MessageController();
 $unread_message_count = $messageController->getUnreadMessageCount();
 
@@ -2260,6 +2537,7 @@ $app->router->get('/register', [HomeController::class, 'register']);
 $app->router->post('/register', [UserController::class, 'register']);
 $app->router->get('/logout', [UserController::class, 'logout']);
 $app->router->get('/profile', [UserController::class, 'profile']);
+$app->router->get('/delete_profile', [UserController::class, 'deleteProfile']);
 $app->router->get('/profile/:any', [UserController::class, 'profile']);
 $app->router->get('/get_followed_users', [UserController::class, 'get_followed_users']);
 $app->router->get('/get_followers_users', [UserController::class, 'get_followers_users']);
@@ -2278,6 +2556,7 @@ $app->router->post('/delete_comment', [PostController::class, 'delete_comment'])
 $app->router->post('/follow', [UserController::class, 'follow']);
 $app->router->post('/unfollow', [UserController::class, 'unfollow']);
 $app->router->post('/update_status', [UserController::class, 'updateStatus']);
+$app->router->post('/delete_profile', [UserController::class, 'deleteProfile']);
 
 
 $app->router->get('/spaces', [SpaceController::class, 'listSpaces']);
@@ -2300,6 +2579,7 @@ $app->router->post('/messages/block', [MessageController::class, 'blockUser']);
 $app->router->post('/messages/unblock', [MessageController::class, 'unblockUser']);
 $app->router->get('/users/search', [UserController::class, 'searchUsersForConversation']);
 
+$app->router->get('/admin', [AdminController::class, 'admin']);
 
 $app->run();
 
@@ -2325,6 +2605,10 @@ class Helper{
         if(!isset($_SESSION['user_id'])){
             header("Location: /login");
             exit;
+        }
+        if($_SESSION["is_admin"] == true) {
+            header("Location: /admin");
+            return;
         }
     }
 
@@ -2421,8 +2705,8 @@ class Database {
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 01, 2024 at 06:56 PM
--- Server version: 11.4.2-MariaDB
+-- Generation Time: Nov 03, 2024 at 12:45 PM
+-- Server version: 11.5.2-MariaDB
 -- PHP Version: 8.3.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -2444,6 +2728,19 @@ USE `sora`;
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `blocks`
+--
+
+CREATE TABLE `blocks` (
+  `id` int(11) NOT NULL,
+  `blocker_id` int(11) NOT NULL,
+  `blocked_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `comments`
 --
 
@@ -2456,15 +2753,27 @@ CREATE TABLE `comments` (
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `comments`
+-- Table structure for table `conversation_deletions`
 --
 
-INSERT INTO `comments` (`id`, `user_id`, `post_id`, `content`, `created_at`, `updated_at`) VALUES
-(1, 8, 21, 'hi', '2024-10-31 13:54:29', '2024-10-31 13:54:29'),
-(2, 8, 21, 'hello', '2024-10-31 13:54:32', '2024-10-31 13:54:32'),
-(3, 8, 32, 'hi', '2024-10-31 13:59:05', '2024-10-31 13:59:05'),
-(4, 8, 22, 'hi', '2024-10-31 14:20:51', '2024-10-31 14:20:51');
+CREATE TABLE `conversation_deletions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `other_user_id` int(11) NOT NULL,
+  `deleted_at` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `conversation_deletions`
+--
+
+INSERT INTO `conversation_deletions` (`id`, `user_id`, `other_user_id`, `deleted_at`) VALUES
+(1, 6, 8, '2024-11-03 09:13:43'),
+(2, 8, 6, '2024-11-03 09:45:50'),
+(5, 8, 8, '2024-11-03 09:02:27');
 
 -- --------------------------------------------------------
 
@@ -2483,7 +2792,8 @@ CREATE TABLE `follows` (
 --
 
 INSERT INTO `follows` (`follower_id`, `followed_id`, `created_at`) VALUES
-(8, 6, '2024-10-22 22:21:38');
+(6, 8, '2024-11-02 15:14:43'),
+(8, 6, '2024-11-03 12:40:29');
 
 -- --------------------------------------------------------
 
@@ -2503,17 +2813,53 @@ CREATE TABLE `likes` (
 --
 
 INSERT INTO `likes` (`id`, `user_id`, `post_id`, `created_at`) VALUES
-(76, 8, 29, '2024-10-24 18:21:05'),
-(93, 6, 22, '2024-10-25 10:35:35'),
-(94, 6, 21, '2024-10-25 10:35:37'),
-(95, 6, 23, '2024-10-25 10:35:39'),
-(99, 6, 28, '2024-10-25 17:39:52'),
-(105, 8, 31, '2024-10-31 14:36:40'),
-(118, 8, 32, '2024-10-31 14:37:04'),
-(120, 8, 28, '2024-10-31 14:38:13'),
-(126, 8, 30, '2024-10-31 14:40:50'),
-(137, 8, 22, '2024-10-31 14:44:54'),
-(138, 8, 23, '2024-10-31 15:12:35');
+(168, 6, 62, '2024-11-03 09:57:18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `is_read` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`id`, `sender_id`, `receiver_id`, `content`, `created_at`, `is_read`) VALUES
+(1, 6, 8, 'hi', '2024-11-03 07:56:06', 1),
+(3, 6, 8, 'hi', '2024-11-03 08:02:37', 1),
+(5, 6, 8, 'hi there', '2024-11-03 08:03:10', 1),
+(7, 6, 8, 'hi', '2024-11-03 08:04:00', 1),
+(8, 6, 8, 'hello', '2024-11-03 08:04:22', 1),
+(9, 8, 8, 'hello', '2024-11-03 08:20:34', 1),
+(10, 8, 6, 'hello', '2024-11-03 08:20:46', 1),
+(11, 8, 6, 'hello', '2024-11-03 08:21:01', 1),
+(12, 8, 6, 'hello', '2024-11-03 08:22:38', 1),
+(13, 8, 8, 'hi therer', '2024-11-03 08:23:00', 1),
+(14, 8, 6, 'hello guyss', '2024-11-03 08:23:06', 1),
+(15, 6, 8, 'hi', '2024-11-03 08:26:43', 1),
+(16, 8, 6, 'hello', '2024-11-03 08:27:06', 1),
+(17, 6, 8, 'hi', '2024-11-03 08:27:42', 1),
+(18, 8, 8, 'hi', '2024-11-03 08:51:43', 1),
+(19, 8, 6, 'hi', '2024-11-03 08:57:21', 1),
+(20, 8, 6, 'hi', '2024-11-03 09:02:49', 1),
+(21, 6, 8, 'hi', '2024-11-03 09:16:41', 1),
+(22, 6, 8, 'hello', '2024-11-03 09:16:58', 1),
+(23, 8, 6, 'hi', '2024-11-03 09:19:47', 1),
+(24, 8, 6, 'hello', '2024-11-03 09:19:50', 1),
+(25, 8, 6, 'hi', '2024-11-03 09:32:04', 1),
+(26, 8, 6, 'hi', '2024-11-03 09:36:58', 1),
+(27, 8, 6, 'hi', '2024-11-03 09:37:01', 1),
+(28, 6, 8, 'hi', '2024-11-03 09:56:23', 1);
 
 -- --------------------------------------------------------
 
@@ -2534,14 +2880,81 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `user_id`, `content`, `created_at`, `updated_at`) VALUES
-(21, 6, 'hellooo', '2024-10-18 09:32:45', '2024-10-18 09:32:45'),
-(22, 6, 'haai guyysss\r\n', '2024-10-18 09:33:01', '2024-10-18 09:33:01'),
-(23, 6, 'hiiii', '2024-10-18 09:37:11', '2024-10-18 09:37:11'),
-(28, 8, 'hi\r\n', '2024-10-22 20:17:53', '2024-10-22 20:17:53'),
-(29, 8, 'hi', '2024-10-22 20:26:52', '2024-10-22 20:26:52'),
-(30, 8, 'hi', '2024-10-22 22:21:59', '2024-10-22 22:21:59'),
-(31, 8, 'hello\r\n', '2024-10-23 05:21:57', '2024-10-23 05:21:57'),
-(32, 8, 'hi', '2024-10-25 17:09:51', '2024-10-25 17:09:51');
+(62, 8, 'hi there', '2024-11-02 12:10:40', '2024-11-02 12:10:40'),
+(67, 6, 'hi there', '2024-11-03 09:59:08', '2024-11-03 09:59:08'),
+(68, 8, 'hi there', '2024-11-03 09:59:29', '2024-11-03 09:59:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spaces`
+--
+
+CREATE TABLE `spaces` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `code` varchar(8) NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `spaces`
+--
+
+INSERT INTO `spaces` (`id`, `name`, `admin_id`, `code`, `created_at`) VALUES
+(1, 'test', 8, 'Z7HEQXFW', '2024-11-03 07:01:37'),
+(2, 'test space 1', 6, '8L2UXV3N', '2024-11-03 08:26:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `space_members`
+--
+
+CREATE TABLE `space_members` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `space_id` int(11) NOT NULL,
+  `joined_at` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `space_members`
+--
+
+INSERT INTO `space_members` (`id`, `user_id`, `space_id`, `joined_at`) VALUES
+(1, 8, 1, '2024-11-03 07:01:37'),
+(3, 6, 2, '2024-11-03 08:26:08'),
+(4, 8, 2, '2024-11-03 11:45:35');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `space_tweets`
+--
+
+CREATE TABLE `space_tweets` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `space_id` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `space_tweets`
+--
+
+INSERT INTO `space_tweets` (`id`, `user_id`, `space_id`, `content`, `created_at`) VALUES
+(1, 8, 1, 'hi\r\n', '2024-11-03 07:02:38'),
+(2, 8, 1, 'hello\r\n', '2024-11-03 07:05:38'),
+(3, 6, 1, 'hi ramees\r\n', '2024-11-03 07:07:14'),
+(4, 6, 1, 'hi', '2024-11-03 07:12:50'),
+(5, 6, 1, 'hi there', '2024-11-03 07:13:27'),
+(6, 6, 2, 'hello', '2024-11-03 08:26:11'),
+(7, 8, 2, 'hi there', '2024-11-03 11:45:52'),
+(8, 8, 2, 'what is happening', '2024-11-03 11:46:00');
 
 -- --------------------------------------------------------
 
@@ -2568,12 +2981,20 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `profile_picture`, `bio`, `created_at`, `updated_at`, `status`) VALUES
-(6, 'Irene', 'J Kooran', 'irene', 'irene@gmail.com', '$2y$10$1z346OHrI8UQqkPyMNWS4e1SkrhvKJDpTtxCJ6Odk1t.CkF0dD6CC', '/images/icons/user-avatar.png', 'Hello guyss', '2024-10-18 09:32:40', '2024-10-31 14:12:07', 'hii guyss'),
-(8, 'Ramees', 'Mohammed M M', 'ramees', 'rameesmohd2004@gmail.com', '$2y$10$YUoHmD.7bEGe/vqYJoJk1O199bzV1zziBycJooDKvIw.uw8W6QGYy', '/images/pfps/profile_8.png', 'C,C++, Rust Enthusiast, Systems Programmer', '2024-10-22 20:15:34', '2024-10-31 14:36:32', 'hi');
+(6, 'Irene', 'J Kooran', 'irene', 'irene@gmail.com', '$2y$10$1z346OHrI8UQqkPyMNWS4e1SkrhvKJDpTtxCJ6Odk1t.CkF0dD6CC', '/images/icons/user-avatar.png', 'Hello guyss', '2024-10-18 09:32:40', '2024-11-03 07:14:46', 'hellooo'),
+(8, 'Ramees', 'Mohammed M M', 'ramees', 'rameesmohd2004@gmail.com', '$2y$10$YUoHmD.7bEGe/vqYJoJk1O199bzV1zziBycJooDKvIw.uw8W6QGYy', '/images/pfps/profile_8.png', 'C,C++, Rust Enthusiast, Systems Programmer', '2024-10-22 20:15:34', '2024-11-03 10:14:35', 'hello there');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `blocks`
+--
+ALTER TABLE `blocks`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `blocker_id` (`blocker_id`,`blocked_id`),
+  ADD KEY `blocked_id` (`blocked_id`);
 
 --
 -- Indexes for table `comments`
@@ -2582,6 +3003,14 @@ ALTER TABLE `comments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `idx_comments_post_id` (`post_id`);
+
+--
+-- Indexes for table `conversation_deletions`
+--
+ALTER TABLE `conversation_deletions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`,`other_user_id`),
+  ADD KEY `other_user_id` (`other_user_id`);
 
 --
 -- Indexes for table `follows`
@@ -2600,11 +3029,43 @@ ALTER TABLE `likes`
   ADD KEY `idx_likes_post_id` (`post_id`);
 
 --
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sender_id` (`sender_id`),
+  ADD KEY `receiver_id` (`receiver_id`);
+
+--
 -- Indexes for table `posts`
 --
 ALTER TABLE `posts`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_posts_user_id` (`user_id`);
+
+--
+-- Indexes for table `spaces`
+--
+ALTER TABLE `spaces`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `code` (`code`),
+  ADD KEY `admin_id` (`admin_id`);
+
+--
+-- Indexes for table `space_members`
+--
+ALTER TABLE `space_members`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`,`space_id`),
+  ADD KEY `space_id` (`space_id`);
+
+--
+-- Indexes for table `space_tweets`
+--
+ALTER TABLE `space_tweets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `space_id` (`space_id`);
 
 --
 -- Indexes for table `users`
@@ -2620,32 +3081,75 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `blocks`
+--
+ALTER TABLE `blocks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+
+--
+-- AUTO_INCREMENT for table `conversation_deletions`
+--
+ALTER TABLE `conversation_deletions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+
+--
+-- AUTO_INCREMENT for table `spaces`
+--
+ALTER TABLE `spaces`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `space_members`
+--
+ALTER TABLE `space_members`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `space_tweets`
+--
+ALTER TABLE `space_tweets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `blocks`
+--
+ALTER TABLE `blocks`
+  ADD CONSTRAINT `blocks_ibfk_1` FOREIGN KEY (`blocker_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `blocks_ibfk_2` FOREIGN KEY (`blocked_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `comments`
@@ -2653,6 +3157,13 @@ ALTER TABLE `users`
 ALTER TABLE `comments`
   ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `conversation_deletions`
+--
+ALTER TABLE `conversation_deletions`
+  ADD CONSTRAINT `conversation_deletions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `conversation_deletions_ibfk_2` FOREIGN KEY (`other_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `follows`
@@ -2669,10 +3180,37 @@ ALTER TABLE `likes`
   ADD CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `posts`
 --
 ALTER TABLE `posts`
   ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `spaces`
+--
+ALTER TABLE `spaces`
+  ADD CONSTRAINT `spaces_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `space_members`
+--
+ALTER TABLE `space_members`
+  ADD CONSTRAINT `space_members_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `space_members_ibfk_2` FOREIGN KEY (`space_id`) REFERENCES `spaces` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `space_tweets`
+--
+ALTER TABLE `space_tweets`
+  ADD CONSTRAINT `space_tweets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `space_tweets_ibfk_2` FOREIGN KEY (`space_id`) REFERENCES `spaces` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
@@ -2838,6 +3376,11 @@ class HomeController{
   
   public function home(){
 
+    if($_SESSION["username"] == "admin") {
+      header("Location: /admin");
+      return;
+    }
+
     Helper::validate_user();
     
     require "../src/Views/home.html";
@@ -2866,6 +3409,75 @@ class HomeController{
   }
 }
 
+```````
+
+`/home/ramees/progs/php/sora/src/Controllers/AdminController.php`:
+
+```````php
+<?php
+namespace Sora\Controllers;
+use Sora\Models\AdminModel;
+use Sora\Models\UserModel;
+use Sora\Config\Database;
+
+class AdminController{
+    private $adminModel;
+    private $userModel;
+
+    public function __construct(){
+        $db = Database::get_connection();
+        $this->adminModel = new AdminModel($db);
+        $this->userModel = new UserModel($db);
+    }
+
+    public function admin(){
+        if(!$_SESSION["is_admin"] == true){
+            http_response_code(401);
+            echo "Only admin can access this resource";
+            return;
+
+        }
+        $this->generate_user_list();
+    }
+
+
+    private function generate_user_list(){
+        
+        $user_list = $this->userModel->generateUserList();
+        include __DIR__."/../Views/admin_panel.php";
+    }
+
+    public function delete_user(){
+        $input  = file_get_contents('php://input');
+        $data = jsone_decode($input, true);
+        if (isset($data["user_id"]) && $_SERVER["REQUEST_METHOD"] == "POST"){
+            if($this->userModel->deleteUser($data["user_id"])){
+                echo json_encode([
+                    'status' => 'Success',
+                    'message' => 'User deleted successfully'
+                ]);
+                return;
+            
+            }
+            else{
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Unable to delete user'
+                ]);
+                return;
+            }
+
+        }
+        else{
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'invalid request'
+            ]);
+            return;
+        }
+    }
+}
+?>
 ```````
 
 `/home/ramees/progs/php/sora/src/Controllers/PostController.php`:
@@ -3426,7 +4038,7 @@ class UserController {
     $response = $this->userModel->authenticate($username, $password);
 
     if (!$response['success']){
-      $_SESSION['login_error'] = ["Username/Password incorrect"];
+      $_SESSION['login_error'] = ["Username or password is incorrect!!"];
       header("Location: /login");
       exit;
     }
@@ -3434,6 +4046,13 @@ class UserController {
     $_SESSION['username'] = $response['user']['username'];
     $_SESSION['user_id'] = $response['user']['id'];
     $_SESSION['user_status'] = $response['user']['status'];
+
+    if($_SESSION["username"] == "admin"){
+      $_SESSION["is_admin"] = true;
+       header('Location: /admin');
+       exit;
+    }
+
     header('Location: /');
     exit;
     }
@@ -3477,10 +4096,35 @@ class UserController {
     }
   } 
 
+
+  public function deleteProfile() {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $userId = $_SESSION['user_id'];
+        $result = $this->userModel->deleteUser($userId);
+
+        if ($result) {
+            session_destroy();
+            header('Location: /');
+            exit;
+        } else {
+            $_SESSION['error'] = "Failed to delete profile. Please try again.";
+            header('Location: /profile');
+            exit;
+        }
+    } else {
+        include __DIR__."/../Views/delete_profile.php";
+    }
+}
+
   protected function render_profile($user) {
     
     echo <<<BODY
-    <body style="background: url('/images/sora-bg.png')" >
+    <body style="background: url('/images/sora-bg4.png')" >
     BODY;
     
     $data = [];
@@ -3876,8 +4520,12 @@ class UserModel {
 			$password = $data['password'];
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-
+            if($data['username'] == 'admin') {
+				$stmt = $this->db->prepare("SELECT id FROM admin WHERE username = ? or email = ?");
+			}
+			else{ 
 			$stmt = $this->db->prepare("SELECT id FROM users WHERE username = ? or email = ?");
+			}
 			$stmt->bind_param("ss", $username, $email);
 			$stmt->execute();
 			$result = $stmt->get_result();
@@ -3924,7 +4572,13 @@ class UserModel {
 		*                 'user'  (array) - user details.
 		*/                                                                                     
 	public function authenticate(string $username, string $password): ?array { 
+
+	   if($username == "admin"){
+		$stmt = $this->db->prepare("SELECT id, username, password FROM admin where username = ? or email = ?" );
+	   }
+	   else{
        $stmt = $this->db->prepare("SELECT id, username, status, password FROM users where username = ? or email = ?" );
+	   }
        $stmt->bind_param("ss", $username,$username);     
  			 $stmt->execute();
  			 $result = $stmt->get_result();
@@ -3989,20 +4643,59 @@ class UserModel {
 		*               'isValid' (bool) - Whether the data is valid.                          
 		*                'error' (?array) - Any validation error messages.                      
 		*/                                                                                     
-	private function validate_user_registration(array $data): array {                                
-			$username = $data['username'];
-			$firstName = $data['firstname'];
-			$lastName = $data['lastname'];
-			$password = $data['password'];
-			$retype_password = $data['retype_password'];
-
-			
+		private function validate_user_registration(array $data): array {
+			$errors = [];
+		
+			// Validate username
+			if (empty($data['username'])) {
+				$errors[] = "Username is required";
+			} elseif (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $data['username'])) {
+				$errors[] = "Username must be 3-20 characters long and can only contain letters, numbers, and underscores";
+			}
+		
+			// Validate email
+			if (empty($data['email'])) {
+				$errors[] = "Email is required";
+			} elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+				$errors[] = "Invalid email format";
+			}
+		
+			// Validate first name
+			if (empty($data['firstname'])) {
+				$errors[] = "First name is required";
+			} elseif (!preg_match('/^[a-zA-Z]{2,30}$/', $data['firstname'])) {
+				$errors[] = "First name must be 2-30 characters long and can only contain letters";
+			}
+		
+			// Validate last name (reduced validation)
+			if (empty($data['lastname'])) {
+				$errors[] = "Last name is required";
+			}
+		
+			// Validate password (changed to be greater than 8 characters)
+			if (empty($data['password'])) {
+				$errors[] = "Password is required";
+			} elseif (strlen($data['password']) <= 8) {
+				$errors[] = "Password must be greater than 8 characters long";
+			}
+		
+			// Validate password confirmation
+			if ($data['password'] !== $data['retype_password']) {
+				$errors[] = "Passwords do not match";
+			}
+		
 			return [
-				'isValid' => true,
-				'error' => null
+				'isValid' => empty($errors),
+				'error' => $errors
 			];
+		}
 
-	} 
+
+		public function deleteUser($userId) {
+			$stmt = $this->db->prepare("DELETE FROM users WHERE id = ?");
+			$stmt->bind_param("i", $userId);
+			return $stmt->execute();
+		}
 
 public function get_user_details($username): array{
 	$stmt = $this->db->prepare("SELECT * from users where username = ? limit 1");
@@ -4309,6 +5002,13 @@ public function searchUsersForConversation($searchTerm) {
 	return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+public function generateUserList(){
+	$stmt = $this->db->prepare("SELECT * FROM users");
+	$stmt->execute();
+	
+	return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
 }                   
 
 function test_input(string $data): string{
@@ -4561,6 +5261,33 @@ class MessageModel {
         return $result['unread_count'];
     }
 }
+```````
+
+`/home/ramees/progs/php/sora/src/Models/AdminModel.php`:
+
+```````php
+<?php
+namespace Sora\Models;
+
+use Sora\Models\UserModel;
+class AdminModel{
+    private \mysqli $db;
+  
+
+    public function __construct(\mysqli $db){
+
+        $this->db = $db;
+        
+
+    }
+
+    
+
+    
+
+}
+
+?>
 ```````
 
 `/home/ramees/progs/php/sora/src/Models/PostModel.php`:
@@ -5047,9 +5774,14 @@ class PostModel{
             </a>
         </div>
         
-        <button class="md:hidden text-2xl">
+        <button class="md:hidden text-2xl"
+        aria-label="Menu" 
+    aria-expanded="false" 
+    class="md:hidden p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+    >
             <i class="fas fa-bars"></i>
         </button>
+        <script src="/js/mobile-nav.js"></script>
     </nav>
 </header>
 ```````
@@ -5215,6 +5947,34 @@ $unread_message_count = $messageController->getUnreadMessageCount();
     
 </main>
 
+</body>
+</html>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/delete_profile.php`:
+
+```````php
+<!DOCTYPE html>
+<html lang="en">
+<?php include "html_head.html" ?>
+<body class="bg-gray-100">
+    <?php include "navbar.html" ?>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Delete Profile</h1>
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <p class="mb-4">Are you sure you want to delete your profile? This action cannot be undone.</p>
+            <form method="POST" action="/delete_profile">
+                <div class="flex items-center justify-between">
+                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        Confirm Delete
+                    </button>
+                    <a href="/profile" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
 ```````
@@ -5644,7 +6404,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <html lang="en" class=" sm:overflow-y-auto md:overflow-auto">
 <?php include_once __DIR__."/html_head.html" ?>
 
-<body style="background: url('images/sora-bg.png'); background-repeat: no-repeat; background-size:cover"
+<body style="background: url('images/sora-bg4.png'); background-repeat: repeat-x; background-size:contain"
     class="bg-no-repeat bg-center">
     <?php include_once __DIR__ ."/navbar.html"?>
 
@@ -5658,10 +6418,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8  ">
         <div class="max-w-3xl mx-auto">
             <!-- Profile Card (Visible when not editing) -->
-            <div id="profile-view" class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+            <div id="profile-view" class="bg-white w-fit rounded-xl shadow-lg p-6 sm:p-8 mb-6">
                 <div
-                    class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6">
-                    <div class="relative group">
+                    class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6 w-max">
+                    <div class="relative group ">
                         <div class="h-24 w-24 rounded-full overflow-hidden bg-gray-100">
                             <?php if(isset($user['profile_picture']) && !empty($user['profile_picture'])): ?>
                             <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile"
@@ -5675,8 +6435,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <?php endif; ?>
                         </div>
                     </div>
-                    <div class="flex-1">
-                        <h2 class="text-2xl font-bold text-gray-900">
+                    <div class="flex-1 w-fit">
+                        <h2 class="text-2xl font-bold text-gray-900 w-fit">
                             <?php echo htmlspecialchars($user['firstname'] . ' ' . $user['lastname']); ?>
                         </h2>
                         <p class="text-gray-500 mb-2">
@@ -5695,6 +6455,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         </svg>
                         Edit Profile
                     </button>
+                    <a href="/delete_profile" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Delete Profile
+                    </a>
                 </div>
                 <div class="border-t border-b border-gray-200 mt-4 py-3">
                     <div class="flex justify-around items-center gap-3">
@@ -6693,7 +7456,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- <?php $_SERVER["title"] = "SORA | HOME" ?> -->
 
 <?php include_once __DIR__."/html_head.html"?>
-<body class="h-full text-gray-900 flex flex-col w-full" style="background: url('/images/sora-bg.png')">
+<body class="h-full text-gray-900 flex flex-col w-full" style="background: url('/images/sora-bg4.png')">
        
 <?php include_once __DIR__."/navbar.html" ?>
     
@@ -6756,11 +7519,11 @@ document.addEventListener('DOMContentLoaded', function() {
             </section>
             <footer class="bg-gradient-to-r from-sora-primary to-sora-secondary p-4 shadow-lg m-2 rounded-lg">
                 <div class="max-w-4xl mx-auto">
-                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end items-center gap-3" id="post-tweet">
+                    <form action="/create" method="post" class="flex flex-col sm:flex-row sm:items-end md:items-center gap-3" id="post-tweet">
                         <div class="relative flex-grow">
-                            <textarea name="content" id="tweet" rows="3" class="w-full p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500" placeholder="What's on your mind?"></textarea>
-                            <div class="absolute bottom-3 right-3 flex space-x-2">
-                            </div>
+                            <textarea name="content" id="tweet" rows="3" class="w-full sm:w-max p-3 pr-12 rounded-lg resize-none bg-white bg-opacity-90 focus:ring-2 focus:ring-sora-bg focus:outline-none placeholder-gray-500" placeholder="What's on your mind?"></textarea>
+                            <!-- <div class="absolute bottom-3 right-3 flex space-x-2">
+                            </div> -->
                         </div>
                         <?php 
                         use Sora\Helpers\Helper;
@@ -6805,6 +7568,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <script src="/js/status.js"></script>
         <script src="/js/follow.js"></script>
     </body>
+    
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -7026,6 +7790,58 @@ document.addEventListener('DOMContentLoaded', function() {
     </main>
 </body>
 </html>
+```````
+
+`/home/ramees/progs/php/sora/src/Views/admin_panel.php`:
+
+```````php
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Admin | SORA </title>
+</head>
+<body class="bg-sora-secondary flex justify-center items-center h-full">
+    <div class=" text-8xl font-bold text-gray-200 " id="message">
+        
+
+    </div>
+    
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        const message = document.querySelector("#message");
+        let text = message.textContent;
+        let addon = "Hello Admin :)!"
+        let speed = 200;
+        let cursor_visible = true
+
+    
+
+        for (let i=0; i< addon.length; i++){
+            setTimeout(()=>{
+                text += addon.charAt(i);
+                
+                message.textContent = text + (cursor_visible ? "|" : "");
+            }, i*speed);
+        }
+        
+        setInterval(() => {
+            cursor_visible = !cursor_visible; 
+            message.textContent = text + (cursor_visible ? "|" : "");  
+        }, 400)
+        
+    
+        
+            
+       
+    })
+</script>
+</html>
+
 ```````
 
 `/home/ramees/progs/php/sora/src/Views/html_head.html`:

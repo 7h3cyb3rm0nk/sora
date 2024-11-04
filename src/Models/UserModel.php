@@ -44,8 +44,12 @@ class UserModel {
 			$password = $data['password'];
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-
+            if($data['username'] == 'admin') {
+				$stmt = $this->db->prepare("SELECT id FROM admin WHERE username = ? or email = ?");
+			}
+			else{ 
 			$stmt = $this->db->prepare("SELECT id FROM users WHERE username = ? or email = ?");
+			}
 			$stmt->bind_param("ss", $username, $email);
 			$stmt->execute();
 			$result = $stmt->get_result();
@@ -92,7 +96,13 @@ class UserModel {
 		*                 'user'  (array) - user details.
 		*/                                                                                     
 	public function authenticate(string $username, string $password): ?array { 
+
+	   if($username == "admin"){
+		$stmt = $this->db->prepare("SELECT id, username, password FROM admin where username = ? or email = ?" );
+	   }
+	   else{
        $stmt = $this->db->prepare("SELECT id, username, status, password FROM users where username = ? or email = ?" );
+	   }
        $stmt->bind_param("ss", $username,$username);     
  			 $stmt->execute();
  			 $result = $stmt->get_result();
@@ -513,6 +523,13 @@ public function searchUsersForConversation($searchTerm) {
 	$stmt = $this->db->prepare("SELECT id, username FROM users WHERE username LIKE ? LIMIT 10");
 	$stmt->bind_param("s", $searchTerm);
 	$stmt->execute();
+	return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+public function generateUserList(){
+	$stmt = $this->db->prepare("SELECT * FROM users");
+	$stmt->execute();
+	
 	return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 

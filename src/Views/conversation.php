@@ -5,7 +5,7 @@
 <?php include_once __DIR__ ."/navbar.html"?>
 
 <main class="container mx-auto px-4 py-8">
-    <div class="bg-white shadow rounded-lg">
+    <div class="bg-white opacity-90 min-h-fit shadow rounded-lg">
         <div class="flex justify-between items-center p-4 border-b border-gray-200">
             <h1 class="text-2xl font-bold" id="conversation-title">
                 <?= htmlspecialchars($other_username) ?>
@@ -31,7 +31,7 @@
             <div id="user-search-results" class="mt-2"></div>
         </div>
 
-        <div id="messages-container" class="h-96 overflow-y-auto p-4">
+        <div id="messages-container" class="h-[60vh] overflow-y-auto p-4">
     <?php if (isset($messages) && !empty($messages)): ?>
         <?php 
         $other_user = $this->userModel->getUserById($other_user_id);

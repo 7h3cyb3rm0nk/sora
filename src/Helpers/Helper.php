@@ -11,6 +11,10 @@ class Helper{
             header("Location: /login");
             exit;
         }
+        if($_SESSION["is_admin"] == true) {
+            header("Location: /admin");
+            return;
+        }
     }
 
     public static function time_ago($timestamp) {
