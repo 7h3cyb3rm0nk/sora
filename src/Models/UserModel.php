@@ -44,8 +44,12 @@ class UserModel {
 			$password = $data['password'];
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-
+            if($data['username'] == 'admin') {
+				$stmt = $this->db->prepare("SELECT id FROM admin WHERE username = ? or email = ?");
+			}
+			else{ 
 			$stmt = $this->db->prepare("SELECT id FROM users WHERE username = ? or email = ?");
+			}
 			$stmt->bind_param("ss", $username, $email);
 			$stmt->execute();
 			$result = $stmt->get_result();

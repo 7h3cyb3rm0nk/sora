@@ -21,6 +21,41 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/default.html#constant_APPROOT"
         },                {
+            "fqsen": "\\Sora\\Controllers\\AdminController",
+            "name": "AdminController",
+            "summary": "",
+            "url": "classes/Sora-Controllers-AdminController.html"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\AdminController\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Sora-Controllers-AdminController.html#method___construct"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\AdminController\u003A\u003Aadmin\u0028\u0029",
+            "name": "admin",
+            "summary": "",
+            "url": "classes/Sora-Controllers-AdminController.html#method_admin"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\AdminController\u003A\u003Agenerate_user_list\u0028\u0029",
+            "name": "generate_user_list",
+            "summary": "",
+            "url": "classes/Sora-Controllers-AdminController.html#method_generate_user_list"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\AdminController\u003A\u003Adelete_user\u0028\u0029",
+            "name": "delete_user",
+            "summary": "",
+            "url": "classes/Sora-Controllers-AdminController.html#method_delete_user"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\AdminController\u003A\u003A\u0024adminModel",
+            "name": "adminModel",
+            "summary": "",
+            "url": "classes/Sora-Controllers-AdminController.html#property_adminModel"
+        },                {
+            "fqsen": "\\Sora\\Controllers\\AdminController\u003A\u003A\u0024userModel",
+            "name": "userModel",
+            "summary": "",
+            "url": "classes/Sora-Controllers-AdminController.html#property_userModel"
+        },                {
             "fqsen": "\\Sora\\Controllers\\HomeController",
             "name": "HomeController",
             "summary": "",
@@ -256,6 +291,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Sora-Controllers-UserController.html#method_profile"
         },                {
+            "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003AdeleteProfile\u0028\u0029",
+            "name": "deleteProfile",
+            "summary": "",
+            "url": "classes/Sora-Controllers-UserController.html#method_deleteProfile"
+        },                {
             "fqsen": "\\Sora\\Controllers\\UserController\u003A\u003Arender_profile\u0028\u0029",
             "name": "render_profile",
             "summary": "",
@@ -400,6 +440,21 @@ Search.appendIndex(
             "name": "time_ago",
             "summary": "",
             "url": "classes/Sora-Helpers-Helper.html#method_time_ago"
+        },                {
+            "fqsen": "\\Sora\\Models\\AdminModel",
+            "name": "AdminModel",
+            "summary": "",
+            "url": "classes/Sora-Models-AdminModel.html"
+        },                {
+            "fqsen": "\\Sora\\Models\\AdminModel\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Sora-Models-AdminModel.html#method___construct"
+        },                {
+            "fqsen": "\\Sora\\Models\\AdminModel\u003A\u003A\u0024db",
+            "name": "db",
+            "summary": "",
+            "url": "classes/Sora-Models-AdminModel.html#property_db"
         },                {
             "fqsen": "\\Sora\\Models\\MessageModel",
             "name": "MessageModel",
@@ -641,6 +696,11 @@ Search.appendIndex(
             "summary": "validate\u0020user\u0020registration\u0020data.",
             "url": "classes/Sora-Models-UserModel.html#method_validate_user_registration"
         },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AdeleteUser\u0028\u0029",
+            "name": "deleteUser",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_deleteUser"
+        },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003Aget_user_details\u0028\u0029",
             "name": "get_user_details",
             "summary": "",
@@ -740,6 +800,11 @@ Search.appendIndex(
             "name": "searchUsersForConversation",
             "summary": "",
             "url": "classes/Sora-Models-UserModel.html#method_searchUsersForConversation"
+        },                {
+            "fqsen": "\\Sora\\Models\\UserModel\u003A\u003AgenerateUserList\u0028\u0029",
+            "name": "generateUserList",
+            "summary": "",
+            "url": "classes/Sora-Models-UserModel.html#method_generateUserList"
         },                {
             "fqsen": "\\Sora\\Models\\UserModel\u003A\u003A\u0024db",
             "name": "db",
