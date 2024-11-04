@@ -86,6 +86,9 @@ class UserController {
        header('Location: /admin');
        exit;
     }
+    else{
+      $_SESSION["is_admin"] = false;
+    }
 
     header('Location: /');
     exit;
