@@ -33,7 +33,7 @@ class AdminController{
 
     public function delete_user(){
         $input  = file_get_contents('php://input');
-        $data = jsone_decode($input, true);
+        $data = json_decode($input, true);
         if (isset($data["user_id"]) && $_SERVER["REQUEST_METHOD"] == "POST"){
             if($this->userModel->deleteUser($data["user_id"])){
                 echo json_encode([

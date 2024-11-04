@@ -74,6 +74,8 @@ $app->router->get('/users/search', [UserController::class, 'searchUsersForConver
 
 $app->router->get('/admin', [AdminController::class, 'admin']);
 
+$app->router->post('/admin/delete_user', [AdminController::class, 'delete_user']);
+
 $app->run();
 
 
