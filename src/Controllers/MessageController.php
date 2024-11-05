@@ -22,7 +22,7 @@ class MessageController {
         $conversations = $this->messageModel->getConversations($user_id);
 
         // Fetch user details for conversations with no messages
-        foreach ($conversations as &$conversation) {
+        foreach ($conversations as $conversation) {
             if (empty($conversation['username'])) {
                 $user = $this->userModel->getUserById($conversation['other_user_id']);
                 $conversation['username'] = $user['username'];
