@@ -54,13 +54,14 @@ class UserController {
       $_SESSION['username'] = $_POST['username'];
       $_SESSION['user_id'] = $response['user']['id'];
       $_SESSION['user_status'] = $response['user']['status'];
+      $_SESSION['is_admin'] = false;
       header('Location: /');
       exit;
     }
     else{
       $_SESSION['error'] = $response['error'];
     
-      header('Location: /register');
+      header('Location: /signup');
       exit;
     }
   }

@@ -39,8 +39,8 @@ class UserModel {
 			}
 			$username  = $data['username'];
 			$email = $data['email'];
-			$firstName = $data['firstname'];
-			$lastName = $data['lastname'];
+			$firstName = $data['first_name'];
+			$lastName = $data['last_name'];
 			$password = $data['password'];
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
@@ -185,14 +185,14 @@ class UserModel {
 			}
 		
 			// Validate first name
-			if (empty($data['firstname'])) {
+			if (empty($data['first_name'])) {
 				$errors[] = "First name is required";
-			} elseif (!preg_match('/^[a-zA-Z]{2,30}$/', $data['firstname'])) {
+			} elseif (!preg_match('/^[a-zA-Z]{2,30}$/', $data['first_name'])) {
 				$errors[] = "First name must be 2-30 characters long and can only contain letters";
 			}
 		
 			// Validate last name (reduced validation)
-			if (empty($data['lastname'])) {
+			if (empty($data['last_name'])) {
 				$errors[] = "Last name is required";
 			}
 		
@@ -204,7 +204,7 @@ class UserModel {
 			}
 		
 			// Validate password confirmation
-			if ($data['password'] !== $data['retype_password']) {
+			if ($data['password'] !== $data['confirm_password']) {
 				$errors[] = "Passwords do not match";
 			}
 		
