@@ -61,6 +61,11 @@
                 <p class="mt-4 text-center text-sm text-gray-600">
                     Already have an account? <a href="/login" class="text-sora-primary hover:underline">Login here</a>
                 </p>
+                <p class="text-red-500 mt-2 text-center font-bold">
+                    <?= isset($_SESSION["auth_error"]) ? implode("<br>", $_SESSION["auth_error"]): "" ?>
+                    <?php unset($_SESSION["auth_error"]); ?>
+                    
+                </p>
             </div>
         </div>
     </div>

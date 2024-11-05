@@ -59,7 +59,7 @@ class UserController {
       exit;
     }
     else{
-      $_SESSION['error'] = $response['error'];
+    $_SESSION['auth_error'] = $response["error"];
     
       header('Location: /signup');
       exit;
@@ -73,7 +73,7 @@ class UserController {
     $response = $this->userModel->authenticate($username, $password);
 
     if (!$response['success']){
-      $_SESSION['login_error'] = ["Username or password is incorrect!!"];
+      $_SESSION['auth_error'] = $response["error"];
       header("Location: /login");
       exit;
     }
@@ -81,6 +81,7 @@ class UserController {
     $_SESSION['username'] = $response['user']['username'];
     $_SESSION['user_id'] = $response['user']['id'];
     $_SESSION['user_status'] = $response['user']['status'];
+    // $_SESSION['auth_error'] = $response["error"];
 
     if($_SESSION["username"] == "admin"){
       $_SESSION["is_admin"] = true;

@@ -111,6 +111,7 @@ class UserModel {
 				 return [
 					 'success' => false,
 					 'message' => 'INVALID_DETAILS_ERROR',
+					 'error' => ['Invalid credentials']
 				 ];
 			 } 
 
@@ -128,7 +129,8 @@ class UserModel {
 			 else {
 				 return [
 					 'success' => false,
-					 'message' => 'INVALID_PASSWORD_ERROR',
+					 'message' => 'INVALID_DETAILS_ERROR',
+					 'error' => ['Invalid credentials']
 				 ];
 			 }
 		                                                               
@@ -173,7 +175,7 @@ class UserModel {
 			// Validate username
 			if (empty($data['username'])) {
 				$errors[] = "Username is required";
-			} elseif (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $data['username'])) {
+			} elseif (!preg_match('/^[a-zA-Z0-9_@.]{3,20}$/', $data['username'])) {
 				$errors[] = "Username must be 3-20 characters long and can only contain letters, numbers, and underscores";
 			}
 		
@@ -199,8 +201,8 @@ class UserModel {
 			// Validate password (changed to be greater than 8 characters)
 			if (empty($data['password'])) {
 				$errors[] = "Password is required";
-			} elseif (strlen($data['password']) <= 8) {
-				$errors[] = "Password must be greater than 8 characters long";
+			} elseif (strlen($data['password']) < 8) {
+				$errors[] = "Password must be at least 8 characters long";
 			}
 		
 			// Validate password confirmation

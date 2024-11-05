@@ -36,7 +36,7 @@ class HomeController{
 
     }
     else{
-      print_r($_SESSION["error"]);
+      // print_r($_SESSION["error"]);
       require_once __DIR__."/../Views/signup.html";
     }
   }
