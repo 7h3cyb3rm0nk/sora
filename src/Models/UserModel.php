@@ -39,8 +39,8 @@ class UserModel {
 			}
 			$username  = $data['username'];
 			$email = $data['email'];
-			$firstName = $data['firstname'];
-			$lastName = $data['lastname'];
+			$firstName = $data['first_name'];
+			$lastName = $data['last_name'];
 			$password = $data['password'];
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
@@ -111,6 +111,7 @@ class UserModel {
 				 return [
 					 'success' => false,
 					 'message' => 'INVALID_DETAILS_ERROR',
+					 'error' => ['Invalid credentials']
 				 ];
 			 } 
 
@@ -128,7 +129,8 @@ class UserModel {
 			 else {
 				 return [
 					 'success' => false,
-					 'message' => 'INVALID_PASSWORD_ERROR',
+					 'message' => 'INVALID_DETAILS_ERROR',
+					 'error' => ['Invalid credentials']
 				 ];
 			 }
 		                                                               
@@ -173,7 +175,7 @@ class UserModel {
 			// Validate username
 			if (empty($data['username'])) {
 				$errors[] = "Username is required";
-			} elseif (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $data['username'])) {
+			} elseif (!preg_match('/^[a-zA-Z0-9_@.]{3,20}$/', $data['username'])) {
 				$errors[] = "Username must be 3-20 characters long and can only contain letters, numbers, and underscores";
 			}
 		
@@ -185,26 +187,26 @@ class UserModel {
 			}
 		
 			// Validate first name
-			if (empty($data['firstname'])) {
+			if (empty($data['first_name'])) {
 				$errors[] = "First name is required";
-			} elseif (!preg_match('/^[a-zA-Z]{2,30}$/', $data['firstname'])) {
+			} elseif (!preg_match('/^[a-zA-Z]{2,30}$/', $data['first_name'])) {
 				$errors[] = "First name must be 2-30 characters long and can only contain letters";
 			}
 		
 			// Validate last name (reduced validation)
-			if (empty($data['lastname'])) {
+			if (empty($data['last_name'])) {
 				$errors[] = "Last name is required";
 			}
 		
 			// Validate password (changed to be greater than 8 characters)
 			if (empty($data['password'])) {
 				$errors[] = "Password is required";
-			} elseif (strlen($data['password']) <= 8) {
-				$errors[] = "Password must be greater than 8 characters long";
+			} elseif (strlen($data['password']) < 8) {
+				$errors[] = "Password must be at least 8 characters long";
 			}
 		
 			// Validate password confirmation
-			if ($data['password'] !== $data['retype_password']) {
+			if ($data['password'] !== $data['confirm_password']) {
 				$errors[] = "Passwords do not match";
 			}
 		

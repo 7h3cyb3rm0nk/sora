@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 03, 2024 at 12:45 PM
+-- Generation Time: Nov 05, 2024 at 07:23 PM
 -- Server version: 11.5.2-MariaDB
 -- PHP Version: 8.3.13
 
@@ -22,6 +22,26 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `sora` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `sora`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `id` int(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`id`, `username`, `password`, `email`) VALUES
+(1, 'admin', '$2y$10$2GisDr9vG.UtMP.xmDoUV.Mk5e0OmFzThpx0tFbVtau3de.9/ShuS', 'rameesmohd2004@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -51,6 +71,15 @@ CREATE TABLE `comments` (
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`id`, `user_id`, `post_id`, `content`, `created_at`, `updated_at`) VALUES
+(43, 6, 76, 'yes yes', '2024-11-05 12:03:33', '2024-11-05 12:03:33'),
+(44, 8, 74, 'hello', '2024-11-05 19:11:40', '2024-11-05 19:11:40'),
+(45, 8, 76, 'hello', '2024-11-05 19:11:48', '2024-11-05 19:11:48');
+
 -- --------------------------------------------------------
 
 --
@@ -69,8 +98,8 @@ CREATE TABLE `conversation_deletions` (
 --
 
 INSERT INTO `conversation_deletions` (`id`, `user_id`, `other_user_id`, `deleted_at`) VALUES
-(1, 6, 8, '2024-11-03 09:13:43'),
-(2, 8, 6, '2024-11-03 09:45:50'),
+(1, 6, 8, '2024-11-04 20:55:46'),
+(2, 8, 6, '2024-11-04 20:55:22'),
 (5, 8, 8, '2024-11-03 09:02:27');
 
 -- --------------------------------------------------------
@@ -91,7 +120,9 @@ CREATE TABLE `follows` (
 
 INSERT INTO `follows` (`follower_id`, `followed_id`, `created_at`) VALUES
 (6, 8, '2024-11-02 15:14:43'),
-(8, 6, '2024-11-03 12:40:29');
+(8, 6, '2024-11-05 19:11:35'),
+(11, 6, '2024-11-05 12:30:14'),
+(11, 8, '2024-11-05 12:30:17');
 
 -- --------------------------------------------------------
 
@@ -105,13 +136,6 @@ CREATE TABLE `likes` (
   `post_id` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `likes`
---
-
-INSERT INTO `likes` (`id`, `user_id`, `post_id`, `created_at`) VALUES
-(168, 6, 62, '2024-11-03 09:57:18');
 
 -- --------------------------------------------------------
 
@@ -157,7 +181,18 @@ INSERT INTO `messages` (`id`, `sender_id`, `receiver_id`, `content`, `created_at
 (25, 8, 6, 'hi', '2024-11-03 09:32:04', 1),
 (26, 8, 6, 'hi', '2024-11-03 09:36:58', 1),
 (27, 8, 6, 'hi', '2024-11-03 09:37:01', 1),
-(28, 6, 8, 'hi', '2024-11-03 09:56:23', 1);
+(28, 6, 8, 'hi', '2024-11-03 09:56:23', 1),
+(29, 8, 6, 'Hi', '2024-11-03 13:22:05', 1),
+(30, 8, 6, 'hello', '2024-11-04 20:32:13', 1),
+(31, 8, 6, 'helo', '2024-11-04 20:32:14', 1),
+(32, 8, 6, 'dfd', '2024-11-04 20:32:15', 1),
+(33, 8, 6, 'df', '2024-11-04 20:32:16', 1),
+(34, 8, 6, 'df', '2024-11-04 20:32:17', 1),
+(35, 8, 6, 'dfdf', '2024-11-04 20:32:18', 1),
+(36, 8, 6, 'dfdf', '2024-11-04 20:32:19', 1),
+(37, 6, 8, 'hi', '2024-11-04 20:55:56', 1),
+(38, 6, 8, 'hello hello', '2024-11-05 12:06:37', 1),
+(39, 11, 8, 'hi bro', '2024-11-05 12:30:27', 0);
 
 -- --------------------------------------------------------
 
@@ -178,9 +213,11 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `user_id`, `content`, `created_at`, `updated_at`) VALUES
-(62, 8, 'hi there', '2024-11-02 12:10:40', '2024-11-02 12:10:40'),
 (67, 6, 'hi there', '2024-11-03 09:59:08', '2024-11-03 09:59:08'),
-(68, 8, 'hi there', '2024-11-03 09:59:29', '2024-11-03 09:59:29');
+(69, 8, 'Hi there', '2024-11-03 12:48:04', '2024-11-03 12:48:04'),
+(74, 8, 'hey there', '2024-11-03 13:23:43', '2024-11-03 13:23:43'),
+(76, 6, 'hello ramees', '2024-11-05 12:03:12', '2024-11-05 12:03:12'),
+(77, 11, 'hello', '2024-11-05 12:30:10', '2024-11-05 12:30:10');
 
 -- --------------------------------------------------------
 
@@ -202,7 +239,8 @@ CREATE TABLE `spaces` (
 
 INSERT INTO `spaces` (`id`, `name`, `admin_id`, `code`, `created_at`) VALUES
 (1, 'test', 8, 'Z7HEQXFW', '2024-11-03 07:01:37'),
-(2, 'test space 1', 6, '8L2UXV3N', '2024-11-03 08:26:08');
+(2, 'test space 1', 6, '8L2UXV3N', '2024-11-03 08:26:08'),
+(5, 'nice group', 6, 'PU9V618C', '2024-11-05 12:04:40');
 
 -- --------------------------------------------------------
 
@@ -224,7 +262,7 @@ CREATE TABLE `space_members` (
 INSERT INTO `space_members` (`id`, `user_id`, `space_id`, `joined_at`) VALUES
 (1, 8, 1, '2024-11-03 07:01:37'),
 (3, 6, 2, '2024-11-03 08:26:08'),
-(4, 8, 2, '2024-11-03 11:45:35');
+(5, 6, 5, '2024-11-05 12:04:40');
 
 -- --------------------------------------------------------
 
@@ -246,13 +284,14 @@ CREATE TABLE `space_tweets` (
 
 INSERT INTO `space_tweets` (`id`, `user_id`, `space_id`, `content`, `created_at`) VALUES
 (1, 8, 1, 'hi\r\n', '2024-11-03 07:02:38'),
-(2, 8, 1, 'hello\r\n', '2024-11-03 07:05:38'),
-(3, 6, 1, 'hi ramees\r\n', '2024-11-03 07:07:14'),
 (4, 6, 1, 'hi', '2024-11-03 07:12:50'),
 (5, 6, 1, 'hi there', '2024-11-03 07:13:27'),
 (6, 6, 2, 'hello', '2024-11-03 08:26:11'),
 (7, 8, 2, 'hi there', '2024-11-03 11:45:52'),
-(8, 8, 2, 'what is happening', '2024-11-03 11:46:00');
+(8, 8, 2, 'what is happening', '2024-11-03 11:46:00'),
+(9, 8, 2, 'oiii', '2024-11-04 20:33:19'),
+(13, 8, 1, 'hello', '2024-11-04 20:48:56'),
+(14, 6, 5, 'hello hello', '2024-11-05 12:05:15');
 
 -- --------------------------------------------------------
 
@@ -267,7 +306,7 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `profile_picture` varchar(255) DEFAULT NULL,
+  `profile_picture` varchar(255) DEFAULT '/images/icons/user-avatar.png',
   `bio` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -279,12 +318,20 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `profile_picture`, `bio`, `created_at`, `updated_at`, `status`) VALUES
-(6, 'Irene', 'J Kooran', 'irene', 'irene@gmail.com', '$2y$10$1z346OHrI8UQqkPyMNWS4e1SkrhvKJDpTtxCJ6Odk1t.CkF0dD6CC', '/images/icons/user-avatar.png', 'Hello guyss', '2024-10-18 09:32:40', '2024-11-03 07:14:46', 'hellooo'),
-(8, 'Ramees', 'Mohammed M M', 'ramees', 'rameesmohd2004@gmail.com', '$2y$10$YUoHmD.7bEGe/vqYJoJk1O199bzV1zziBycJooDKvIw.uw8W6QGYy', '/images/pfps/profile_8.png', 'C,C++, Rust Enthusiast, Systems Programmer', '2024-10-22 20:15:34', '2024-11-03 10:14:35', 'hello there');
+(6, 'Irene', 'J Kooran', 'irene', 'irene@gmail.com', '$2y$10$1z346OHrI8UQqkPyMNWS4e1SkrhvKJDpTtxCJ6Odk1t.CkF0dD6CC', '/images/icons/user-avatar.png', 'Hello guyss', '2024-10-18 09:32:40', '2024-11-05 12:04:11', 'yeahhh yeahhh'),
+(8, 'Ramees', 'Mohammed M M', 'ramees', 'rameesmohd2004@gmail.com', '$2y$10$5yChFl2GyOz1rFypvMQJku5By3sTZdKiYSztZVILvulQmTxBzYPgq', '/images/pfps/profile_8.png', 'C,C++, Rust Enthusiast, Systems Programmer', '2024-10-22 20:15:34', '2024-11-05 12:09:36', 'hello hi'),
+(11, 'test', 'user', 'test', 'test@gmail.com', '$2y$10$yKBtrX18VhlSCkIabhMWmOMKW/j2gohwOyABuoEDMsSiEDmcVQzk.', '/images/icons/user-avatar.png', NULL, '2024-11-05 12:27:14', '2024-11-05 19:04:50', NULL);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id` (`id`,`username`);
 
 --
 -- Indexes for table `blocks`
@@ -388,55 +435,55 @@ ALTER TABLE `blocks`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `conversation_deletions`
 --
 ALTER TABLE `conversation_deletions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `spaces`
 --
 ALTER TABLE `spaces`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `space_members`
 --
 ALTER TABLE `space_members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `space_tweets`
 --
 ALTER TABLE `space_tweets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables

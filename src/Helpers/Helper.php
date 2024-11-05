@@ -11,7 +11,7 @@ class Helper{
             header("Location: /login");
             exit;
         }
-        if($_SESSION["is_admin"] == true) {
+        if( isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] == true) {
             header("Location: /admin");
             return;
         }

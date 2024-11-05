@@ -39,6 +39,11 @@
                 <p class="mt-4 text-center text-sm text-gray-600">
                     Don't have an account? <a href="/signup" class="text-sora-primary hover:underline">Sign up here</a>
                 </p>
+                <p class="text-red-500 mt-2 text-center font-bold">
+                    <?= isset($_SESSION["auth_error"]) ? implode("<br>", $_SESSION["auth_error"]): "" ?>
+                    <?php unset($_SESSION["auth_error"]); ?>
+                    
+                </p>
             </div>
         </div>
     </div>
@@ -53,7 +58,7 @@
             const passwordError = document.getElementById('passwordError');
 
             // Email validation
-            if (!email.value.match(/^[a-zA-Z0-9_]{3,20}$/)) {
+            if (!email.value.match(/^[a-zA-Z0-9_@.]{3,20}$/)) {
                 isValid = false;
                 email.classList.add('border-red-500');
                 email.classList.remove('border-gray-300');
@@ -65,12 +70,12 @@
                 emailError.classList.add('hidden');
             }
 
-            // Password validation (at least 8 characters, including uppercase, lowercase, number, and special character)
-            // if (!password.value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+            // Password validation (at least 8 characters)
+            // if (!(password.length >= 8)) {
             //     isValid = false;
             //     password.classList.add('border-red-500');
             //     password.classList.remove('border-gray-300');
-            //     passwordError.textContent = 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.';
+            //     passwordError.textContent = 'Password must be at least 8 ';
             //     passwordError.classList.remove('hidden');
             // } else {
             //     password.classList.remove('border-red-500');
