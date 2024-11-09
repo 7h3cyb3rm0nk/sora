@@ -16,7 +16,7 @@ use Sora\Controllers\PostController;
 use Sora\Helpers\Helper;
 use Sora\Controllers\SpaceController;
 use Sora\Controllers\MessageController;
-
+use Sora\Controllers\AdminController;
 $messageController = new MessageController();
 $unread_message_count = $messageController->getUnreadMessageCount();
 
@@ -26,8 +26,8 @@ $app = new Application($router);
 $app->router->get('/', [HomeController::class, 'home']);
 $app->router->get('/login', [HomeController::class, 'login']);
 $app->router->post('/login', [UserController::class, 'login']);
-$app->router->get('/register', [HomeController::class, 'register']);
-$app->router->post('/register', [UserController::class, 'register']);
+$app->router->get('/signup', [HomeController::class, 'register']);
+$app->router->post('/signup', [UserController::class, 'register']);
 $app->router->get('/logout', [UserController::class, 'logout']);
 $app->router->get('/profile', [UserController::class, 'profile']);
 $app->router->get('/delete_profile', [UserController::class, 'deleteProfile']);
@@ -72,7 +72,9 @@ $app->router->post('/messages/block', [MessageController::class, 'blockUser']);
 $app->router->post('/messages/unblock', [MessageController::class, 'unblockUser']);
 $app->router->get('/users/search', [UserController::class, 'searchUsersForConversation']);
 
+$app->router->get('/admin', [AdminController::class, 'admin']);
 
+$app->router->post('/admin/delete_user', [AdminController::class, 'delete_user']);
 
 $app->run();
 

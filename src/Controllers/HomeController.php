@@ -8,6 +8,11 @@ class HomeController{
   
   public function home(){
 
+    if($_SESSION["username"] == "admin") {
+      header("Location: /admin");
+      return;
+    }
+
     Helper::validate_user();
     
     require "../src/Views/home.html";
@@ -31,6 +36,7 @@ class HomeController{
 
     }
     else{
+      // print_r($_SESSION["error"]);
       require_once __DIR__."/../Views/signup.html";
     }
   }

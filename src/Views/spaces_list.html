@@ -4,7 +4,7 @@
 <body class="bg-gray-100">
     <?php include_once __DIR__ ."/navbar.html"?>
     
-    <main class="container mx-auto px-4 py-8">
+    <main class="container  bg-gray-200 rounded-md shadow-md opacity-85 mt-20 mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold mb-6">Spaces</h1>
         
         <div class="mb-8">
@@ -28,7 +28,7 @@
             <h2 class="text-2xl font-bold mb-4">Your Spaces</h2>
             <div id="user-spaces" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <?php foreach ($userSpaces as $space): ?>
-                    <div class="bg-white p-4 rounded shadow">
+                    <div class="bg-white p-4 text-slate-900 rounded shadow">
                         <h3 class="text-xl font-bold mb-2"><?= htmlspecialchars($space['name']) ?></h3>
                         <p class="text-gray-600 mb-2">Code: <?= htmlspecialchars($space['code']) ?></p>
                         <a href="/spaces/<?= $space['id'] ?>" class="text-blue-500 hover:underline">View Space</a>
